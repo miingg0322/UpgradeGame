@@ -16,6 +16,8 @@ public class Enemy : MonoBehaviour
     public SpriteRenderer enemyRend;
     private Player player;
 
+    public List<GameObject> drops = new List<GameObject>();
+
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
