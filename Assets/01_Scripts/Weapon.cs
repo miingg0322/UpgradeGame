@@ -7,7 +7,6 @@ namespace Ming
     public class Weapon : MonoBehaviour
     {
         public int dmg;
-
         // -1 레벨 = 파괴된 상태
         private int level;
         public int Level
