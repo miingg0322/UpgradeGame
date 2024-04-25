@@ -1,53 +1,104 @@
+using Ming;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public class Enemy : MonoBehaviour
 {
     public int hp;
     private int maxHp;
     public int dmg;
-    public float range = 3f;
+
+    public Vector2 direction;
     public float moveSpeed = 2f;
-    public float atkCoolTime = 2f;
-    [SerializeField]
-    private float atkTimer = 0f;
 
-    public SpriteRenderer enemyRend;
-    private Player player;
+    bool isHit;
 
-    public List<GameObject> drops = new List<GameObject>();
+    Rigidbody2D rigid;
+    Collider2D coll;
+    SpriteRenderer spriter;
+    WaitForFixedUpdate wait;
+    void Awake()
+    {
+        rigid = GetComponent<Rigidbody2D>();
+        coll = GetComponent<Collider2D>();
+        spriter = GetComponent<SpriteRenderer>();
+        wait = new WaitForFixedUpdate();
+    }
 
     void Start()
     {
-        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
+        direction = Vector2.right;
     }
 
+    private void OnEnable()
+    {
+        coll.enabled = true;
+        rigid.simulated = true;
+        spriter.sortingOrder = 2;
+        hp = maxHp;
+    }
+
+    // Update is called once per frame
     void Update()
     {
-        Vector2 curPos = transform.position;
-        Vector2 playerPos = player.transform.position;
-        float distance = Vector2.Distance(curPos, playerPos);
-        if (distance > range)
-        {
-            transform.position = Vector2.MoveTowards(curPos, playerPos, moveSpeed * Time.deltaTime);
-        }
+        if (!isHit)
+            transform.Translate(direction * moveSpeed * Time.deltaTime);
         else
+            transform.Translate(direction * moveSpeed * -0.4f * Time.deltaTime);
+    }
+
+    public void Init(SpawnData data)
+    {
+        moveSpeed = data.speed;
+        maxHp = data.health;
+        hp = data.health;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Wall"))
         {
-            if (atkTimer <= 0)
+            gameObject.SetActive(false);
+        }
+        else if (collision.CompareTag("Range"))
+        {
+            hp -= collision.GetComponent<Range>().damage;
+            if (gameObject.activeSelf)
+                StartCoroutine(KnockBack());
+                
+            if(hp > 0)
             {
-                NormalAttack();
+                // 피격 애니메이션, 효과음 재생
             }
             else
             {
-                atkTimer -= Time.deltaTime;
+                Dead();
             }
+        }
+        else if(collision.CompareTag("Melee"))
+        {
+            hp -= maxHp;
+            Dead();
         }
     }
 
-    void NormalAttack()
+    IEnumerator KnockBack()
+    {       
+            yield return wait;
+            isHit = true;
+
+            yield return new WaitForSeconds(0.3f);
+            isHit = false;            
+    }
+
+    void Dead()
     {
-        Debug.Log("공격처리");
-        atkTimer = atkCoolTime;
+        coll.enabled = false;
+        rigid.simulated = false;
+        spriter.sortingOrder = 1;
+        gameObject.SetActive(false);
     }
 }
