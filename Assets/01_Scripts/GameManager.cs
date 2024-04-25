@@ -11,6 +11,9 @@ public class GameManager : MonoBehaviour
         set { instance = value; }
     }
 
+    public PoolManager pool;
+    public Player player;
+
     private void Awake()
     {
         if(instance == null)
