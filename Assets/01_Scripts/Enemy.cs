@@ -39,6 +39,7 @@ public class Enemy : MonoBehaviour
         rigid.simulated = true;
         spriter.sortingOrder = 2;
         hp = maxHp;
+        isHit = false;
     }
 
     // Update is called once per frame
