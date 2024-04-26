@@ -1,3 +1,4 @@
+using Rito;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,6 +11,10 @@ public class GameManager : MonoBehaviour
         get { return instance; }
         set { instance = value; }
     }
+
+    public PoolManager pool;
+    public Player player;
+    public RandomItem ranItem;
 
     private void Awake()
     {

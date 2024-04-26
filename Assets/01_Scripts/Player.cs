@@ -1,18 +1,28 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.InputSystem;
 public class Player : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public Vector2 inputVec;
+    public Scanner scanner;
+    public float speed;
+
+    Rigidbody2D rigid;
+
+    private void Awake()
     {
-        
+        rigid = GetComponent<Rigidbody2D>();
+    }
+    void OnMove(InputValue value)
+    {
+        inputVec = value.Get<Vector2>();
     }
 
-    // Update is called once per frame
-    void Update()
+
+    private void FixedUpdate()
     {
-        
+        Vector2 nextVec = inputVec * speed * Time.fixedDeltaTime;
+        rigid.MovePosition(rigid.position + nextVec);
     }
 }
