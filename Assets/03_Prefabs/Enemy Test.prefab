@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4836032201170289825}
   - component: {fileID: 1515200827069842710}
   - component: {fileID: 9159009347141659447}
-  - component: {fileID: -6638681066782867926}
+  - component: {fileID: 1856475823477211356}
   m_Layer: 6
   m_Name: Enemy Test
   m_TagString: Untagged
@@ -159,7 +159,7 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &-6638681066782867926
+--- !u!114 &1856475823477211356
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -168,10 +168,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 1677046663122528521}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6e521c7cc32b98a438d1a5bd3c9d5fbb, type: 3}
+  m_Script: {fileID: 11500000, guid: e23492e296890244bb636e45055e1425, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyData:
+  - {fileID: 11400000, guid: f6dddf95b129e0c4391d1ac1ea9622b9, type: 2}
+  - {fileID: 11400000, guid: 068dfe6c0864fbd47a4308d37d994587, type: 2}
+  - {fileID: 11400000, guid: 6aa293dcb79f98547a73a8ca9fd6485b, type: 2}
+  - {fileID: 11400000, guid: 51a0012514ab99341a282b07b34d02a2, type: 2}
+  - {fileID: 11400000, guid: 662fdb2f269b3ba499fba6fb789cebeb, type: 2}
   hp: 0
   dmg: 0
   direction: {x: 0, y: 0}
-  moveSpeed: 2
+  moveSpeed: 0
