@@ -770,9 +770,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5267ac3a52705e4ebfc532ad98a7854, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  weaponData: {fileID: 11400000, guid: 0963cf2763eb64a46bf215d3d6184240, type: 2}
   dmg: 0
   destroyedLevel: -1
-  maxSafeLevel: 20
   isDestroyed: 0
   upCost: 0
   reCost: 0

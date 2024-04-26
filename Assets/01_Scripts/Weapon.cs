@@ -5,10 +5,9 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
-    public int tier;
+    [SerializeField]
+    private WeaponBaseData weaponData;
     public int dmg;
-    public int dmgBase;
-    public int dmgPerLevel;
     // -1 레벨 = 파괴된 상태
     private int level;
     public int Level
@@ -18,16 +17,15 @@ public class Weapon : MonoBehaviour
         {
             level = value;
             if (level >= 0)
-                dmg = dmgBase + dmgPerLevel * level;
+                dmg = weaponData.dmgBase + weaponData.dmgPerLevel * level;
             else
-                dmg = (int)(dmgBase * 0.75f);
-            Debug.Log($"{level}, {dmg}({dmgBase} + {dmgPerLevel * level})");
+                dmg = (int)(weaponData.dmgBase * 0.75f);
+            Debug.Log($"{level}, {dmg}({weaponData.dmgBase} + {weaponData.dmgPerLevel * level})");
         }
     }
     public int destroyedLevel = -1;
 
     // 실패 없는 강화 단계 최대치
-    public int maxSafeLevel = 20;
     public bool isDestroyed = false;
 
     public int upCost;
