@@ -77,12 +77,14 @@ public class Enemy : MonoBehaviour
             else
             {
                 Dead();
+                Debug.Log(GameManager.Instance.ranItem.GetRandomPick());
             }
         }
         else if(collision.CompareTag("Melee"))
         {
             hp -= maxHp;
             Dead();
+            Debug.Log(GameManager.Instance.ranItem.GetRandomPick());
         }
     }
 

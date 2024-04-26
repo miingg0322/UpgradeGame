@@ -1,3 +1,4 @@
+using Rito;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,6 +14,7 @@ public class GameManager : MonoBehaviour
 
     public PoolManager pool;
     public Player player;
+    public RandomItem ranItem;
 
     private void Awake()
     {
