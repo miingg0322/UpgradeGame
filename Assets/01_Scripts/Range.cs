@@ -15,10 +15,10 @@ public class Range : MonoBehaviour
         rigid = GetComponent<Rigidbody2D>();
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         float distance = Vector2.Distance(GameManager.Instance.player.transform.position, rigid.transform.position);
-        transform.Rotate(0,0,Time.deltaTime * 150);
+        transform.Rotate(0,0,15);
 
         if(maxDistance < distance)
         {
