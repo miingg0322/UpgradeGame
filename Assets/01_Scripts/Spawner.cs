@@ -17,6 +17,7 @@ public class Spawner : MonoBehaviour
     {
         timer += Time.deltaTime;
 
+        // 플레이어가 입장한 던전의 level 값을 받아와서 spawnData[]에 값을 할당하도록 수정 예정
         if (timer > spawnData[0].spawnTime)
         {
             timer = 0;
@@ -28,7 +29,7 @@ public class Spawner : MonoBehaviour
     {
         GameObject enemy = GameManager.Instance.pool.Get(0);
         enemy.transform.position = spawnPoint[Random.Range(0, spawnPoint.Length)].position;
-        enemy.GetComponent<Enemy>().Init(spawnData[0]);
+        enemy.GetComponent<Enemy>().Init(spawnData[0].level); // 플레이어가 입장한 던전의 level 값을 받아와서 spawnData[]에 값을 할당하도록 수정 예정
     }
 }
 
@@ -36,8 +37,5 @@ public class Spawner : MonoBehaviour
 public class SpawnData
 {
     public float spawnTime;
-    public float speed;
     public int level;
-    public int health;
-    public int spriteType;
 }
