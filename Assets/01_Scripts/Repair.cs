@@ -19,6 +19,7 @@ public class Repair : MonoBehaviour
         {
             weapon.Level = weapon.destroyedLevel - lowerAmount;
             weapon.destroyedLevel = -1;
+            weapon.isDestroyed = false;
         }
     }
 
@@ -32,6 +33,7 @@ public class Repair : MonoBehaviour
             int randomLevel = Random.Range(minLevel, maxLevel);
             weapon.Level = randomLevel;
             weapon.destroyedLevel = -1;
+            weapon.isDestroyed = false;
         }
     }
 }
