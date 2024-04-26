@@ -251,6 +251,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pool: {fileID: 776570206}
   player: {fileID: 1261284360}
+  ranItem: {fileID: 0}
 --- !u!4 &267900554
 Transform:
   m_ObjectHideFlags: 0
@@ -1040,7 +1041,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5267ac3a52705e4ebfc532ad98a7854, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tier: 0
   dmg: 100
+  dmgBase: 0
+  dmgPerLevel: 0
   destroyedLevel: -1
   maxSafeLevel: 20
   isDestroyed: 0
@@ -1715,7 +1719,7 @@ Transform:
   m_GameObject: {fileID: 1675963362}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -12, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
