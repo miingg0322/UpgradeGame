@@ -35,7 +35,7 @@ public class Weapon : MonoBehaviour
     void Start()
     {
         Level = 20;
-        
+
     }
 
     public void DestroyWeapon()
