@@ -16,6 +16,10 @@ public class Upgrade : MonoBehaviour
     }
     public void UpgradeWeapon()
     {
+        if(weapon.Level<weapon.weaponData.maxLevel)
+        {
+
+        }
         // 강화 비용 처리
 
         // 강화 확률 처리

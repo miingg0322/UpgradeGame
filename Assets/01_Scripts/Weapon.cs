@@ -5,8 +5,7 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
-    [SerializeField]
-    private WeaponBaseData weaponData;
+    public WeaponBaseData weaponData;
     public int dmg;
     // -1 레벨 = 파괴된 상태
     private int level;
@@ -35,7 +34,7 @@ public class Weapon : MonoBehaviour
     void Start()
     {
         Level = 20;
-
+        Debug.Log(Application.dataPath);
     }
 
     public void DestroyWeapon()
