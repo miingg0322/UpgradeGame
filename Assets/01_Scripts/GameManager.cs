@@ -16,6 +16,8 @@ public class GameManager : MonoBehaviour
     public Player player;
     public RandomItem ranItem;
 
+    public int DungeonLevel;
+
     private void Awake()
     {
         if(instance == null)
