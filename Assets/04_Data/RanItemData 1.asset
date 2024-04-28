@@ -22,4 +22,6 @@ MonoBehaviour:
   - itemName: "\uC911\uAE09 \uAC15\uD654\uC11DC"
     weight: 45
   - itemName: "\uC911\uAE09 \uAC15\uD654\uC11DD"
-    weight: 35
+    weight: 45
+  - itemName: "\uD655\uB960 \uC99D\uAC00 \uC8FC\uBB38\uC11C 3%"
+    weight: 45

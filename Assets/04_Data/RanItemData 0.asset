@@ -13,8 +13,6 @@ MonoBehaviour:
   m_Name: RanItemData 0
   m_EditorClassIdentifier: 
   itemInfos:
-  - itemName: null
-    weight: 1800
   - itemName: "\uD558\uAE09 \uAC15\uD654\uC11DA"
     weight: 45
   - itemName: "\uD558\uAE09 \uAC15\uD654\uC11DB"
@@ -22,20 +20,4 @@ MonoBehaviour:
   - itemName: "\uD558\uAE09 \uAC15\uD654\uC11DC"
     weight: 45
   - itemName: "\uD558\uAE09 \uAC15\uD654\uC11DD"
-    weight: 35
-  - itemName: "\uD655\uB960 \uC0C1\uC2B9 \uC8FC\uBB38\uC11C 10%"
-    weight: 2
-  - itemName: "\uD655\uB960 \uC0C1\uC2B9 \uC8FC\uBB38\uC11C 5%"
-    weight: 4
-  - itemName: "\uD655\uB960 \uC0C1\uC2B9 \uC8FC\uBB38\uC11C 3%"
-    weight: 6
-  - itemName: "+1 \uAC15\uD654\uAD8C(0 ~ 5\uB2E8\uACC4)"
-    weight: 4
-  - itemName: "+1 \uAC15\uD654\uAD8C(5 ~ 10\uB2E8\uACC4)"
-    weight: 2
-  - itemName: "+1 \uAC15\uD654\uAD8C(10 ~ 15\uB2E8\uACC4)"
-    weight: 1
-  - itemName: "\uD30C\uAD34 \uBCF4\uD638 \uC8FC\uBB38\uC11C 30%"
-    weight: 10
-  - itemName: "\uD30C\uAD34 \uBCF4\uD638 \uC8FC\uBB38\uC11C 100%"
-    weight: 1
+    weight: 45
