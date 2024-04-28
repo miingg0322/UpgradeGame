@@ -32,7 +32,7 @@ public class WeaponThrow : MonoBehaviour
         weapon.position = player.transform.position;
         weapon.rotation = Quaternion.identity;
 
-        int damage = 50; // 플레이어가 장착한 무기의 dmg를 받아오게 수정 예정
+        int damage = 300; // 플레이어가 장착한 무기의 dmg를 받아오게 수정 예정
         weapon.GetComponent<Range>().Init(dir, damage);
     }
 }
