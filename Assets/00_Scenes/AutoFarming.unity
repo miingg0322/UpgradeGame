@@ -154,6 +154,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ranItemDatas:
   - {fileID: 11400000, guid: 0bd6de2913edf9348beff56fefc8ba8f, type: 2}
+  - {fileID: 11400000, guid: 70cce15767ab9ba49a050c6d3f2c914f, type: 2}
+  - {fileID: 11400000, guid: 97a31103e65fee548acd153f92e2d1df, type: 2}
+  - {fileID: 11400000, guid: 8525a475fe98e484daf2e16ff7159c42, type: 2}
+  - {fileID: 11400000, guid: 1c60486b57be0ed4d9febebcc3ace898, type: 2}
 --- !u!4 &74146572
 Transform:
   m_ObjectHideFlags: 0
@@ -298,6 +302,7 @@ MonoBehaviour:
   pool: {fileID: 776570206}
   player: {fileID: 1261284360}
   ranItem: {fileID: 74146571}
+  DungeonLevel: 0
 --- !u!4 &267900554
 Transform:
   m_ObjectHideFlags: 0
@@ -1752,15 +1757,10 @@ MonoBehaviour:
   - {fileID: 2091503804}
   spawnData:
   - spawnTime: 0.35
-    level: 0
   - spawnTime: 0.3
-    level: 1
   - spawnTime: 0.27
-    level: 2
   - spawnTime: 0.22
-    level: 3
   - spawnTime: 0.15
-    level: 4
 --- !u!4 &1675963364
 Transform:
   m_ObjectHideFlags: 0
