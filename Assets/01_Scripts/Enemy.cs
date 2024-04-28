@@ -6,6 +6,7 @@ using static UnityEngine.GraphicsBuffer;
 
 public class Enemy : MonoBehaviour
 {
+    public GameObject dropItem;
     public EnemyData[] enemyData;
     public int hp;
     private int maxHp;
@@ -80,16 +81,26 @@ public class Enemy : MonoBehaviour
             else
             {
                 Dead();
-                // Log만 출력하도록 임시로 구현
-                Debug.Log(GameManager.Instance.ranItem.GetRandomPick());
+                if (!(GameManager.Instance.ranItem.GetRandomPick() == "null"))
+                {
+                    GameObject ranDropItem = GameManager.Instance.pool.Get(2);
+                    ranDropItem.transform.position = transform.position;
+                    DropItem dropItem = ranDropItem.GetComponent<DropItem>();
+                    dropItem.ReadItemInfo(GameManager.Instance.ranItem.GetRandomPick());
+                }
             }
         }
         else if(collision.CompareTag("Melee"))
         {
             hp -= maxHp;
             Dead();
-            // Log만 출력하도록 임시로 구현
-            Debug.Log(GameManager.Instance.ranItem.GetRandomPick());
+            if (!(GameManager.Instance.ranItem.GetRandomPick() == "null"))
+            {
+                GameObject ranDropItem = GameManager.Instance.pool.Get(2);
+                ranDropItem.transform.position = transform.position;
+                DropItem dropItem = ranDropItem.GetComponent<DropItem>();
+                dropItem.ReadItemInfo(GameManager.Instance.ranItem.GetRandomPick());
+            }
         }
     }
 
@@ -106,7 +117,7 @@ public class Enemy : MonoBehaviour
     {
         coll.enabled = false;
         rigid.simulated = false;
-        spriter.sortingOrder = 1;
+        spriter.sortingOrder = 0;
         gameObject.SetActive(false);
     }
 }
