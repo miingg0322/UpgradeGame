@@ -511,9 +511,9 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -1
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 0.5518868, g: 1, b: 0.5884601, a: 1}
+  m_Color: {r: 0.9701258, g: 0.9103774, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -830,6 +830,7 @@ MonoBehaviour:
   prefabs:
   - {fileID: 1677046663122528521, guid: 938b8d48e41e8d441813c39a618d585f, type: 3}
   - {fileID: 7408453616909965835, guid: cfa3a3cdd72ae9c4c9f2674bfa801e50, type: 3}
+  - {fileID: 2962633444311843975, guid: 2d6b3c8935d0d024b8d3cdd0e01d2b62, type: 3}
 --- !u!4 &776570207
 Transform:
   m_ObjectHideFlags: 0
@@ -1276,6 +1277,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a921e6bfe5e377c44995b20106f5d160, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxHealth: 0
+  curHealth: 0
   inputVec: {x: 0, y: 0}
   scanner: {fileID: 1261284361}
   speed: 4.5
