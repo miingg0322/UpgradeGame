@@ -945,7 +945,7 @@ MonoBehaviour:
   player: {fileID: 0}
   ranItem: {fileID: 0}
   DungeonLevel: 0
-  probBase: 100
+  probBase: 1000
 --- !u!4 &1430865212
 Transform:
   m_ObjectHideFlags: 0

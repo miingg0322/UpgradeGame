@@ -22,7 +22,7 @@ public class GameManager : MonoBehaviour
     /// Key = Upgrade, Cost, Destroy
     /// </summary>
     public Dictionary<string, List<int[]>> dataTables = new Dictionary<string, List<int[]>>();
-    public int probBase = 100;
+    public int probBase = 1000;
     private void Awake()
     {
         if(instance == null)
