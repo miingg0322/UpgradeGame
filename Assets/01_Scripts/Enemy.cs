@@ -16,17 +16,23 @@ public class Enemy : MonoBehaviour
     public float moveSpeed = 2f;
 
     bool isHit;
+    bool isDead;
 
     Rigidbody2D rigid;
     Collider2D coll;
     SpriteRenderer spriter;
     WaitForFixedUpdate wait;
+    WaitForSeconds knockBackWait;
+    WaitForSeconds deadWait;
+    Notice notice;
     void Awake()
     {
         rigid = GetComponent<Rigidbody2D>();
         coll = GetComponent<Collider2D>();
         spriter = GetComponent<SpriteRenderer>();
         wait = new WaitForFixedUpdate();
+        knockBackWait = new WaitForSeconds(0.05f);
+        deadWait = new WaitForSeconds(2f);
     }
 
     void Start()
@@ -41,14 +47,17 @@ public class Enemy : MonoBehaviour
         spriter.sortingOrder = 2;
         hp = maxHp;
         isHit = false;
+        isDead = false;
     }
 
     void Update()
     {
-        if (!isHit)
+        if (!isHit && !isDead)
             transform.Translate(direction * moveSpeed * Time.deltaTime);
-        else
+        else if (isHit)
             transform.Translate(direction * moveSpeed * -0.4f * Time.deltaTime);
+        else if (isDead)
+            transform.Translate(direction * 0);
     }
 
     public void Init(int level)
@@ -79,27 +88,15 @@ public class Enemy : MonoBehaviour
             }
             else
             {
-                Dead();
-                if (!(GameManager.Instance.ranItem.GetRandomPick() == "null"))
-                {
-                    GameObject ranDropItem = GameManager.Instance.pool.Get(2);
-                    ranDropItem.transform.position = transform.position;
-                    DropItem dropItem = ranDropItem.GetComponent<DropItem>();
-                    dropItem.ReadItemInfo(GameManager.Instance.ranItem.GetRandomPick());
-                }
+                StartCoroutine(Dead());
+                DropItem();              
             }
         }
         else if(collision.CompareTag("Melee"))
         {
             hp -= maxHp;
-            Dead();
-            if (!(GameManager.Instance.ranItem.GetRandomPick() == "null"))
-            {
-                GameObject ranDropItem = GameManager.Instance.pool.Get(2);
-                ranDropItem.transform.position = transform.position;
-                DropItem dropItem = ranDropItem.GetComponent<DropItem>();
-                dropItem.ReadItemInfo(GameManager.Instance.ranItem.GetRandomPick());
-            }
+            StartCoroutine(Dead());
+            DropItem();           
         }
     }
 
@@ -108,15 +105,66 @@ public class Enemy : MonoBehaviour
             yield return wait;
             isHit = true;
 
-            yield return new WaitForSeconds(0.05f);
+            yield return knockBackWait;
             isHit = false;            
     }
 
-    void Dead()
+    IEnumerator Dead()
     {
         coll.enabled = false;
         rigid.simulated = false;
         spriter.sortingOrder = 0;
+        isDead = true;
+
+        yield return deadWait;
+
+        gameObject.SetActive(false);
+    }
+
+    void DropItem()
+    {
+        if (!(GameManager.Instance.ranItem.GetRandomPick() == "null"))
+        {
+            string itemName = GameManager.Instance.ranItem.GetRandomPick();
+
+            GameObject ranDropItem = GameManager.Instance.pool.Get(2);
+            ranDropItem.transform.position = transform.position;
+            DropItem dropItem = ranDropItem.GetComponent<DropItem>();
+            dropItem.ReadItemInfo(itemName);
+            Sprite sprite = dropItem.GetComponent<SpriteRenderer>().sprite;
+
+            if (!gameObject.activeSelf)
+            {
+                StartCoroutine(ActivateAndNotice(itemName, sprite));
+            }
+            else
+            {
+                NoticeItem(itemName, sprite);
+            }          
+        }
+    }
+
+    void NoticeItem(string itemName, Sprite sprite)
+    {
+        if(itemName.Contains("주문서") || itemName.Contains("강화권"))
+        {
+            StartCoroutine(GameManager.Instance.notice.NoticeRoutine());
+            GameManager.Instance.notice.noticeText.text = itemName + "를 획득했습니다!";
+            GameManager.Instance.notice.noticeIcon.sprite = sprite;
+        }
+        else
+        {
+            return;
+        }
+    }
+
+    IEnumerator ActivateAndNotice(string itemName, Sprite sprite)
+    {
+        gameObject.SetActive(true);
+        yield return null; 
+
+        NoticeItem(itemName, sprite);
+
         gameObject.SetActive(false);
     }
 }

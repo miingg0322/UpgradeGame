@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour
     public PoolManager pool;
     public Player player;
     public RandomItem ranItem;
+    public Notice notice;
 
     public int DungeonLevel;
 
