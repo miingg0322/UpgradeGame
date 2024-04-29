@@ -7,7 +7,7 @@ namespace Rito
     public class RandomItem : MonoBehaviour
     {
         public RanItemData[] ranItemDatas;
-        public string GetRandomPick()
+        public string[] GetRandomPick()
         {
             
             var dropItem = new Rito.WeightedRandomPicker<string>();
@@ -18,8 +18,13 @@ namespace Rito
             }
 
             string pick = dropItem.GetRandomPick();
+            string grade = ranItemDatas[GameManager.Instance.DungeonLevel].GetGrade(pick);
 
-            return pick;
+            string[] info = new string[2];
+            info[0] = pick;
+            info[1] = grade;
+
+            return info;
         }
     }
 }

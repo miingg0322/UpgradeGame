@@ -123,9 +123,12 @@ public class Enemy : MonoBehaviour
 
     void DropItem()
     {
-        if (!(GameManager.Instance.ranItem.GetRandomPick() == "null"))
+        string[] randomPick = GameManager.Instance.ranItem.GetRandomPick();
+
+        if (randomPick[0] != "null")
         {
-            string itemName = GameManager.Instance.ranItem.GetRandomPick();
+            string itemName = randomPick[0];
+            string grade = randomPick[1];
 
             GameObject ranDropItem = GameManager.Instance.pool.Get(2);
             ranDropItem.transform.position = transform.position;
@@ -135,19 +138,24 @@ public class Enemy : MonoBehaviour
 
             if (!gameObject.activeSelf)
             {
-                StartCoroutine(ActivateAndNotice(itemName, sprite));
+                StartCoroutine(ActivateAndNotice(itemName, grade, sprite));
             }
             else
             {
-                NoticeItem(itemName, sprite);
+                NoticeItem(itemName, grade, sprite);
             }          
+        }
+        else
+        {
+            return;
         }
     }
 
-    void NoticeItem(string itemName, Sprite sprite)
+    void NoticeItem(string itemName, string grade, Sprite sprite)
     {
-        if(itemName.Contains("주문서") || itemName.Contains("강화권"))
+        if(grade == "rare")
         {
+            Debug.Log(grade);
             StartCoroutine(GameManager.Instance.notice.NoticeRoutine());
             GameManager.Instance.notice.noticeText.text = itemName + "를 획득했습니다!";
             GameManager.Instance.notice.noticeIcon.sprite = sprite;
@@ -158,12 +166,12 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    IEnumerator ActivateAndNotice(string itemName, Sprite sprite)
+    IEnumerator ActivateAndNotice(string itemName, string grade, Sprite sprite)
     {
         gameObject.SetActive(true);
         yield return null; 
 
-        NoticeItem(itemName, sprite);
+        NoticeItem(itemName, grade, sprite);
 
         gameObject.SetActive(false);
     }
