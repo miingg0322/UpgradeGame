@@ -43,7 +43,6 @@ public class Enemy : MonoBehaviour
         isHit = false;
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (!isHit)
@@ -109,7 +108,7 @@ public class Enemy : MonoBehaviour
             yield return wait;
             isHit = true;
 
-            yield return new WaitForSeconds(0.3f);
+            yield return new WaitForSeconds(0.05f);
             isHit = false;            
     }
 
