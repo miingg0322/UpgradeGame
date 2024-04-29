@@ -15,6 +15,7 @@ public class DropItem : MonoBehaviour
 
     public Sprite[] enhancementScrolls;
 
+    Sprite selectedSprite;
     public void ReadItemInfo(string itemInfo)
     {
         if (itemInfo.Contains("°­È­¼®"))
@@ -71,8 +72,6 @@ public class DropItem : MonoBehaviour
                 return;
         }
 
-        Sprite selectedSprite = null;
-
         switch (type)
         {
             case "A":
@@ -107,8 +106,6 @@ public class DropItem : MonoBehaviour
         string[] tokens = itemInfo.Split(' ');
 
         string percentage = tokens[3];
-
-        Sprite selectedSprite = null;
 
         switch (percentage)
         {
@@ -153,8 +150,6 @@ public class DropItem : MonoBehaviour
             Debug.LogError("Invalid enhancement level!");
             return;
         }
-
-        Sprite selectedSprite = null;
 
         if (enhancementLevel >= 0 && enhancementLevel <= 10)
         {
