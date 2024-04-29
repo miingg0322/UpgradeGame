@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8891875872023144497}
   - component: {fileID: 2011907166963416444}
   - component: {fileID: 4098249094196356649}
+  - component: {fileID: 4756010859317858443}
   m_Layer: 0
   m_Name: Drop Item
   m_TagString: Untagged
@@ -194,3 +195,18 @@ MonoBehaviour:
   - {fileID: -9095717837082945937, guid: bd3cb4af8406d4436a2ae8c2aafe1f8d, type: 3}
   - {fileID: -9095717837082945937, guid: bd3cb4af8406d4436a2ae8c2aafe1f8d, type: 3}
   - {fileID: -9095717837082945937, guid: 207ee8102dd4143d288186ef0be518ee, type: 3}
+--- !u!114 &4756010859317858443
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2962633444311843975}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bccf622dad2f64d4cabb15b8e7c4ad37, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotationSpeed: 90
+  floatSpeed: 1
+  lifeTime: 1
