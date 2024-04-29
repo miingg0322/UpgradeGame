@@ -6,6 +6,7 @@ using static UnityEngine.GraphicsBuffer;
 
 public class Enemy : MonoBehaviour
 {
+    public EnemyData[] enemyData;
     public int hp;
     private int maxHp;
     public int dmg;
@@ -50,11 +51,14 @@ public class Enemy : MonoBehaviour
             transform.Translate(direction * moveSpeed * -0.4f * Time.deltaTime);
     }
 
-    public void Init(SpawnData data)
+    public void Init(int level)
     {
-        moveSpeed = data.speed;
-        maxHp = data.health;
-        hp = data.health;
+        EnemyData Data = enemyData[level];
+
+        moveSpeed = Data.moveSpeed;
+        maxHp = Data.maxHp;
+        hp = Data.curHp;
+        spriter.sprite = Data.enemySprite;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -76,6 +80,7 @@ public class Enemy : MonoBehaviour
             else
             {
                 Dead();
+                // Log만 출력하도록 임시로 구현
                 Debug.Log(GameManager.Instance.ranItem.GetRandomPick());
             }
         }
@@ -83,6 +88,7 @@ public class Enemy : MonoBehaviour
         {
             hp -= maxHp;
             Dead();
+            // Log만 출력하도록 임시로 구현
             Debug.Log(GameManager.Instance.ranItem.GetRandomPick());
         }
     }
