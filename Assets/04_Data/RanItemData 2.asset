@@ -14,20 +14,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemInfos:
   - itemName: null
-    weight: 45
+    weight: 900
     grade: normal
   - itemName: "\uC0C1\uAE09 \uAC15\uD654\uC11D A"
-    weight: 45
+    weight: 24
     grade: normal
   - itemName: "\uC0C1\uAE09 \uAC15\uD654\uC11D B"
-    weight: 45
+    weight: 24
     grade: normal
   - itemName: "\uC0C1\uAE09 \uAC15\uD654\uC11D C"
-    weight: 45
+    weight: 24
     grade: normal
   - itemName: "\uC0C1\uAE09 \uAC15\uD654\uC11D D"
-    weight: 45
+    weight: 24
     grade: normal
   - itemName: "\uD655\uB960 \uC99D\uAC00 \uC8FC\uBB38\uC11C 5%"
-    weight: 45
+    weight: 4
     grade: rare

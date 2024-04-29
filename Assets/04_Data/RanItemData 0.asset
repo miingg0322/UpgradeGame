@@ -14,17 +14,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemInfos:
   - itemName: null
-    weight: 45
+    weight: 900
     grade: normal
   - itemName: "\uD558\uAE09 \uAC15\uD654\uC11D A"
-    weight: 45
+    weight: 25
     grade: normal
   - itemName: "\uD558\uAE09 \uAC15\uD654\uC11D B"
-    weight: 45
+    weight: 25
     grade: normal
   - itemName: "\uD558\uAE09 \uAC15\uD654\uC11D C"
-    weight: 45
+    weight: 25
     grade: normal
   - itemName: "\uD558\uAE09 \uAC15\uD654\uC11D D"
-    weight: 45
+    weight: 25
     grade: normal
