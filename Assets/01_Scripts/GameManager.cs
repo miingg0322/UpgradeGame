@@ -18,6 +18,11 @@ public class GameManager : MonoBehaviour
 
     public int DungeonLevel;
 
+    /// <summary>
+    /// Key = Upgrade, Cost, Destroy
+    /// </summary>
+    public Dictionary<string, List<int[]>> dataTables = new Dictionary<string, List<int[]>>();
+    public int probBase = 100;
     private void Awake()
     {
         if(instance == null)
