@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: WeaponData_Tier_0
   m_EditorClassIdentifier: 
   tier: 0
-  dmgBase: 1
+  dmgBase: 10
   dmgPerLevel: 1
   maxSafeLevel: 20
+  maxLevel: 50

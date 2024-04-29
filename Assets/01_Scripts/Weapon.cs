@@ -33,7 +33,7 @@ public class Weapon : MonoBehaviour
 
     void Start()
     {
-        Level = 20;
+        Level = 0;
         Debug.Log(Application.dataPath);
     }
 
