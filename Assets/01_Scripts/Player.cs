@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 public class Player : MonoBehaviour
 {
+    public int maxHealth;
+    public int curHealth;
+
     public Vector2 inputVec;
     public Scanner scanner;
     public float speed;

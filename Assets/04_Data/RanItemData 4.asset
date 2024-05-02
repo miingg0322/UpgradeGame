@@ -15,11 +15,15 @@ MonoBehaviour:
   itemInfos:
   - itemName: null
     weight: 45
-  - itemName: "\uC804\uC124\uAE09 \uAC15\uD654\uC11DA"
+  - itemName: "\uC804\uC124\uAE09 \uAC15\uD654\uC11D A"
     weight: 45
-  - itemName: "\uC804\uC124\uAE09 \uAC15\uD654\uC11DB"
+  - itemName: "\uC804\uC124\uAE09 \uAC15\uD654\uC11D B"
     weight: 45
-  - itemName: "\uC804\uC124\uAE09 \uAC15\uD654\uC11DC"
+  - itemName: "\uC804\uC124\uAE09 \uAC15\uD654\uC11D C"
     weight: 45
-  - itemName: "\uC804\uC124\uAE09 \uAC15\uD654\uC11DD"
+  - itemName: "\uC804\uC124\uAE09 \uAC15\uD654\uC11D D"
     weight: 35
+  - itemName: "\uD655\uB960 \uC99D\uAC00 \uC8FC\uBB38\uC11C 10%"
+    weight: 45
+  - itemName: "+1 \uAC15\uD654\uAD8C 0~10\uB2E8\uACC4"
+    weight: 45
