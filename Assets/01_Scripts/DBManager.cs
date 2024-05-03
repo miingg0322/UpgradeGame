@@ -149,7 +149,7 @@ public class DBManager : MonoBehaviour
         OpenConnection();
 
         // 캐릭터 정보를 데이터베이스에 추가합니다.
-        string query = $"INSERT INTO characters (class, user_id) VALUES ({characterClass}, '{userId}')";
+        string query = $"INSERT INTO characters (class, user_id, clear, inventory, status) VALUES ({characterClass}, '{userId}', 0, 0, 0)";
         MySqlCommand command = new MySqlCommand(query, connection);
         int result = command.ExecuteNonQuery();
 
