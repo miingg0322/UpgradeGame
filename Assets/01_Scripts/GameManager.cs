@@ -90,6 +90,10 @@ public class GameManager : MonoBehaviour
     public void SetUserSlots(int[] slots)
     {
         userSlots = slots;
+
+        for(int index = 0; index < userSlots.Length; index++)
+        {
+        }
     }
 
     // 캐릭터 선택창에서 슬룻을 선택했을 때
