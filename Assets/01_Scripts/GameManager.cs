@@ -30,6 +30,11 @@ public class GameManager : MonoBehaviour
     public int DungeonLevel;
 
     int[] userSlots;
+    /// <summary>
+    /// Key = Upgrade, Cost, Destroy
+    /// </summary>
+    public Dictionary<string, List<int[]>> dataTables = new Dictionary<string, List<int[]>>();
+    public int probBase = 1000;
     private void Awake()
     {
         if(instance == null)
@@ -92,23 +97,23 @@ public class GameManager : MonoBehaviour
         userSlots = slots;
     }
 
-    // Ä³¸¯ÅÍ ¼±ÅÃÃ¢¿¡¼­ ½½·íÀ» ¼±ÅÃÇßÀ» ¶§
+    // Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ã¢ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
     public void SelectCharacter(int slotIndex)
     {
         if (userSlots != null)
         {
-            // DB¿¡¼­ CharactersÀÇ id°¡ userSlots[slotIndex]ÀÎ °ÍÀ» Ã£¾Æ ¸ðµç µ¥ÀÌÅÍ¸¦ °¡Á®¿À°í ¾ÀÀ» ¹Ù²Ù´Â ·ÎÁ÷ ÀÛ¼º
+            // DBï¿½ï¿½ï¿½ï¿½ Charactersï¿½ï¿½ idï¿½ï¿½ userSlots[slotIndex]ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ù²Ù´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Û¼ï¿½
         }
         else
         {
-            Debug.LogError("µ¥ÀÌÅÍ°¡ ºñ¾îÀÖ½À´Ï´Ù.");
+            Debug.LogError("ï¿½ï¿½ï¿½ï¿½ï¿½Í°ï¿½ ï¿½ï¿½ï¿½ï¿½Ö½ï¿½ï¿½Ï´ï¿½.");
         }
     }
 
     public void CreateCharacter(int character)
     {
         string id = userId;
-        // DB¿¡ µ¥ÀÌÅÍ »ý¼º
+        // DBï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         DBManager.Instance.CreateCharacter(id, character);
     }
 }
