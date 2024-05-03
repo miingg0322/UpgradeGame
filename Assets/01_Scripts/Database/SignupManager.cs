@@ -117,6 +117,7 @@ public class SignupManager : MonoBehaviour
         }
 
         // DBManager를 통해 회원가입 처리
-        DBManager.Instance.RegisterUser(nickname, id, password);
+        string encryptedPw = Encryptor.SHA256Encryt(password);
+        DBManager.Instance.RegisterUser(nickname, id, encryptedPw);
     }
 }

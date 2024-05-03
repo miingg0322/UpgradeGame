@@ -90,7 +90,8 @@ public class DBManager : MonoBehaviour
     {
         OpenConnection();
 
-        string query = $"SELECT COUNT(*) FROM users WHERE id = '{id}' AND pw = '{password}'";
+        string encryptedPw = Encryptor.SHA256Encryt(password);
+        string query = $"SELECT COUNT(*) FROM users WHERE id = '{id}' AND pw = '{encryptedPw}'";
         MySqlCommand command = new MySqlCommand(query, connection);
         int count = int.Parse(command.ExecuteScalar().ToString());
 
