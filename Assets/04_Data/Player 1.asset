@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c89c05fb07d3b345bd380560312251c, type: 3}
+  m_Name: Player 1
+  m_EditorClassIdentifier: 
+  playerType: 1
+  playerId: 1
+  playerName: "\uBC84\uC11C\uCEE4"
+  maxHp: 225
+  curHp: 250
+  moveSpeed: 3.2
+  drainRate: 1
+  playerSprite: {fileID: -9095717837082945937, guid: bd3cb4af8406d4436a2ae8c2aafe1f8d, type: 3}

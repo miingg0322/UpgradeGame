@@ -16,17 +16,23 @@ public class Enemy : MonoBehaviour
     public float moveSpeed = 2f;
 
     bool isHit;
+    bool isDead;
 
     Rigidbody2D rigid;
     Collider2D coll;
     SpriteRenderer spriter;
     WaitForFixedUpdate wait;
+    WaitForSeconds knockBackWait;
+    WaitForSeconds deadWait;
+    Notice notice;
     void Awake()
     {
         rigid = GetComponent<Rigidbody2D>();
         coll = GetComponent<Collider2D>();
         spriter = GetComponent<SpriteRenderer>();
         wait = new WaitForFixedUpdate();
+        knockBackWait = new WaitForSeconds(0.05f);
+        deadWait = new WaitForSeconds(2f);
     }
 
     void Start()
@@ -41,14 +47,17 @@ public class Enemy : MonoBehaviour
         spriter.sortingOrder = 2;
         hp = maxHp;
         isHit = false;
+        isDead = false;
     }
 
     void Update()
     {
-        if (!isHit)
+        if (!isHit && !isDead)
             transform.Translate(direction * moveSpeed * Time.deltaTime);
-        else
+        else if (isHit)
             transform.Translate(direction * moveSpeed * -0.4f * Time.deltaTime);
+        else if (isDead)
+            transform.Translate(direction * 0);
     }
 
     public void Init(int level)
@@ -79,27 +88,15 @@ public class Enemy : MonoBehaviour
             }
             else
             {
-                Dead();
-                if (!(GameManager.Instance.ranItem.GetRandomPick() == "null"))
-                {
-                    GameObject ranDropItem = GameManager.Instance.pool.Get(2);
-                    ranDropItem.transform.position = transform.position;
-                    DropItem dropItem = ranDropItem.GetComponent<DropItem>();
-                    dropItem.ReadItemInfo(GameManager.Instance.ranItem.GetRandomPick());
-                }
+                StartCoroutine(Dead());
+                DropItem();              
             }
         }
         else if(collision.CompareTag("Melee"))
         {
             hp -= maxHp;
-            Dead();
-            if (!(GameManager.Instance.ranItem.GetRandomPick() == "null"))
-            {
-                GameObject ranDropItem = GameManager.Instance.pool.Get(2);
-                ranDropItem.transform.position = transform.position;
-                DropItem dropItem = ranDropItem.GetComponent<DropItem>();
-                dropItem.ReadItemInfo(GameManager.Instance.ranItem.GetRandomPick());
-            }
+            StartCoroutine(Dead());
+            DropItem();           
         }
     }
 
@@ -108,15 +105,74 @@ public class Enemy : MonoBehaviour
             yield return wait;
             isHit = true;
 
-            yield return new WaitForSeconds(0.05f);
+            yield return knockBackWait;
             isHit = false;            
     }
 
-    void Dead()
+    IEnumerator Dead()
     {
         coll.enabled = false;
         rigid.simulated = false;
         spriter.sortingOrder = 0;
+        isDead = true;
+
+        yield return deadWait;
+
+        gameObject.SetActive(false);
+    }
+
+    void DropItem()
+    {
+        string[] randomPick = GameManager.Instance.ranItem.GetRandomPick();
+
+        if (randomPick[0] != "null")
+        {
+            string itemName = randomPick[0];
+            string grade = randomPick[1];
+
+            GameObject ranDropItem = GameManager.Instance.pool.Get(2);
+            ranDropItem.transform.position = transform.position;
+            DropItem dropItem = ranDropItem.GetComponent<DropItem>();
+            dropItem.ReadItemInfo(itemName);
+            Sprite sprite = dropItem.GetComponent<SpriteRenderer>().sprite;
+
+            if (!gameObject.activeSelf)
+            {
+                StartCoroutine(ActivateAndNotice(itemName, grade, sprite));
+            }
+            else
+            {
+                NoticeItem(itemName, grade, sprite);
+            }          
+        }
+        else
+        {
+            return;
+        }
+    }
+
+    void NoticeItem(string itemName, string grade, Sprite sprite)
+    {
+        if(grade == "rare")
+        {
+            Debug.Log(grade);
+            StartCoroutine(GameManager.Instance.notice.NoticeRoutine());
+            GameManager.Instance.notice.noticeText.text = itemName + "∏¶ »πµÊ«ﬂΩ¿¥œ¥Ÿ!";
+            GameManager.Instance.notice.noticeIcon.sprite = sprite;
+        }
+        else
+        {
+            return;
+        }
+    }
+
+    IEnumerator ActivateAndNotice(string itemName, string grade, Sprite sprite)
+    {
+        gameObject.SetActive(true);
+        yield return null; 
+
+        NoticeItem(itemName, grade, sprite);
+
         gameObject.SetActive(false);
     }
 }

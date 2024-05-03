@@ -14,16 +14,35 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemInfos:
   - itemName: null
-    weight: 45
+    weight: 900
+    grade: normal
   - itemName: "\uC804\uC124\uAE09 \uAC15\uD654\uC11D A"
-    weight: 45
+    weight: 20
+    grade: normal
   - itemName: "\uC804\uC124\uAE09 \uAC15\uD654\uC11D B"
-    weight: 45
+    weight: 20
+    grade: normal
   - itemName: "\uC804\uC124\uAE09 \uAC15\uD654\uC11D C"
-    weight: 45
+    weight: 20
+    grade: normal
   - itemName: "\uC804\uC124\uAE09 \uAC15\uD654\uC11D D"
-    weight: 35
+    weight: 20
+    grade: normal
+  - itemName: "\uD655\uB960 \uC99D\uAC00 \uC8FC\uBB38\uC11C 3%"
+    weight: 5
+    grade: rare
+  - itemName: "\uD655\uB960 \uC99D\uAC00 \uC8FC\uBB38\uC11C 5%"
+    weight: 5
+    grade: rare
   - itemName: "\uD655\uB960 \uC99D\uAC00 \uC8FC\uBB38\uC11C 10%"
-    weight: 45
+    weight: 4
+    grade: rare
   - itemName: "+1 \uAC15\uD654\uAD8C 0~10\uB2E8\uACC4"
-    weight: 45
+    weight: 3
+    grade: rare
+  - itemName: "+1 \uAC15\uD654\uAD8C 0~15\uB2E8\uACC4"
+    weight: 2
+    grade: rare
+  - itemName: "+1 \uAC15\uD654\uAD8C 0~20\uB2E8\uACC4"
+    weight: 1
+    grade: rare

@@ -6,6 +6,7 @@ public class Range : MonoBehaviour
 {
     public int damage;
     public float maxDistance;
+    public float rotationSpeed;
 
     bool isTurn = false;
 
@@ -15,14 +16,18 @@ public class Range : MonoBehaviour
         rigid = GetComponent<Rigidbody2D>();
     }
 
+    private void OnEnable()
+    {
+        isTurn = false;
+    }
     private void FixedUpdate()
     {
         float distance = Vector2.Distance(GameManager.Instance.player.transform.position, rigid.transform.position);
-        transform.Rotate(0,0,15);
+        transform.Rotate(0,0, rotationSpeed);
 
-        if(maxDistance < distance)
+        if(maxDistance < distance && !isTurn)
         {
-            rigid.velocity *= -1;
+            rigid.velocity *= -1f;
             isTurn = true;
         }
     }

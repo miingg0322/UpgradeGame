@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 public class SceneSwitcher : MonoBehaviour
 {
     int levelValue;
-    public void SwitchScene(int value)
+    public void SwitchAutoFarmingScene(int value)
     {
         SceneManager.LoadScene("AutoFarming");
 
