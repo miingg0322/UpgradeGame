@@ -5,6 +5,8 @@ using UnityEngine.InputSystem;
 public class Player : MonoBehaviour
 {
     public PlayerData[] playerDatas;
+    public int playerClass;
+    public string playerName;
     public float maxHealth;
     public float curHealth;
     public float speed;
@@ -13,15 +15,20 @@ public class Player : MonoBehaviour
     public Vector2 inputVec;
     public Scanner scanner;
     public Weapon weapon;
+    public SpriteRenderer spriter;
 
     Rigidbody2D rigid;
-    SpriteRenderer spriter;
-
+    
     private void Awake()
     {
         rigid = GetComponent<Rigidbody2D>();
     }
 
+    private void Start()
+    {
+        GameManager.Instance.AssignPlayer(this);
+        Init(GameManager.Instance.selectedClass);
+    }
     void OnMove(InputValue value)
     {
         inputVec = value.Get<Vector2>();
@@ -37,6 +44,9 @@ public class Player : MonoBehaviour
     public void Init(int playerId)
     {
         PlayerData data = playerDatas[playerId];
+
+        playerClass = data.playerId;
+        playerName = data.playerName;
 
         maxHealth = data.maxHp;
         curHealth = data.curHp;
