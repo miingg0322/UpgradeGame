@@ -1,4 +1,5 @@
 using Rito;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,12 +21,14 @@ public class GameManager : MonoBehaviour
     public RandomItem ranItem;
     public Notice notice;
 
-    public GameObject startGroup;
+    public GameObject loginGroup;
     public GameObject signupGroup;
     public GameObject loginFail;
     public GameObject selectUi;
     public GameObject createUi;
     public GameObject createBtn;
+    public GameObject signupNotice;
+    public GameObject slotNotice;
 
     public Image[] characterIcons;
     public Text[] characterTexts;
@@ -62,16 +65,38 @@ public class GameManager : MonoBehaviour
     {
         
     }
+    public void Login()
+    {
+        loginGroup.SetActive(false);
+        selectUi.SetActive(true);
+    }
     public void ActiveSignUp()
     {
-        startGroup.SetActive(false);
+        loginGroup.SetActive(false);
         signupGroup.SetActive(true);
     }
 
     public void CancleSignUp()
     {
-        startGroup.SetActive(true);
+        loginGroup.SetActive(true);
         signupGroup.SetActive(false);
+    }
+
+    public void ActiveSignUpNotice()
+    {
+        signupNotice.SetActive(true);
+    }
+
+    public void CancleSignUpNotice()
+    {
+        signupNotice.SetActive(false);
+        signupGroup.SetActive(false);
+        loginGroup.SetActive(true);
+    }
+
+    public void CancleSlotNotice()
+    {
+        slotNotice.SetActive(false);
     }
     public void ActiveLoginFail()
     {
@@ -85,11 +110,15 @@ public class GameManager : MonoBehaviour
     public void ActiveCreateCharacter()
     {
         if (userSlots[userSlots.Length - 1] != 0)
-            return;
-
-        selectUi.SetActive(false);
-        createUi.SetActive(true);
-        createBtn.SetActive(false);
+        {
+            slotNotice.SetActive(true);
+        }
+        else
+        {
+            selectUi.SetActive(false);
+            createUi.SetActive(true);
+            createBtn.SetActive(false);
+        }                
     }
 
     public void CancleCreateCharacter()
@@ -120,12 +149,13 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // ĳ���� ����â���� ������ �������� ��
     public void SelectCharacter(int slotIndex)
     {
         if (userSlots != null)
         {
-            // DB���� Characters�� id�� userSlots[slotIndex]�� ���� ã�� ��� �����͸� �������� ���� �ٲٴ� ���� �ۼ�
+            int selectClass = DBManager.Instance.GetCharacterClass(userSlots[slotIndex]);
+
+            // playerData[selectClass]에 해당하는 데이터로 player 능력치 초기화
         }
         else
         {
@@ -136,20 +166,26 @@ public class GameManager : MonoBehaviour
     public void CreateCharacter(int character)
     {
         if (userSlots[userSlots.Length - 1] != 0)
+        {
             return;
-
+        }
+            
         string id = userId;
         // DB�� ������ ����
         int characterId = DBManager.Instance.CreateCharacter(id, character);
         
         for(int index = 0;index < userSlots.Length;index++)
         {
-            if (userSlots[index] != 0)
+            if (userSlots[index] == 0)
             {
                 userSlots[index] = characterId;
                 break;
             }
         }
+
+        SetUserSlots(userSlots);
         createUi.SetActive(false);
+        selectUi.SetActive(true);
+        createBtn.SetActive(true);
     }
 }
