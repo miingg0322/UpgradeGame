@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
@@ -36,8 +37,9 @@ public class GameManager : MonoBehaviour
 
     public string userId;
     public int DungeonLevel;
+    public int selectedClass;
 
-    int[] userSlots;
+    int[] userSlots;  
     /// <summary>
     /// Key = Upgrade, Cost, Destroy
     /// </summary>
@@ -55,10 +57,6 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-    }
-    void Start()
-    {
-        
     }
 
     // Update is called once per frame
@@ -165,9 +163,8 @@ public class GameManager : MonoBehaviour
     {
         if (userSlots != null)
         {
-            int selectClass = DBManager.Instance.GetCharacterClass(userSlots[slotIndex]);
-
-            // playerData[selectClass]에 해당하는 데이터로 player 능력치 초기화
+            selectedClass = DBManager.Instance.GetCharacterClass(userSlots[slotIndex]);
+            SceneManager.LoadScene("SampleScene");        
         }
         else
         {
@@ -199,5 +196,10 @@ public class GameManager : MonoBehaviour
         createUi.SetActive(false);
         selectUi.SetActive(true);
         createBtn.SetActive(true);
+    }
+
+    public void AssignPlayer(Player playerRef)
+    {
+        player = playerRef;
     }
 }
