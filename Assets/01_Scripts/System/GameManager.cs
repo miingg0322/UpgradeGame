@@ -240,5 +240,18 @@ public class GameManager : MonoBehaviour
     public void AssignPlayer(Player playerRef)
     {
         player = playerRef;
+        player.isExecution = true;
+    }
+    public void AssignPool(PoolManager poolmanager)
+    {
+        pool = poolmanager;
+    }
+    public void AssignRanItem(RandomItem randomItem)
+    {
+        ranItem = randomItem;
+    }
+    public void AssignNotice(Notice noti)
+    {
+        notice = noti;
     }
 }

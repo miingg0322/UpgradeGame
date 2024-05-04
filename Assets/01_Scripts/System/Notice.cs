@@ -16,6 +16,11 @@ public class Notice : MonoBehaviour
         wait = new WaitForSecondsRealtime(5);
     }
 
+    private void Start()
+    {
+        GameManager.Instance.AssignNotice(this);
+    }
+
     public IEnumerator NoticeRoutine()
     {
         noticeUi.SetActive(true);

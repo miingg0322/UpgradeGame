@@ -17,6 +17,8 @@ public class Player : MonoBehaviour
     public Weapon weapon;
     public SpriteRenderer spriter;
 
+    public bool isExecution;
+
     Rigidbody2D rigid;
     
     private void Awake()
@@ -27,7 +29,9 @@ public class Player : MonoBehaviour
     private void Start()
     {
         GameManager.Instance.AssignPlayer(this);
-        Init(GameManager.Instance.selectedClass);
+
+        if(!isExecution)
+            Init(GameManager.Instance.selectedClass);
     }
     void OnMove(InputValue value)
     {

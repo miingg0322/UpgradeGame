@@ -17,7 +17,12 @@ public class PoolManager : MonoBehaviour
         }
     }
 
-    public GameObject Get(int index)
+    private void Start()
+    {
+        GameManager.Instance.AssignPool(this);
+    }
+
+        public GameObject Get(int index)
     {
         GameObject select = null;
 
