@@ -36,6 +36,7 @@ public class SignupManager : MonoBehaviour
         OnNicknameInputChanged();
         OnIdInputChanged();
         OnPwCheckInputChanged();
+        SignupConvenience();
     }
 
     public void OnNicknameInputChanged()
@@ -130,7 +131,53 @@ public class SignupManager : MonoBehaviour
         }
 
         // DBManager를 통해 회원가입 처리
+        Init();
         string encryptedPw = Encryptor.SHA256Encryt(password);
         DBManager.Instance.RegisterUser(nickname, id, encryptedPw);
+    }
+
+    public void Init()
+    {
+        nicknameField.text = "";
+        idField.text = "";
+        passwordField.text = "";
+        confirmPasswordField.text = "";
+        feedbackText.text = "";
+    }
+
+    private void SignupConvenience()
+    {
+        if (nicknameField.isFocused == true)
+        {
+            nicknameField.placeholder.GetComponent<TextMeshProUGUI>().text = "";
+            if (Input.GetKeyDown(KeyCode.Tab))
+            {
+                idField.Select();
+            }
+        }
+        else if (idField.isFocused == true)
+        {
+            idField.placeholder.GetComponent<TextMeshProUGUI>().text = "";
+            if (Input.GetKeyDown(KeyCode.Tab))
+            {
+                passwordField.Select();
+            }
+        }
+        else if (passwordField.isFocused == true)
+        {
+            passwordField.placeholder.GetComponent<TextMeshProUGUI>().text = "";
+            if (Input.GetKeyDown(KeyCode.Tab))
+            {
+                confirmPasswordField.Select();
+            }
+        }
+        else if (confirmPasswordField.isFocused == true)
+        {
+            confirmPasswordField.placeholder.GetComponent<TextMeshProUGUI>().text = "";
+            if (Input.GetKeyDown(KeyCode.Tab))
+            {
+                nicknameField.Select();
+            }
+        }
     }
 }
