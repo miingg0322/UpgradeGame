@@ -82,7 +82,7 @@ public class DBManager : MonoBehaviour
         MySqlCommand command = new MySqlCommand(query, connection);
         command.ExecuteNonQuery();
 
-        GameManager.Instance.CancleSignUp();
+        GameManager.Instance.ActiveSignUpNotice();
         CloseConnection();
     }
 
@@ -101,7 +101,7 @@ public class DBManager : MonoBehaviour
         {
             GameManager.Instance.SetUserSlots(GetCharacterInfo(id));
             GameManager.Instance.userId = id;
-            SceneManager.LoadScene("CharacterSelect");
+            GameManager.Instance.Login();
         }
         else
         {
@@ -141,7 +141,7 @@ public class DBManager : MonoBehaviour
         {
             Debug.Log(slots[i]);
         }
-        SceneManager.LoadScene("CharacterSelect");
+
         return slots;
     }
 
@@ -154,7 +154,7 @@ public class DBManager : MonoBehaviour
         // 캐릭터 정보를 데이터베이스에 추가합니다.
         string query = $"INSERT INTO characters (class, user_id, clear, inventory, status) VALUES ({characterClass}, '{userId}', 0, 0, 0); SELECT LAST_INSERT_ID();";
         MySqlCommand command = new MySqlCommand(query, connection);
-        object result = command.ExecuteScalar();
+        object result = command.ExecuteScalar();       
 
         if (result != null && int.TryParse(result.ToString(), out characterId))
         {
@@ -165,6 +165,14 @@ public class DBManager : MonoBehaviour
             // 오류 처리
             Debug.LogError("Failed to get character id from database.");
         }
+
+        string updateQuery = $"UPDATE users SET " +
+                             $"slot1 = IF(slot1 IS NULL, {characterId}, slot1), " +
+                             $"slot2 = IF(slot1 IS NOT NULL AND slot2 IS NULL, IF(slot1 != {characterId}, {characterId}, slot2), slot2), " +
+                             $"slot3 = IF(slot1 IS NOT NULL AND slot2 IS NOT NULL AND slot3 IS NULL, IF(slot2 != {characterId}, {characterId}, slot3), slot3) " +
+                             $"WHERE id = '{userId}';";
+        MySqlCommand updateSlotCommand = new MySqlCommand(updateQuery, connection);
+        updateSlotCommand.ExecuteNonQuery();
 
         CloseConnection();
 
@@ -181,8 +189,13 @@ public class DBManager : MonoBehaviour
         MySqlCommand command = new MySqlCommand(query, connection);
         MySqlDataReader reader = command.ExecuteReader();
 
-        characterClass = reader.GetInt32(0);
+        if (reader.Read())
+        {
+            characterClass = reader.GetInt32(0);
+        }
 
+        CloseConnection();
+            
         return characterClass;
     }
 }
