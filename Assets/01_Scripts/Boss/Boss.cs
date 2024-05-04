@@ -8,18 +8,25 @@ public class Boss : MonoBehaviour
     BossData bossData;
     public int hp;
     public int dmg;
-    public float moveSpeed;
+    public float moveSpeed = 0.5f;
+    public bool isMoving = false;
 
     public float atkSpeed = 3f;
-    public float atkRange;
+    public float atkRange = 2f;
     public bool isAttack = false;
 
+    public int patterns = 3;
     public AOE aoe;
+
     public GameObject throwWeapon;
-    private float throwSpeed = 3f;
+    private float throwSpeed = 2f;
+
+    public TrackingMissile[] missiles;
+
+
     public Player player;
 
-    private bool isPattern = false;
+    public bool isPattern = false;
 
     void Start()
     {
@@ -29,16 +36,62 @@ public class Boss : MonoBehaviour
 
     void Update()
     {
-        
-    }
-
-    public void BossPattern()
-    {
         Vector2 playerPos = player.transform.position;
         float playerDist = Vector2.Distance(playerPos, transform.position);
-        if (playerDist < atkRange)
-            NormalAttack();
+        if (playerDist > atkRange)
+        {
+            //RangePattern();
+
+        }
+        else
+        {
+            //NormalAttack();
+        }
     }
+
+    public void RangePattern()
+    {
+        if (!isPattern)
+        {
+            int pattern = Random.Range(0, patterns + 1);
+            switch (pattern)
+            {
+                case 0:
+                    ShootTrackMissiles(missiles.Length, 2f);
+                    break;
+                case 1:
+                    //ThrowPattern();
+                    AOEPattern();
+                    break;
+                default:
+                    Move(2f);
+                    break;
+            }
+        }
+    }
+
+    public void Move(float moveTime)
+    {
+        if (!isMoving)
+            StartCoroutine(MoveCoroutine(moveTime));
+    }
+
+    IEnumerator MoveCoroutine(float moveTime)
+    {
+        isMoving = true;
+        float moveTimer = 0;
+        while(moveTimer < moveTime)
+        {
+            Vector2 playerPos = player.transform.position;
+            float playerDist = Vector2.Distance(playerPos, transform.position);
+            if (playerDist < atkRange)
+                break;
+            transform.Translate(playerPos * Time.deltaTime * moveSpeed);
+            moveTimer += Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+    }
+
     public void NormalAttack()
     {
         if(!isAttack)
@@ -49,19 +102,22 @@ public class Boss : MonoBehaviour
     {
         isAttack = true;
         // 플레이어 공격 처리
+        Debug.Log("Player Attack");
         yield return new WaitForSeconds(atkSpeed);
         isAttack = false;
     }
 
     public void ThrowPattern()
     {
+        isPattern = true;
         Vector2 playerPos = player.transform.position;
         StartCoroutine(ThrowCoroutine(throwWeapon, playerPos, throwSpeed));
     }
 
     IEnumerator ThrowCoroutine(GameObject throwWeapon, Vector2 direction, float throwSpeed ,float removeTime = 5f)
-    {
+    {        
         float timer = 0;
+        throwWeapon.transform.position = transform.position;
         throwWeapon.SetActive(true);
         while(timer < removeTime)
         {
@@ -71,19 +127,53 @@ public class Boss : MonoBehaviour
         }
         throwWeapon.SetActive(false);
         throwWeapon.transform.position = transform.position;
-        Debug.Log(timer);
+        isPattern = false;
     }
 
-    public void AOEAttack()
+    public void AOEPattern()
+    {
+        StartCoroutine(AOEAttackCorountine());        
+    }
+
+    IEnumerator AOEAttackCorountine()
     {
         float radius = 5f;
         float angle = 90f;
         float activeDelay = 1f;
         float deactiveDelay = 2f;
-
+        isPattern = true;
         aoe.SetRadius(radius);
         aoe.SetAngle(angle);
-        StartCoroutine(aoe.AOECoroutine(activeDelay, deactiveDelay));
+        yield return StartCoroutine(aoe.AOECoroutine(activeDelay, deactiveDelay));
+        isPattern = false;
+    }
+
+    public void ShootTrackMissiles()
+    {
+        int amount = 3;
+        float delay = 2f;
+        isPattern = true;
+        if (amount > missiles.Length)
+            amount = missiles.Length;
+        StartCoroutine(ShootCoroutine(amount, delay));
+    }
+    public void ShootTrackMissiles(int amount = 3, float delay = 2f)
+    {
+        isPattern = true;
+        if (amount > missiles.Length)
+            amount = missiles.Length;
+        StartCoroutine(ShootCoroutine(amount, delay));
+    }
+
+    IEnumerator ShootCoroutine(int amount, float delay)
+    {
+        for (int i = 0; i < amount; i++)
+        {
+            missiles[i].gameObject.SetActive(true);
+            missiles[i].TrackTarget(player.gameObject);
+            yield return new WaitForSeconds(delay);
+        }
+        isPattern = false;
     }
 
     public void InitBoss()
