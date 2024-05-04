@@ -137,11 +137,6 @@ public class DBManager : MonoBehaviour
         reader.Close();
         CloseConnection();
 
-        for(int i = 0; i < slots.Length; i++)
-        {
-            Debug.Log(slots[i]);
-        }
-
         return slots;
     }
 
