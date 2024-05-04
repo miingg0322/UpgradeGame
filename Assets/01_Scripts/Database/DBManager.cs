@@ -198,4 +198,43 @@ public class DBManager : MonoBehaviour
             
         return characterClass;
     }
+
+    public void DeleteCharacter(int characterId)
+    {
+        string userId = GameManager.Instance.userId;
+        OpenConnection();
+
+        string OffQuery = $"SET foreign_key_checks = 0;";
+        MySqlCommand offCommand = new MySqlCommand(OffQuery, connection);
+        offCommand.ExecuteNonQuery();
+
+        string deleteQuery = $"DELETE FROM characters WHERE id = '{characterId}'";
+        MySqlCommand deleteCommand = new MySqlCommand(deleteQuery, connection);
+        deleteCommand.ExecuteNonQuery();
+
+        string OnQuery = $"SET foreign_key_checks = 1;";
+        MySqlCommand onCommand = new MySqlCommand(OnQuery, connection);
+        onCommand.ExecuteNonQuery();
+
+        if(GameManager.Instance.selectIndex == 0)
+        {
+            string deleteQuery0 = $"UPDATE users SET slot1 = NULL WHERE id = '{userId}';";
+            MySqlCommand deleteCommand0 = new MySqlCommand(deleteQuery0, connection);
+            deleteCommand0.ExecuteNonQuery();
+        }
+        else if(GameManager.Instance.selectIndex == 1)
+        {
+            string deleteQuery1 = $"UPDATE users SET slot2 = NULL WHERE id = '{userId}';";
+            MySqlCommand deleteCommand1 = new MySqlCommand(deleteQuery1, connection);
+            deleteCommand1.ExecuteNonQuery();
+        }
+        else if (GameManager.Instance.selectIndex == 2)
+        {
+            string deleteQuery2 = $"UPDATE users SET slot3 = NULL WHERE id = '{userId}';";
+            MySqlCommand deleteCommand2 = new MySqlCommand(deleteQuery2, connection);
+            deleteCommand2.ExecuteNonQuery();
+        }
+            
+        CloseConnection();
+    }
 }
