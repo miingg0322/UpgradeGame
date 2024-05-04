@@ -20,6 +20,7 @@ public class GameManager : MonoBehaviour
     public Player player;
     public RandomItem ranItem;
     public Notice notice;
+    public SignupManager signupManager;
 
     public GameObject loginGroup;
     public GameObject signupGroup;
@@ -80,6 +81,7 @@ public class GameManager : MonoBehaviour
     {
         loginGroup.SetActive(true);
         signupGroup.SetActive(false);
+        signupManager.Init();
     }
 
     public void ActiveSignUpNotice()
@@ -126,6 +128,16 @@ public class GameManager : MonoBehaviour
         selectUi.SetActive(true);
         createUi.SetActive(false);
         createBtn.SetActive(true);
+    }
+
+    public void Logout()
+    {
+        selectUi.SetActive(false);
+        createUi.SetActive(false);
+        loginGroup.SetActive(true);
+
+        userId = null;
+        userSlots = new int[userSlots.Length];
     }
 
     public void SetUserSlots(int[] slots)
