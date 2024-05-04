@@ -12,7 +12,7 @@ public class TrackingMissile : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public void TrackTarget(GameObject target, float trackSpeed = 0.5f, float trackTime = 5f)
+    public void TrackTarget(GameObject target, float trackSpeed = 2f, float trackTime = 5f)
     {
         StartCoroutine(TrackCoroutine(target, trackSpeed, trackTime));
     }
@@ -25,7 +25,7 @@ public class TrackingMissile : MonoBehaviour
         while(trackTimer < trackTime)
         {
             trackTimer += Time.deltaTime;
-            transform.Translate(target.transform.position * trackSpeed * Time.deltaTime);
+            transform.Translate((target.transform.position - transform.position).normalized * trackSpeed * Time.deltaTime);
             //transform.LookAt(target.transform);
             Vector2 dir = target.transform.position - transform.position;
             float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
