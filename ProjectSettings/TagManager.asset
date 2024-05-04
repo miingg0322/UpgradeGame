@@ -8,6 +8,7 @@ TagManager:
   - Weapon
   - Range
   - Melee
+  - Boss
   layers:
   - Default
   - TransparentFX

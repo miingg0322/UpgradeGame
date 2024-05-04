@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHp: 500
   baseDmg: 20
-  baseMoveSpeed: 1
+  baseMoveSpeed: 0.5
   atkRange: 2
