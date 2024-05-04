@@ -145,15 +145,44 @@ public class DBManager : MonoBehaviour
         return slots;
     }
 
-    public void CreateCharacter(string userId, int characterClass)
+    public int CreateCharacter(string userId, int characterClass)
     {
+        int characterId = -1;
+
         OpenConnection();
 
         // 캐릭터 정보를 데이터베이스에 추가합니다.
-        string query = $"INSERT INTO characters (class, user_id, clear, inventory, status) VALUES ({characterClass}, '{userId}', 0, 0, 0)";
+        string query = $"INSERT INTO characters (class, user_id, clear, inventory, status) VALUES ({characterClass}, '{userId}', 0, 0, 0); SELECT LAST_INSERT_ID();";
         MySqlCommand command = new MySqlCommand(query, connection);
-        int result = command.ExecuteNonQuery();
+        object result = command.ExecuteScalar();
+
+        if (result != null && int.TryParse(result.ToString(), out characterId))
+        {
+            Debug.Log(characterId);
+        }
+        else
+        {
+            // 오류 처리
+            Debug.LogError("Failed to get character id from database.");
+        }
 
         CloseConnection();
+
+        return characterId;
+    }
+
+    public int GetCharacterClass(int  characterId)
+    {
+        int characterClass = -1;
+
+        OpenConnection();
+
+        string query = $"SELECT class FROM characters WHERE id = '{characterId}'";
+        MySqlCommand command = new MySqlCommand(query, connection);
+        MySqlDataReader reader = command.ExecuteReader();
+
+        characterClass = reader.GetInt32(0);
+
+        return characterClass;
     }
 }

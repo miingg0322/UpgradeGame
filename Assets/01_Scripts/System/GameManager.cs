@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -25,6 +26,9 @@ public class GameManager : MonoBehaviour
     public GameObject selectUi;
     public GameObject createUi;
     public GameObject createBtn;
+
+    public Image[] characterIcons;
+    public Text[] characterTexts;
 
     public string userId;
     public int DungeonLevel;
@@ -80,6 +84,9 @@ public class GameManager : MonoBehaviour
 
     public void ActiveCreateCharacter()
     {
+        if (userSlots[userSlots.Length - 1] != 0)
+            return;
+
         selectUi.SetActive(false);
         createUi.SetActive(true);
         createBtn.SetActive(false);
@@ -98,6 +105,18 @@ public class GameManager : MonoBehaviour
 
         for(int index = 0; index < userSlots.Length; index++)
         {
+            if (userSlots[index] == 0)
+            {
+                characterIcons[index].sprite = null;
+                characterTexts[index].text = "Empty";
+            }
+            else
+            {
+               int chClass = DBManager.Instance.GetCharacterClass(userSlots[index]);
+
+                characterIcons[index].sprite = playerData[chClass].playerSprite;
+                characterTexts[index].text = playerData[chClass].playerName;
+            }
         }
     }
 
@@ -116,8 +135,21 @@ public class GameManager : MonoBehaviour
 
     public void CreateCharacter(int character)
     {
+        if (userSlots[userSlots.Length - 1] != 0)
+            return;
+
         string id = userId;
         // DB�� ������ ����
-        DBManager.Instance.CreateCharacter(id, character);
+        int characterId = DBManager.Instance.CreateCharacter(id, character);
+        
+        for(int index = 0;index < userSlots.Length;index++)
+        {
+            if (userSlots[index] != 0)
+            {
+                userSlots[index] = characterId;
+                break;
+            }
+        }
+        createUi.SetActive(false);
     }
 }

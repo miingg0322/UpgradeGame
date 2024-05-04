@@ -1914,8 +1914,17 @@ MonoBehaviour:
   selectUi: {fileID: 740582295}
   createUi: {fileID: 530314244}
   createBtn: {fileID: 437391726}
+  characterIcons:
+  - {fileID: 2115218873}
+  - {fileID: 674142187}
+  - {fileID: 248164148}
+  characterTexts:
+  - {fileID: 1367133139}
+  - {fileID: 23504562}
+  - {fileID: 1965308988}
   userId: 
   DungeonLevel: 0
+  probBase: 1000
 --- !u!4 &1213803928
 Transform:
   m_ObjectHideFlags: 0
