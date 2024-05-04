@@ -21,6 +21,8 @@ public class SignupManager : MonoBehaviour
     public Text feedbackText;
 
     bool isPwSame;
+    bool isIdDuplicate;
+    bool isNickDuplicate;
     private void Start()
     {
         feedbackTextNick.text = "";
@@ -49,10 +51,12 @@ public class SignupManager : MonoBehaviour
         if (DBManager.Instance.IsNicknameExists(nickname))
         {
             feedbackTextNick.text = "중복된 닉네임입니다.";
+            isNickDuplicate = true;  
         }
         else
         {
             feedbackTextNick.text = "";
+            isNickDuplicate = false;
         }
     }
 
@@ -69,10 +73,12 @@ public class SignupManager : MonoBehaviour
         if (DBManager.Instance.IsIdExists(id))
         {
             feedbackTextId.text = "중복된 아이디입니다.";
+            isIdDuplicate = true;
         }
         else
         {
             feedbackTextId.text = "";
+            isIdDuplicate = false;
         }
     }
 
@@ -89,6 +95,7 @@ public class SignupManager : MonoBehaviour
         if (password != confirmPassword)
         {
             feedbackTextPw.text = "비밀번호가 일치하지 않습니다.";
+            isPwSame = false;
         }
         else
         {
@@ -113,6 +120,12 @@ public class SignupManager : MonoBehaviour
         if (!isPwSame)
         {
             feedbackText.text = "비밀번호를 일치하게 입력해주세요.";
+            return;
+        }
+
+        if (isIdDuplicate || isNickDuplicate)
+        {
+            feedbackText.text = "아이디와 닉네임은 중복되지 않게 지어야합니다.";
             return;
         }
 
