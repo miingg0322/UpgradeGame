@@ -32,6 +32,7 @@ public class GameManager : MonoBehaviour
     public GameObject signupNotice;
     public GameObject slotNotice;
     public GameObject deleteNotice;
+
     public GameObject[] selectBtn;
     public GameObject[] deleteBtn;
 
@@ -161,7 +162,6 @@ public class GameManager : MonoBehaviour
         createUi.SetActive(false);
         createBtn.SetActive(true);
     }
-
     public void Logout()
     {
         selectUi.SetActive(false);
@@ -240,7 +240,6 @@ public class GameManager : MonoBehaviour
     public void AssignPlayer(Player playerRef)
     {
         player = playerRef;
-        player.isExecution = true;
     }
     public void AssignPool(PoolManager poolmanager)
     {
