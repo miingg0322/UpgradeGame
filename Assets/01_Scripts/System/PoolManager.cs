@@ -9,17 +9,13 @@ public class PoolManager : MonoBehaviour
 
     private void Awake()
     {
+        GameManager.Instance.AssignPool(this);
         pools = new List<GameObject>[prefabs.Length];
 
         for(int index = 0; index < pools.Length; index++)
         {
             pools[index] = new List<GameObject>();
         }
-    }
-
-    private void Start()
-    {
-        GameManager.Instance.AssignPool(this);
     }
 
         public GameObject Get(int index)

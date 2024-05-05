@@ -16,10 +16,6 @@ public class Notice : MonoBehaviour
     private void Awake()
     {
         wait = new WaitForSecondsRealtime(5);
-    }
-
-    private void Start()
-    {
         GameManager.Instance.AssignNotice(this);
     }
 

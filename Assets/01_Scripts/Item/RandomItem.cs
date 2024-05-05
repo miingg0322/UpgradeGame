@@ -8,7 +8,7 @@ namespace Rito
     {
         public RanItemData[] ranItemDatas;
 
-        private void Start()
+        private void Awake()
         {
             GameManager.Instance.AssignRanItem(this);
         }
