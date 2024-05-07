@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour
     public RandomItem ranItem;
     public Notice notice;
     public SignupManager signupManager;
+    public Weapon weapon;
 
     public GameObject loginGroup;
     public GameObject signupGroup;
@@ -63,7 +64,6 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-
     }
 
     // Update is called once per frame

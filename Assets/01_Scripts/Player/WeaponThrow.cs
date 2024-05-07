@@ -30,7 +30,7 @@ public class WeaponThrow : MonoBehaviour
 
         Transform weapon = GameManager.Instance.pool.Get(1).transform;
         weapon.position = player.transform.position;
-        weapon.rotation = Quaternion.identity;
+        weapon.rotation = Quaternion.FromToRotation(Vector3.up, dir);
 
         int damage = 300; // 플레이어가 장착한 무기의 dmg를 받아오게 수정 예정
         weapon.GetComponent<Range>().Init(dir, damage);

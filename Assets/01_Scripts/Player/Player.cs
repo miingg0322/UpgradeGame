@@ -47,7 +47,7 @@ public class Player : MonoBehaviour
     private void Start()
     {
         GameManager.Instance.AssignPlayer(this);
-        Init(GameManager.Instance.selectedClass);     
+        Init(GameManager.Instance.selectedClass);
     }
     void OnMove(InputValue value)
     {

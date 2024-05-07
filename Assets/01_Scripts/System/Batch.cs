@@ -20,6 +20,7 @@ public class Batch : MonoBehaviour
     {
         for (int index = 0; index < count; index++)
         {
+            float angle = 360 * index / count;
             Transform weapon;
 
             weapon = GameManager.Instance.pool.Get(3).transform;
@@ -28,9 +29,14 @@ public class Batch : MonoBehaviour
             weapon.localPosition = Vector3.zero;
             weapon.localRotation = Quaternion.identity;
 
-            Vector3 rotVec = Vector3.forward * 360 * index / count;
+            Vector3 rotVec = Vector3.forward * angle;
+            Vector3 revRotVec = Vector3.forward * -1 *angle;
+
             weapon.Rotate(rotVec);
-            weapon.Translate(weapon.up * 1.5f, Space.World);
+            weapon.Translate(weapon.up * 1.5f, Space.World);          
+            
+            if(Player.Instance.playerId == 0)
+                weapon.Rotate(revRotVec);
         }
     }
 }
