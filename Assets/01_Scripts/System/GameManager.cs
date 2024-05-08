@@ -21,24 +21,8 @@ public class GameManager : MonoBehaviour
     public Player player;
     public RandomItem ranItem;
     public Notice notice;
-    public SignupManager signupManager;
     public Weapon weapon;
-
-    public GameObject loginGroup;
-    public GameObject signupGroup;
-    public GameObject loginFail;
-    public GameObject selectUi;
-    public GameObject createUi;
-    public GameObject createBtn;
-    public GameObject signupNotice;
-    public GameObject slotNotice;
-    public GameObject deleteNotice;
-
-    public GameObject[] selectBtn;
-    public GameObject[] deleteBtn;
-
-    public Image[] characterIcons;
-    public Text[] characterTexts;
+    public LoginUi loginUi;
 
     public string userId;
     public int DungeonLevel;
@@ -46,7 +30,7 @@ public class GameManager : MonoBehaviour
     public int selectIndex;
     public int deleteCharacter;
 
-    int[] userSlots;
+    public int[] userSlots;
      
     /// <summary>
     /// Key = Upgrade, Cost, Destroy
@@ -71,106 +55,6 @@ public class GameManager : MonoBehaviour
     {
         
     }
-    public void Login()
-    {
-        loginGroup.SetActive(false);
-        selectUi.SetActive(true);
-    }
-    public void ActiveSignUp()
-    {
-        loginGroup.SetActive(false);
-        signupGroup.SetActive(true);
-    }
-
-    public void CancleSignUp()
-    {
-        loginGroup.SetActive(true);
-        signupGroup.SetActive(false);
-        signupManager.Init();
-    }
-
-    public void ActiveSignUpNotice()
-    {
-        signupNotice.SetActive(true);
-    }
-
-    public void CancleSignUpNotice()
-    {
-        signupNotice.SetActive(false);
-        signupGroup.SetActive(false);
-        loginGroup.SetActive(true);
-    }
-
-    public void CancleSlotNotice()
-    {
-        slotNotice.SetActive(false);
-    }
-    public void ActiveLoginFail()
-    {
-        loginFail.SetActive(true);
-    }
-    public void CancleLoginFail()
-    {
-        loginFail.SetActive(false);
-    }
-
-    public void ActiveDelete()
-    {
-        for (int index = 0; index < selectBtn.Length; index++)
-        {
-            selectBtn[index].SetActive(false);
-            deleteBtn[index].SetActive(true);
-        }      
-    }
-
-    public void CancleDelete()
-    {
-        for (int index = 0; index < selectBtn.Length; index++)
-        {
-            selectBtn[index].SetActive(true);
-            deleteBtn[index].SetActive(false);
-        }
-    }
-    public void ActiveDeleteCheck(int index)
-    {
-        selectIndex = index;
-        deleteCharacter = userSlots[index];
-        deleteNotice.SetActive(true);           
-    }
-
-    public void CancleDeleteCheck()
-    {
-        deleteNotice.SetActive(false);
-    }
-    public void ActiveCreateCharacter()
-    {
-        if (userSlots[userSlots.Length - 1] != 0)
-        {
-            slotNotice.SetActive(true);
-        }
-        else
-        {
-            selectUi.SetActive(false);
-            createUi.SetActive(true);
-            createBtn.SetActive(false);
-        }                
-    }
-
-    public void CancleCreateCharacter()
-    {
-        selectUi.SetActive(true);
-        createUi.SetActive(false);
-        createBtn.SetActive(true);
-    }
-    public void Logout()
-    {
-        selectUi.SetActive(false);
-        createUi.SetActive(false);
-        loginGroup.SetActive(true);
-
-        userId = null;
-        userSlots = new int[userSlots.Length];
-    }
 
     public void SetUserSlots(int[] slots)
     {
@@ -180,17 +64,17 @@ public class GameManager : MonoBehaviour
         {
             if (userSlots[index] == 0)
             {
-                characterIcons[index].sprite = null;
-                characterTexts[index].text = "Empty";
-                selectBtn[index].SetActive(false);
+                loginUi.characterIcons[index].sprite = null;
+                loginUi.characterTexts[index].text = "Empty";
+                loginUi.selectBtn[index].SetActive(false);
             }
             else
             {
                int chClass = DBManager.Instance.GetCharacterClass(userSlots[index]);
 
-                characterIcons[index].sprite = playerData[chClass].playerSprite;
-                characterTexts[index].text = playerData[chClass].playerName;
-                selectBtn[index].SetActive(true);
+                loginUi.characterIcons[index].sprite = playerData[chClass].playerSprite;
+                loginUi.characterTexts[index].text = playerData[chClass].playerName;
+                loginUi.selectBtn[index].SetActive(true);
             }
         }
     }
@@ -222,16 +106,16 @@ public class GameManager : MonoBehaviour
         }
 
         SetUserSlots(userSlots);
-        createUi.SetActive(false);
-        selectUi.SetActive(true);
-        createBtn.SetActive(true);
+        loginUi.createUi.SetActive(false);
+        loginUi.selectUi.SetActive(true);
+        loginUi.createBtn.SetActive(true);
     }
 
     public void DeleteCharacter()
     {
         DBManager.Instance.DeleteCharacter(deleteCharacter);
-        deleteNotice.SetActive(false);
-        CancleDelete();
+        loginUi.deleteNotice.SetActive(false);
+        loginUi.CancleDelete();
 
         userSlots[selectIndex] = 0;
         SetUserSlots(userSlots);
@@ -252,5 +136,10 @@ public class GameManager : MonoBehaviour
     public void AssignNotice(Notice noti)
     {
         notice = noti;
+    }
+
+    public void AssignLoginUi(LoginUi login)
+    {
+        loginUi = login;
     }
 }

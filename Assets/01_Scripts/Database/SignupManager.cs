@@ -134,6 +134,7 @@ public class SignupManager : MonoBehaviour
         Init();
         string encryptedPw = Encryptor.SHA256Encryt(password);
         DBManager.Instance.RegisterUser(nickname, id, encryptedPw);
+        LoginUi.Instance.ActiveSignUpNotice();
     }
 
     public void Init()
