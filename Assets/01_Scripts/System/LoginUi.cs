@@ -1,19 +1,12 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class LoginUi : MonoBehaviour
 {
-    private static LoginUi instance;
-    public static LoginUi Instance
-    {
-        get { return instance; }
-        set { instance = value; }
-    }
-
     public SignupManager signupManager;
 
     public GameObject loginGroup;
@@ -31,28 +24,31 @@ public class LoginUi : MonoBehaviour
 
     public GameObject[] selectBtn;
     public GameObject[] deleteBtn;
+    public GameObject[] createChBtn;
 
     public Image[] characterIcons;
     public Text[] characterTexts;
 
     void Awake()
     {
-        if (instance == null)
-        {
-            instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-
         GameManager.Instance.AssignLoginUi(this);
     }
 
     private void Start()
     {
-        DontDestroyOnLoad(gameObject);
+        for(int index = 0; index < selectBtn.Length; index++)
+        {
+            int selectIndex = index;
+            selectBtn[selectIndex].GetComponent<Button>().onClick.AddListener(()=> GameManager.Instance.SelectCharacter(selectIndex));
+        }
+
+        chdelBtn.GetComponent<Button>().onClick.AddListener(() => GameManager.Instance.DeleteCharacter());
+
+        for (int index = 0; index < createChBtn.Length; index++)
+        {
+            int createIndex = index;
+            createChBtn[createIndex].GetComponent<Button>().onClick.AddListener(() => GameManager.Instance.CreateCharacter(createIndex));
+        }
     }
     public void Login()
     {
@@ -173,12 +169,7 @@ public class LoginUi : MonoBehaviour
         createBtn.SetActive(true);
     }
     public void Logout()
-    {
-        if (SceneManager.GetActiveScene().name != "Login")
-        {
-            SceneManager.LoadScene("Login");
-        }
-
+    { 
         selectUi.SetActive(false);
         createUi.SetActive(false);
         logoutBtn.SetActive(false);
