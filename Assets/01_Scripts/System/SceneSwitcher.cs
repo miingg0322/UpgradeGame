@@ -32,9 +32,4 @@ public class SceneSwitcher : MonoBehaviour
             SceneManager.sceneLoaded -= OnSceneLoaded;
         }
     }
-
-    public void Logout()
-    {
-        LoginUi.Instance.Logout();
-    }
 }
