@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class Withdraw : MonoBehaviour
@@ -21,18 +23,20 @@ public class Withdraw : MonoBehaviour
     {
         confirmText = withdrawField.text;
 
-        if(confirmText != withdrawText.text)
+        
+        if(string.IsNullOrEmpty(confirmText))
+        {
+            feedbackText.text = "";          
+        }
+        else if (confirmText != withdrawText.text)
         {
             feedbackText.text = "문구가 일치하지 않습니다 다시 한번 확인해주세요.";
             withdrawBtn.interactable = false;
         }
-        else if(string.IsNullOrEmpty(confirmText))
-        {
-            feedbackText.text = "";          
-        }
         else if(confirmText == withdrawText.text)
         {
             withdrawBtn.interactable = true;
+            feedbackText.text = "";
         }
     }
     public void ConfirmWithdraw()
@@ -50,8 +54,14 @@ public class Withdraw : MonoBehaviour
             string userId = GameManager.Instance.userId;
 
             confirmUi.SetActive(false);
-            LoginUi.Instance.Logout();
+            SceneManager.LoadScene("Login");
+            Destroy(GameManager.Instance.player.gameObject);
             DBManager.Instance.DeleteUser(userId);
         }     
+    }
+    public void UserLogout()
+    {
+        SceneManager.LoadScene("Login");
+        Destroy(GameManager.Instance.player.gameObject);
     }
 }
