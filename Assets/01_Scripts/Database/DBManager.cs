@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using MySql.Data.MySqlClient;
 using UnityEngine.SceneManagement;
+using UnityEngine.TextCore.Text;
+using System;
 public class DBManager : MonoBehaviour
 {
     private static DBManager instance;
@@ -81,8 +83,7 @@ public class DBManager : MonoBehaviour
 
         MySqlCommand command = new MySqlCommand(query, connection);
         command.ExecuteNonQuery();
-
-        GameManager.Instance.ActiveSignUpNotice();
+       
         CloseConnection();
     }
 
@@ -101,11 +102,11 @@ public class DBManager : MonoBehaviour
         {
             GameManager.Instance.SetUserSlots(GetCharacterInfo(id));
             GameManager.Instance.userId = id;
-            GameManager.Instance.Login();
+            LoginUi.Instance.Login();
         }
         else
         {
-            GameManager.Instance.ActiveLoginFail();
+            LoginUi.Instance.ActiveLoginFail();
         }
     }
 
@@ -230,6 +231,22 @@ public class DBManager : MonoBehaviour
             deleteCommand2.ExecuteNonQuery();
         }
             
+        CloseConnection();
+    }
+
+    public void DeleteUser(string userId)
+    {
+        OpenConnection();
+
+        string deleteQuery = $"DELETE characters, inventory, item FROM users LEFT JOIN characters ON users.id = characters.user_id LEFT JOIN inventory ON characters.id = inventory.character_id LEFT JOIN item ON inventory.item_id = item.id WHERE users.id = '{userId}'";
+        MySqlCommand deleteCommand = new MySqlCommand(deleteQuery, connection);
+        Console.WriteLine(deleteCommand.CommandText);
+        deleteCommand.ExecuteNonQuery();
+
+        string deleteQuery2 = $"DELETE FROM users WHERE id = '{userId}'";
+        MySqlCommand deleteCommand2 = new MySqlCommand(deleteQuery2, connection);
+        deleteCommand2.ExecuteNonQuery();
+
         CloseConnection();
     }
 }
