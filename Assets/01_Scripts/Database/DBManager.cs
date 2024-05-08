@@ -102,11 +102,11 @@ public class DBManager : MonoBehaviour
         {
             GameManager.Instance.SetUserSlots(GetCharacterInfo(id));
             GameManager.Instance.userId = id;
-            LoginUi.Instance.Login();
+            GameManager.Instance.loginUi.Login();
         }
         else
         {
-            LoginUi.Instance.ActiveLoginFail();
+            GameManager.Instance.loginUi.ActiveLoginFail();
         }
     }
 
@@ -238,6 +238,10 @@ public class DBManager : MonoBehaviour
     {
         OpenConnection();
 
+        string OffQuery = $"SET foreign_key_checks = 0;";
+        MySqlCommand offCommand = new MySqlCommand(OffQuery, connection);
+        offCommand.ExecuteNonQuery();
+
         string deleteQuery = $"DELETE characters, inventory, item FROM users LEFT JOIN characters ON users.id = characters.user_id LEFT JOIN inventory ON characters.id = inventory.character_id LEFT JOIN item ON inventory.item_id = item.id WHERE users.id = '{userId}'";
         MySqlCommand deleteCommand = new MySqlCommand(deleteQuery, connection);
         Console.WriteLine(deleteCommand.CommandText);
@@ -246,6 +250,10 @@ public class DBManager : MonoBehaviour
         string deleteQuery2 = $"DELETE FROM users WHERE id = '{userId}'";
         MySqlCommand deleteCommand2 = new MySqlCommand(deleteQuery2, connection);
         deleteCommand2.ExecuteNonQuery();
+
+        string OnQuery = $"SET foreign_key_checks = 1;";
+        MySqlCommand onCommand = new MySqlCommand(OnQuery, connection);
+        onCommand.ExecuteNonQuery();
 
         CloseConnection();
     }
