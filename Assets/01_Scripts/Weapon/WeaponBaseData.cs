@@ -10,5 +10,4 @@ public class WeaponBaseData : ScriptableObject
     public int dmgPerLevel;
     public int maxSafeLevel = 20;
     public int maxLevel;
-    public Sprite sprite;
 }

@@ -26,7 +26,8 @@ public class Withdraw : MonoBehaviour
         
         if(string.IsNullOrEmpty(confirmText))
         {
-            feedbackText.text = "";          
+            feedbackText.text = "";
+            withdrawBtn.interactable = false;
         }
         else if (confirmText != withdrawText.text)
         {
