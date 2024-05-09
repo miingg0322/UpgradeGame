@@ -11552,6 +11552,7 @@ MonoBehaviour:
   logoutBtn: {fileID: 41874282}
   chdelBtn: {fileID: 1418688270}
   returnBtn: {fileID: 1222864152}
+  delBtn: {fileID: 1564704914}
   signupNotice: {fileID: 1964010197}
   slotNotice: {fileID: 2017611294}
   deleteNotice: {fileID: 1969214620}

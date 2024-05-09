@@ -18,6 +18,7 @@ public class LoginUi : MonoBehaviour
     public GameObject logoutBtn;
     public GameObject chdelBtn;
     public GameObject returnBtn;
+    public GameObject delBtn;
     public GameObject signupNotice;
     public GameObject slotNotice;
     public GameObject deleteNotice;
@@ -117,11 +118,11 @@ public class LoginUi : MonoBehaviour
             {
                 selectBtn[index].SetActive(false);
                 deleteBtn[index].SetActive(true);
-
-                chdelBtn.SetActive(false);
-                returnBtn.SetActive(true);
             }          
         }
+       
+        returnBtn.SetActive(true);
+        delBtn.SetActive(false);
     }
     public void CancleDelete()
     {
@@ -132,10 +133,13 @@ public class LoginUi : MonoBehaviour
                 selectBtn[index].SetActive(true);
                 deleteBtn[index].SetActive(false);
             }              
-
-            chdelBtn.SetActive(true);
-            returnBtn.SetActive(false);
         }
+
+        if (returnBtn.activeSelf)
+        {
+            returnBtn.SetActive(false);
+            delBtn.SetActive(true);
+        }          
     }
     public void ActiveDeleteCheck(int index)
     {
