@@ -54,8 +54,7 @@ public class Withdraw : MonoBehaviour
             string userId = GameManager.Instance.userId;
 
             confirmUi.SetActive(false);
-            SceneManager.LoadScene("Login");
-            Destroy(GameManager.Instance.player.gameObject);
+            UserLogout();
             DBManager.Instance.DeleteUser(userId);
         }     
     }
@@ -63,5 +62,8 @@ public class Withdraw : MonoBehaviour
     {
         SceneManager.LoadScene("Login");
         Destroy(GameManager.Instance.player.gameObject);
+
+        GameManager.Instance.userId = null;
+        GameManager.Instance.userSlots = null;
     }
 }

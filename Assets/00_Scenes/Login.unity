@@ -7828,7 +7828,7 @@ RectTransform:
   m_GameObject: {fileID: 1256550216}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 230752133}
@@ -11550,7 +11550,7 @@ MonoBehaviour:
   createUi: {fileID: 465317245}
   createBtn: {fileID: 766167316}
   logoutBtn: {fileID: 41874282}
-  chdelBtn: {fileID: 1564704914}
+  chdelBtn: {fileID: 1418688270}
   returnBtn: {fileID: 1222864152}
   signupNotice: {fileID: 1964010197}
   slotNotice: {fileID: 2017611294}
