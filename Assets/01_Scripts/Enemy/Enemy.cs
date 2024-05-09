@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using Unity.VisualScripting;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 
@@ -94,9 +95,19 @@ public class Enemy : MonoBehaviour
         }
         else if(collision.CompareTag("Melee"))
         {
-            hp -= maxHp;
-            StartCoroutine(Dead());
-            DropItem();           
+            hp -= collision.GetComponent<Melee>().damage;
+            if (gameObject.activeSelf)
+                StartCoroutine(KnockBack());
+
+            if (hp > 0)
+            {
+                // 피격 애니메이션, 효과음 재생
+            }
+            else
+            {
+                StartCoroutine(Dead());
+                DropItem();
+            }        
         }
     }
 

@@ -7,6 +7,11 @@ namespace Rito
     public class RandomItem : MonoBehaviour
     {
         public RanItemData[] ranItemDatas;
+
+        private void Awake()
+        {
+            GameManager.Instance.AssignRanItem(this);
+        }
         public string[] GetRandomPick()
         {
             

@@ -14,6 +14,13 @@ public class LoginManager : MonoBehaviour
     {
         feedbackText.text = "";
     }
+
+    private void Update()
+    {
+        LoginConvenience();
+    }
+
+
     public void OnLoginButtonClicked()
     {
         string id = idField.text;
@@ -25,6 +32,33 @@ public class LoginManager : MonoBehaviour
             return;
         }
 
+        idField.text = "";
+        passwordField.text = "";
+
         DBManager.Instance.Login(id, password);
+    }
+
+    void LoginConvenience()
+    {
+        if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
+        {
+            OnLoginButtonClicked();
+        }
+        else if (idField.isFocused == true)
+        {
+            idField.placeholder.GetComponent<TextMeshProUGUI>().text = "";
+            if (Input.GetKeyDown(KeyCode.Tab))
+            {
+                passwordField.Select();
+            }
+        }
+        else if (passwordField.isFocused == true)
+        {
+            passwordField.placeholder.GetComponent<TextMeshProUGUI>().text = "";
+            if (Input.GetKeyDown(KeyCode.Tab))
+            {
+                idField.Select();
+            }
+        }
     }
 }

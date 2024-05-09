@@ -9,6 +9,7 @@ public class PoolManager : MonoBehaviour
 
     private void Awake()
     {
+        GameManager.Instance.AssignPool(this);
         pools = new List<GameObject>[prefabs.Length];
 
         for(int index = 0; index < pools.Length; index++)
@@ -17,7 +18,7 @@ public class PoolManager : MonoBehaviour
         }
     }
 
-    public GameObject Get(int index)
+        public GameObject Get(int index)
     {
         GameObject select = null;
 

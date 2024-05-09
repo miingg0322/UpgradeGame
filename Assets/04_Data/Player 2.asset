@@ -16,7 +16,7 @@ MonoBehaviour:
   playerId: 2
   playerName: "\uAC74\uC2AC\uB9C1\uAC70"
   maxHp: 175
-  curHp: 250
+  curHp: 175
   moveSpeed: 3.5
   drainRate: 1
   playerSprite: {fileID: 3625043607559282579, guid: 045b15ec09bba42448d89db77fa6f20a, type: 3}

@@ -21,6 +21,8 @@ public class SignupManager : MonoBehaviour
     public Text feedbackText;
 
     bool isPwSame;
+    bool isIdDuplicate;
+    bool isNickDuplicate;
     private void Start()
     {
         feedbackTextNick.text = "";
@@ -34,6 +36,7 @@ public class SignupManager : MonoBehaviour
         OnNicknameInputChanged();
         OnIdInputChanged();
         OnPwCheckInputChanged();
+        SignupConvenience();
     }
 
     public void OnNicknameInputChanged()
@@ -49,10 +52,12 @@ public class SignupManager : MonoBehaviour
         if (DBManager.Instance.IsNicknameExists(nickname))
         {
             feedbackTextNick.text = "중복된 닉네임입니다.";
+            isNickDuplicate = true;  
         }
         else
         {
             feedbackTextNick.text = "";
+            isNickDuplicate = false;
         }
     }
 
@@ -69,10 +74,12 @@ public class SignupManager : MonoBehaviour
         if (DBManager.Instance.IsIdExists(id))
         {
             feedbackTextId.text = "중복된 아이디입니다.";
+            isIdDuplicate = true;
         }
         else
         {
             feedbackTextId.text = "";
+            isIdDuplicate = false;
         }
     }
 
@@ -89,6 +96,7 @@ public class SignupManager : MonoBehaviour
         if (password != confirmPassword)
         {
             feedbackTextPw.text = "비밀번호가 일치하지 않습니다.";
+            isPwSame = false;
         }
         else
         {
@@ -116,8 +124,61 @@ public class SignupManager : MonoBehaviour
             return;
         }
 
+        if (isIdDuplicate || isNickDuplicate)
+        {
+            feedbackText.text = "아이디와 닉네임은 중복되지 않게 지어야합니다.";
+            return;
+        }
+
         // DBManager를 통해 회원가입 처리
+        Init();
         string encryptedPw = Encryptor.SHA256Encryt(password);
         DBManager.Instance.RegisterUser(nickname, id, encryptedPw);
+        GameManager.Instance.loginUi.ActiveSignUpNotice();
+    }
+
+    public void Init()
+    {
+        nicknameField.text = "";
+        idField.text = "";
+        passwordField.text = "";
+        confirmPasswordField.text = "";
+        feedbackText.text = "";
+    }
+
+    private void SignupConvenience()
+    {
+        if (nicknameField.isFocused == true)
+        {
+            nicknameField.placeholder.GetComponent<TextMeshProUGUI>().text = "";
+            if (Input.GetKeyDown(KeyCode.Tab))
+            {
+                idField.Select();
+            }
+        }
+        else if (idField.isFocused == true)
+        {
+            idField.placeholder.GetComponent<TextMeshProUGUI>().text = "";
+            if (Input.GetKeyDown(KeyCode.Tab))
+            {
+                passwordField.Select();
+            }
+        }
+        else if (passwordField.isFocused == true)
+        {
+            passwordField.placeholder.GetComponent<TextMeshProUGUI>().text = "";
+            if (Input.GetKeyDown(KeyCode.Tab))
+            {
+                confirmPasswordField.Select();
+            }
+        }
+        else if (confirmPasswordField.isFocused == true)
+        {
+            confirmPasswordField.placeholder.GetComponent<TextMeshProUGUI>().text = "";
+            if (Input.GetKeyDown(KeyCode.Tab))
+            {
+                nicknameField.Select();
+            }
+        }
     }
 }

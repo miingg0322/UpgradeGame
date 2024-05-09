@@ -1,8 +1,11 @@
 using Rito;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -18,18 +21,17 @@ public class GameManager : MonoBehaviour
     public Player player;
     public RandomItem ranItem;
     public Notice notice;
-
-    public GameObject startGroup;
-    public GameObject signupGroup;
-    public GameObject loginFail;
-    public GameObject selectUi;
-    public GameObject createUi;
-    public GameObject createBtn;
+    public Weapon weapon;
+    public LoginUi loginUi;
 
     public string userId;
     public int DungeonLevel;
+    public int selectedClass;
+    public int selectIndex;
+    public int deleteCharacter;
 
-    int[] userSlots;
+    public int[] userSlots;
+     
     /// <summary>
     /// Key = Upgrade, Cost, Destroy
     /// </summary>
@@ -46,11 +48,6 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-
-    }
-    void Start()
-    {
-        
     }
 
     // Update is called once per frame
@@ -58,62 +55,91 @@ public class GameManager : MonoBehaviour
     {
         
     }
-    public void ActiveSignUp()
-    {
-        startGroup.SetActive(false);
-        signupGroup.SetActive(true);
-    }
-
-    public void CancleSignUp()
-    {
-        startGroup.SetActive(true);
-        signupGroup.SetActive(false);
-    }
-    public void ActiveLoginFail()
-    {
-        loginFail.SetActive(true);
-    }
-    public void CancleLoginFail()
-    {
-        loginFail.SetActive(false);
-    }
-
-    public void ActiveCreateCharacter()
-    {
-        selectUi.SetActive(false);
-        createUi.SetActive(true);
-        createBtn.SetActive(false);
-    }
-
-    public void CancleCreateCharacter()
-    {
-        selectUi.SetActive(true);
-        createUi.SetActive(false);
-        createBtn.SetActive(true);
-    }
 
     public void SetUserSlots(int[] slots)
     {
         userSlots = slots;
+
+        for(int index = 0; index < userSlots.Length; index++)
+        {
+            if (userSlots[index] == 0)
+            {
+                loginUi.characterIcons[index].sprite = null;
+                loginUi.characterTexts[index].text = "Empty";
+                loginUi.selectBtn[index].SetActive(false);
+            }
+            else
+            {
+               int chClass = DBManager.Instance.GetCharacterClass(userSlots[index]);
+
+                loginUi.characterIcons[index].sprite = playerData[chClass].playerSprite;
+                loginUi.characterTexts[index].text = playerData[chClass].playerName;
+                loginUi.selectBtn[index].SetActive(true);
+            }
+        }
     }
 
-    // ĳ���� ����â���� ������ �������� ��
     public void SelectCharacter(int slotIndex)
     {
-        if (userSlots != null)
-        {
-            // DB���� Characters�� id�� userSlots[slotIndex]�� ���� ã�� ��� �����͸� �������� ���� �ٲٴ� ���� �ۼ�
-        }
-        else
-        {
-            Debug.LogError("�����Ͱ� ����ֽ��ϴ�.");
-        }
+            selectedClass = DBManager.Instance.GetCharacterClass(userSlots[slotIndex]);
+            SceneManager.LoadScene("SampleScene");        
     }
 
     public void CreateCharacter(int character)
     {
+        if (userSlots[userSlots.Length - 1] != 0)
+        {
+            return;
+        }
+            
         string id = userId;
         // DB�� ������ ����
-        DBManager.Instance.CreateCharacter(id, character);
+        int characterId = DBManager.Instance.CreateCharacter(id, character);
+        
+        for(int index = 0;index < userSlots.Length;index++)
+        {
+            if (userSlots[index] == 0)
+            {
+                userSlots[index] = characterId;
+                break;
+            }
+        }
+
+        SetUserSlots(userSlots);
+        loginUi.createUi.SetActive(false);
+        loginUi.selectUi.SetActive(true);
+        loginUi.createBtn.SetActive(true);
+    }
+
+    public void DeleteCharacter()
+    {
+        DBManager.Instance.DeleteCharacter(deleteCharacter);
+        loginUi.deleteNotice.SetActive(false);
+        loginUi.CancleDelete();
+
+        userSlots[selectIndex] = 0;
+        SetUserSlots(userSlots);
+    }
+
+    public void AssignPlayer(Player playerRef)
+    {
+        player = playerRef;
+    }
+    public void AssignPool(PoolManager poolmanager)
+    {
+        pool = poolmanager;
+    }
+    public void AssignRanItem(RandomItem randomItem)
+    {
+        ranItem = randomItem;
+    }
+    public void AssignNotice(Notice noti)
+    {
+        notice = noti;
+    }
+
+    public void AssignLoginUi(LoginUi login)
+    {
+        loginUi = login;
     }
 }
