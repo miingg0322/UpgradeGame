@@ -66,5 +66,6 @@ public class Withdraw : MonoBehaviour
 
         GameManager.Instance.userId = null;
         GameManager.Instance.userSlots = null;
+        GameManager.Instance.dungeonTicket.SaveData();
     }
 }

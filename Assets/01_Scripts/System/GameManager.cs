@@ -23,15 +23,16 @@ public class GameManager : MonoBehaviour
     public Notice notice;
     public Weapon weapon;
     public LoginUi loginUi;
+    public DungeonTicket dungeonTicket;
 
     public string userId;
     public int DungeonLevel;
-    public int selectedClass;
+    public int selectedCharacterId;
     public int selectIndex;
     public int deleteCharacter;
 
     public int[] userSlots;
-     
+
     /// <summary>
     /// Key = Upgrade, Cost, Destroy
     /// </summary>
@@ -53,7 +54,7 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public void SetUserSlots(int[] slots)
@@ -81,8 +82,17 @@ public class GameManager : MonoBehaviour
 
     public void SelectCharacter(int slotIndex)
     {
-            selectedClass = DBManager.Instance.GetCharacterClass(userSlots[slotIndex]);
-            SceneManager.LoadScene("SampleScene");        
+        selectedCharacterId = DBManager.Instance.GetCharacterClass(userSlots[slotIndex]);
+        SceneManager.LoadScene("SampleScene");
+
+        StartCoroutine(TicketInit());
+    }
+
+    IEnumerator TicketInit()
+    {
+        yield return null;
+
+        dungeonTicket.Init();
     }
 
     public void CreateCharacter(int character)
@@ -141,5 +151,10 @@ public class GameManager : MonoBehaviour
     public void AssignLoginUi(LoginUi login)
     {
         loginUi = login;
+    }
+
+    public void AssignTicket(DungeonTicket ticket)
+    {
+        dungeonTicket = ticket;
     }
 }
