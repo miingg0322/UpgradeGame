@@ -39,10 +39,4 @@ public class Notice : MonoBehaviour
         exitUi.SetActive(false);
         Time.timeScale = 1f;
     }
-
-    public void ReturnFirstScene()
-    {
-        SceneManager.LoadScene("SampleScene");
-        Time.timeScale = 1f;
-    }
 }
