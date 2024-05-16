@@ -8,6 +8,8 @@ TagManager:
   - Weapon
   - Range
   - Melee
+  - Cleaner
+  - Explosion
   layers:
   - Default
   - TransparentFX
@@ -16,7 +18,7 @@ TagManager:
   - Water
   - UI
   - Enemy
-  - 
+  - Boss
   - 
   - 
   - 
