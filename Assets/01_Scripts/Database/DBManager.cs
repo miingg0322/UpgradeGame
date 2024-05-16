@@ -110,6 +110,26 @@ public class DBManager : MonoBehaviour
         }
     }
 
+    public int GetClearInfo(int characterId)
+    {
+        int clear = -1;
+
+        OpenConnection();
+
+        string query = $"SELECT clear FROM characters WHERE id = '{characterId}'";
+        MySqlCommand command = new MySqlCommand(query, connection);
+        MySqlDataReader reader = command.ExecuteReader();
+
+        if (reader.Read())
+        {
+            clear = reader.GetInt32(0);
+        }
+
+        CloseConnection();
+
+        return clear;
+    }
+
     public int[] GetCharacterInfo(string userId)
     {
         OpenConnection();
@@ -175,13 +195,13 @@ public class DBManager : MonoBehaviour
         return characterId;
     }
 
-    public int GetCharacterClass(int  characterId)
+    public int GetCharacterClass(int  slotIndex)
     {
         int characterClass = -1;
 
         OpenConnection();
 
-        string query = $"SELECT class FROM characters WHERE id = '{characterId}'";
+        string query = $"SELECT class FROM characters WHERE id = '{slotIndex}'";
         MySqlCommand command = new MySqlCommand(query, connection);
         MySqlDataReader reader = command.ExecuteReader();
 
@@ -193,6 +213,38 @@ public class DBManager : MonoBehaviour
         CloseConnection();
             
         return characterClass;
+    }
+
+    public void UpdateBossClear(int characterId, int bossClear)
+    {
+        OpenConnection();
+
+        string query = $"UPDATE characters SET clear = '{bossClear}' WHERE id = '{characterId}'";
+        MySqlCommand command = new MySqlCommand(query, connection);
+        command.ExecuteNonQuery();
+
+        Debug.Log(characterId + "번 캐릭터의" + bossClear + "단계 보스 클리어 정보 저장");
+        CloseConnection();
+    }
+
+    public int GetBossClear(int characterId)
+    {
+        int clear = -1;
+
+        OpenConnection();
+
+        string query = $"SELECT clear FROM characters WHERE id = '{characterId}'";
+        MySqlCommand command = new MySqlCommand(query, connection);
+        MySqlDataReader reader = command.ExecuteReader();
+
+        if (reader.Read())
+        {
+            clear = reader.GetInt32(0);
+        }
+
+        CloseConnection();
+
+        return clear;
     }
 
     public void DeleteCharacter(int characterId)
