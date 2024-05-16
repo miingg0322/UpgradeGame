@@ -8,6 +8,8 @@ public class AOE : MonoBehaviour
     SpriteRenderer spriter;
     public float aoeRadius;
     public float aoeAngle;
+    public float activeDelay;
+    public float deactiveDelay;
     RaycastHit2D[] playerHits;
 
     void Awake()
@@ -33,6 +35,11 @@ public class AOE : MonoBehaviour
         aoeRadius = radius;
     }
 
+    public void SetDelay(float activeDelay, float deactiveDelay)
+    {
+        this.activeDelay = activeDelay;
+        this.deactiveDelay = deactiveDelay;
+    }
     public void FindPlayer()
     {
         int iterator = Convert.ToInt32(aoeAngle/ 10);
@@ -79,7 +86,7 @@ public class AOE : MonoBehaviour
     /// <param name="activeDelay"></param>
     /// <param name="deactiveDelay"></param>
     /// <returns></returns>
-    public IEnumerator AOECoroutine(float activeDelay, float deactiveDelay)
+    public IEnumerator AOECoroutine()
     {
         yield return new WaitForSeconds(activeDelay);
         spriter.enabled = true;
