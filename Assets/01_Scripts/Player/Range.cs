@@ -13,15 +13,22 @@ public class Range : MonoBehaviour
     bool isTurn = false;
 
     Rigidbody2D rigid;
+    Transform trans;
     //SpriteRenderer spriter;
     void Awake()
     {
         rigid = GetComponent<Rigidbody2D>();
+        trans = GetComponent<Transform>();
     }
     void Start()
     {
         //spriter.sprite = Player.Instance.weapon.weaponData.sprite;
         playerClass = Player.Instance.playerId;
+
+        if(playerClass == 2)
+        {
+            trans.localScale = new Vector3(0.3f, 0.3f, 0.3f);
+        }
     }
 
     private void OnEnable()
@@ -60,6 +67,10 @@ public class Range : MonoBehaviour
             gameObject.SetActive(false);
         }
         if (collision.CompareTag("Wall"))
+        {
+            gameObject.SetActive(false);
+        }
+        if (collision.CompareTag("Cleaner"))
         {
             gameObject.SetActive(false);
         }

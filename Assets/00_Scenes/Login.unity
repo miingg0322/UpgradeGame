@@ -5543,6 +5543,50 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &824910731
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 824910733}
+  - component: {fileID: 824910732}
+  m_Layer: 0
+  m_Name: Scene Switcher
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &824910732
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 824910731}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a1beb3b9b5eff468b3d42c722878f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &824910733
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 824910731}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1047.4215, y: 537.92633, z: -8.692016}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &841609206
 GameObject:
   m_ObjectHideFlags: 0
@@ -9930,12 +9974,21 @@ MonoBehaviour:
   notice: {fileID: 0}
   weapon: {fileID: 0}
   loginUi: {fileID: 1971632491}
+  cleaner: {fileID: 0}
   userId: 
   DungeonLevel: 0
-  selectedClass: 0
+  selectedCharacterClass: 0
+  selectedCharacterId: 0
   selectIndex: 0
   deleteCharacter: 0
+  dungeonTicket: 0
+  maxDungeonTicket: 5
+  ticketGenerationTime: 600
+  timer: 0
   userSlots: 
+  collectedItems: []
+  isDungeonClear: 0
+  isCharacterSelect: 0
   probBase: 1000
 --- !u!4 &1758712023
 Transform:
@@ -12424,3 +12477,4 @@ SceneRoots:
   - {fileID: 1758712023}
   - {fileID: 700248375}
   - {fileID: 1971632490}
+  - {fileID: 824910733}

@@ -16,6 +16,7 @@ public class PlayerData : ScriptableObject
     public float maxHp;
     public float curHp;
     public float moveSpeed;
+    public float attackSpeed;
     public float drainRate;
     public Sprite playerSprite;
 }

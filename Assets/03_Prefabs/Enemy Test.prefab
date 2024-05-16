@@ -171,13 +171,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e23492e296890244bb636e45055e1425, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dropItem: {fileID: 4098249094196356649, guid: 2d6b3c8935d0d024b8d3cdd0e01d2b62, type: 3}
+  dropItem: {fileID: 0}
   enemyData:
   - {fileID: 11400000, guid: f6dddf95b129e0c4391d1ac1ea9622b9, type: 2}
   - {fileID: 11400000, guid: 068dfe6c0864fbd47a4308d37d994587, type: 2}
   - {fileID: 11400000, guid: 6aa293dcb79f98547a73a8ca9fd6485b, type: 2}
   - {fileID: 11400000, guid: 51a0012514ab99341a282b07b34d02a2, type: 2}
   - {fileID: 11400000, guid: 662fdb2f269b3ba499fba6fb789cebeb, type: 2}
+  bossData:
+  - {fileID: 11400000, guid: 29c7a7311025cf84e96edf435de0afaa, type: 2}
+  - {fileID: 11400000, guid: db01159651859f84189df8d3c61b9367, type: 2}
+  - {fileID: 11400000, guid: 83091b6362fff6c48859310de367ba66, type: 2}
+  - {fileID: 11400000, guid: 5af502ce2a9bc5c47a983b62a328affd, type: 2}
+  - {fileID: 11400000, guid: 6402201d66fa19a4aa2aac6b2b12ccdd, type: 2}
   hp: 0
   dmg: 0
   direction: {x: 0, y: 0}
