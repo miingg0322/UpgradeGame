@@ -7,6 +7,7 @@ public class BossData : ScriptableObject
 {
     public int maxHp;
     public int baseDmg;
-    public float baseMoveSpeed;
+    public float moveSpeed;
     public float atkRange;
+    public float atkSpeed;
 }

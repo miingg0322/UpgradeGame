@@ -274,7 +274,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 961656223}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Boss, Assembly-CSharp
         m_MethodName: ThrowPattern
         m_Mode: 1
@@ -470,7 +470,7 @@ GameObject:
   - component: {fileID: 488824060}
   - component: {fileID: 488824059}
   m_Layer: 0
-  m_Name: Circle
+  m_Name: AOE
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -503,8 +503,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97bec4a98b2fd544299a5a0b5e26b68e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  aoeRadius: 0
-  aoeAngle: 0
+  aoeRadius: 5
+  aoeAngle: 120
+  activeDelay: 0.5
+  deactiveDelay: 2
 --- !u!212 &488824060
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -932,7 +934,7 @@ GameObject:
   m_Component:
   - component: {fileID: 961656225}
   - component: {fileID: 961656224}
-  - component: {fileID: 961656223}
+  - component: {fileID: 961656226}
   m_Layer: 0
   m_Name: Boss
   m_TagString: Boss
@@ -940,35 +942,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &961656223
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 961656222}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6abb0e4812cb945409d8f720f7b4299a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  bossData: {fileID: 11400000, guid: 866abdbe2f2de4840880aa9d0e2b78a9, type: 2}
-  hp: 0
-  dmg: 0
-  moveSpeed: 0
-  isMoving: 0
-  atkSpeed: 0
-  atkRange: 0
-  isAttack: 0
-  patterns: 2
-  aoe: {fileID: 488824059}
-  throwWeapon: {fileID: 1070613689}
-  missiles:
-  - {fileID: 1608255749}
-  - {fileID: 1032789709}
-  - {fileID: 875711666}
-  player: {fileID: 0}
-  isPattern: 0
 --- !u!212 &961656224
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1037,6 +1010,34 @@ Transform:
   - {fileID: 488824058}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &961656226
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 961656222}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e01382a470d934f41937ebfddf86ad59, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bossData: {fileID: 11400000, guid: 866abdbe2f2de4840880aa9d0e2b78a9, type: 2}
+  hp: 0
+  moveTime: 2
+  isMoving: 0
+  isAttack: 0
+  isPattern: 0
+  player: {fileID: 0}
+  isPatternCoolDown: 0
+  patternCoolTimer: 0
+  throwWeapon: {fileID: 1070613689}
+  throwSpeed: 1
+  missiles:
+  - {fileID: 1608255749}
+  - {fileID: 1032789709}
+  - {fileID: 875711666}
+  aoe: {fileID: 0}
 --- !u!1 &1032789708
 GameObject:
   m_ObjectHideFlags: 0
@@ -1637,7 +1638,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 961656223}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Boss, Assembly-CSharp
         m_MethodName: AOEPattern
         m_Mode: 1
@@ -1907,7 +1908,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 961656223}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Boss, Assembly-CSharp
         m_MethodName: ShootTrackMissiles
         m_Mode: 1
