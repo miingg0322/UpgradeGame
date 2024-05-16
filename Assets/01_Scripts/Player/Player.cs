@@ -18,6 +18,7 @@ public class Player : MonoBehaviour
     public float maxHealth;
     public float curHealth;
     public float speed;
+    public float attackSpeed;
     public float drainRate;
 
     public Vector2 inputVec;
@@ -47,7 +48,7 @@ public class Player : MonoBehaviour
     private void Start()
     {
         GameManager.Instance.AssignPlayer(this);
-        Init(GameManager.Instance.selectedCharacterId);
+        Init(GameManager.Instance.selectedCharacterClass);
     }
     void OnMove(InputValue value)
     {
@@ -72,6 +73,7 @@ public class Player : MonoBehaviour
         maxHealth = data.maxHp;
         curHealth = data.curHp;
         speed = data.moveSpeed;
+        attackSpeed = data.attackSpeed;
         drainRate = data.drainRate;
         spriter.sprite = data.playerSprite;
     }
