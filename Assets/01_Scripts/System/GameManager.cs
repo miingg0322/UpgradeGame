@@ -230,12 +230,15 @@ public class GameManager : MonoBehaviour
             {
                 // 중복된 아이템이 있으면 수량을 증가시키고 함수 종료
                 item.itemQuantity++;
+                Debug.Log("중복된 아이템. 수량 증가");
                 return;
             }
         }
 
         CollectItem newItem = new CollectItem(name, grade, sprite, 1);
         collectedItems.Add(newItem);
+        Debug.Log("아이템 저장");
+        Debug.Log(collectedItems.Count);
     }
 
     public void ReturnChSelect()
