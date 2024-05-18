@@ -77,6 +77,7 @@ public class Enemy : MonoBehaviour
 
     public void BossInit(int level)
     {
+        Debug.Log("보스 데이터 초기화");
         FarmingBossData data = bossData[level];
 
         // 임시로 크기 증가 써둠
@@ -105,7 +106,7 @@ public class Enemy : MonoBehaviour
 
             gameObject.SetActive(false);
         }
-        else if (collision.CompareTag("Range"))
+        if (collision.CompareTag("Range"))
         {
             float damage = collision.GetComponent<Range>().damage;
             damage += Random.Range(-0.15f * damage, 0.15f * damage);
@@ -128,13 +129,13 @@ public class Enemy : MonoBehaviour
             }
             else
             {
-                if(gameObject.layer == LayerMask.NameToLayer("Boss"))
+                if(gameObject.layer == LayerMask.NameToLayer("Boss") && !GameManager.Instance.isDungeonClear)
                 {
+                    GameManager.Instance.isDungeonClear = true;
                     StartCoroutine(Dead());
                     DropItem();
                     // 임시 구현
-                    Debug.Log("스테이지 클리어");
-                    GameManager.Instance.isDungeonClear = true;
+                    Debug.Log("스테이지 클리어");                   
 
                     // 먹은 아이템들을 보여주는 ui 출력
                     GameManager.Instance.notice.DungeonClear();
@@ -148,7 +149,7 @@ public class Enemy : MonoBehaviour
                              
             }
         }
-        else if(collision.CompareTag("Melee") && !isDamaged)
+        if(collision.CompareTag("Melee") && !isDamaged)
         {
             float damage = collision.GetComponent<Melee>().damage;
             damage += Random.Range(-0.15f * damage, 0.15f * damage);
@@ -171,14 +172,14 @@ public class Enemy : MonoBehaviour
             }
             else
             {
-                if (gameObject.layer == LayerMask.NameToLayer("Boss"))
+                if (gameObject.layer == LayerMask.NameToLayer("Boss") && !GameManager.Instance.isDungeonClear)
                 {
+                    GameManager.Instance.isDungeonClear = true;
                     StartCoroutine(Dead());
                     DropItem();
                     // 임시 구현
                     Debug.Log("스테이지 클리어");
-                    GameManager.Instance.isDungeonClear = true;
-
+                    
                     // 먹은 아이템들을 보여주는 ui 출력
                     GameManager.Instance.notice.DungeonClear();
                 }
@@ -189,7 +190,7 @@ public class Enemy : MonoBehaviour
                 }
             }        
         }
-        else if (collision.CompareTag("Explosion"))
+        if (collision.CompareTag("Explosion"))
         {
             float damage = collision.GetComponent<Explosion>().damage;
             damage += Random.Range(-0.15f * damage, 0.15f * damage);
@@ -212,14 +213,14 @@ public class Enemy : MonoBehaviour
             }
             else
             {
-                if (gameObject.layer == LayerMask.NameToLayer("Boss"))
+                if (gameObject.layer == LayerMask.NameToLayer("Boss") && !GameManager.Instance.isDungeonClear)
                 {
+                    GameManager.Instance.isDungeonClear = true;
                     StartCoroutine(Dead());
                     DropItem();
                     // 임시 구현
                     Debug.Log("스테이지 클리어");
-                    GameManager.Instance.isDungeonClear = true;
-
+                    
                     // 먹은 아이템들을 보여주는 ui 출력
                     GameManager.Instance.notice.DungeonClear();
                 }
@@ -229,11 +230,6 @@ public class Enemy : MonoBehaviour
                     DropItem();
                 }
             }
-        }
-        else if (collision.CompareTag("Cleaner"))
-        {
-            hp -= maxHp;
-            StartCoroutine(Dead());
         }
     }
 
@@ -250,7 +246,7 @@ public class Enemy : MonoBehaviour
         isDamaged = false;
     }
 
-    IEnumerator Dead()
+    public IEnumerator Dead()
     {
         coll.enabled = false;
         rigid.simulated = false;
@@ -278,6 +274,7 @@ public class Enemy : MonoBehaviour
             Sprite sprite = dropItem.GetComponent<SpriteRenderer>().sprite;
 
             // 얻은 아이템 저장
+            Debug.Log("아이템 저장");
             GameManager.Instance.CollectItem(itemName, grade, sprite);
 
             if (!gameObject.activeSelf)
