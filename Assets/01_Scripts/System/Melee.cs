@@ -39,13 +39,13 @@ public class Melee : MonoBehaviour
 
     IEnumerator Explosion()
     {
-        yield return new WaitForSeconds(1.3f);
+        yield return new WaitForSeconds(0.85f);
 
         GameObject explosion = GameManager.Instance.pool.Get(5);
         explosion.transform.parent = transform.parent;
         explosion.transform.position = transform.position;
 
-        yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSeconds(0.15f);
 
         gameObject.SetActive(false);
     }
