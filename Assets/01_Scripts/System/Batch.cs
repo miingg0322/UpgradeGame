@@ -38,6 +38,7 @@ public class Batch : MonoBehaviour
 
     void BatchMelee()
     {
+        // 직업이 건슬링거인 경우
         if (Player.Instance.playerId == 2)
         {
             float angleStep = 360 / count;
@@ -50,7 +51,7 @@ public class Batch : MonoBehaviour
                 positions[i] = transform.position + new Vector3(Mathf.Cos(angle) * 1.5f, Mathf.Sin(angle) * 1.5f, 0);
             }
 
-            // 프로젝트 생성 및 비행 시작
+            // 오브젝트 생성 및 포물선 운동 시작
             for (int i = 0; i < count; i++)
             {
                 GameObject projectile = GameManager.Instance.pool.Get(3);
