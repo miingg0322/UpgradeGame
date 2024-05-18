@@ -15,6 +15,7 @@ public class Player : MonoBehaviour
     public int playerId;
     public int playerClass;
     public string playerName;
+    public string playerTrait;
     public float maxHealth;
     public float curHealth;
     public float speed;
@@ -69,12 +70,14 @@ public class Player : MonoBehaviour
         playerId = data.playerId;
         playerClass = data.playerId;
         playerName = data.playerName;
+        playerTrait = data.playerTrait;
 
         maxHealth = data.maxHp;
         curHealth = data.curHp;
         speed = data.moveSpeed;
         attackSpeed = data.attackSpeed;
         drainRate = data.drainRate;
+        sprite = data.playerSprite;
         spriter.sprite = data.playerSprite;
     }
 }
