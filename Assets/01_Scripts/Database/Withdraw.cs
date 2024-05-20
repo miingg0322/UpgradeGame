@@ -66,7 +66,7 @@ public class Withdraw : MonoBehaviour
 
         GameManager.Instance.userId = null;
         GameManager.Instance.userSlots = null;
-        GameManager.Instance.selectedCharacterId = 0;
+        GameManager.Instance.selectedCharacterId = -1;
         GameManager.Instance.isCharacterSelect = false;
         GameManager.Instance.SaveData();
     }
