@@ -8,6 +8,7 @@ public class Spawner : MonoBehaviour
     public SpawnData[] spawnData;
 
     public int bossSpawnCount = 30;
+    public int renewalSpecialMove = 20;
 
     float timer;
     int spawnDataIndex;
@@ -40,6 +41,11 @@ public class Spawner : MonoBehaviour
 
             if (count == bossSpawnCount)
                 isBossSpawn = true;
+        }
+        if(count == renewalSpecialMove)
+        {
+            Player.Instance.specialMove = true;
+            GameManager.Instance.notice.ActiveSpecialMove();
         }
 
         if (isBossSpawn)

@@ -10,6 +10,8 @@ TagManager:
   - Melee
   - Cleaner
   - Explosion
+  - Enemy
+  - Skill
   layers:
   - Default
   - TransparentFX

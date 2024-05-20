@@ -21,15 +21,18 @@ public class Player : MonoBehaviour
     public float speed;
     public float attackSpeed;
     public float drainRate;
+    public bool specialMove;
 
     public Vector2 inputVec;
     public Scanner scanner;
     public Weapon weapon;
     public Sprite sprite;
+    public GameObject[] specialSkill;
+    
 
     Rigidbody2D rigid;
     SpriteRenderer spriter;
-    
+
     private void Awake()
     {
         if (instance == null)
@@ -80,4 +83,17 @@ public class Player : MonoBehaviour
         sprite = data.playerSprite;
         spriter.sprite = data.playerSprite;
     }
+
+    // AutoFarming에서 사용가능한 필살기
+    public void SpecialMove()
+    {
+        if (specialMove)
+        {
+            // 필살기 비활성화
+            specialMove = false;
+            // 필살기 객체 생성
+            specialSkill[playerClass].SetActive(true);
+            GameManager.Instance.notice.specialMoveBtn.SetActive(false);
+        }           
+    }   
 }

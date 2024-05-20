@@ -11,6 +11,7 @@ public class Notice : MonoBehaviour
     public GameObject exitUi;
     public GameObject clearlUi;
     public GameObject exitBtn;
+    public GameObject specialMoveBtn;
     public GameObject cleaner;
     public Image noticeIcon;
     public Text noticeText;
@@ -37,6 +38,7 @@ public class Notice : MonoBehaviour
             int selectIndex = index;
             testClearBtns[selectIndex].GetComponent<Button>().onClick.AddListener(() => GameManager.Instance.BossClear(selectIndex + 1));
         }
+        specialMoveBtn.GetComponent<Button>().onClick.AddListener(() => Player.Instance.SpecialMove());
     }
 
     private void Update()
@@ -163,5 +165,9 @@ public class Notice : MonoBehaviour
                 slots[index].SetActive(false);
             }
         }
+    }
+    public void ActiveSpecialMove()
+    {
+        specialMoveBtn.SetActive(true);
     }
 }
