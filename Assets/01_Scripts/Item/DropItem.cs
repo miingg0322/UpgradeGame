@@ -16,19 +16,20 @@ public class DropItem : MonoBehaviour
     public Sprite[] enhancementScrolls;
 
     Sprite selectedSprite;
-    public void ReadItemInfo(string itemInfo)
+
+    public void ReadItemInfo(string itemInfo, GameObject dropItem)
     {
         if (itemInfo.Contains("강화석"))
         {
-            SetReinforcementStoneSprite(itemInfo);
+            SetReinforcementStoneSprite(itemInfo, dropItem);
         }
         else if (itemInfo.Contains("주문서"))
         {
-            SetScrollSprite(itemInfo);
+            SetScrollSprite(itemInfo, dropItem);
         }
         else if (itemInfo.Contains("강화권"))
         {
-            SetEnhancementTicketSprite(itemInfo);
+            SetEnhancementTicketSprite(itemInfo, dropItem);
         }
         else if (itemInfo.Contains("null"))
         {
@@ -41,7 +42,7 @@ public class DropItem : MonoBehaviour
         }
     }
 
-    void SetReinforcementStoneSprite(string itemInfo)
+    void SetReinforcementStoneSprite(string itemInfo, GameObject dropItem)
     {
         string[] tokens = itemInfo.Split(' ');
 
@@ -93,7 +94,7 @@ public class DropItem : MonoBehaviour
 
         if (selectedSprite != null)
         {
-            GetComponent<SpriteRenderer>().sprite = selectedSprite;
+            dropItem.GetComponent<SpriteRenderer>().sprite = selectedSprite;
         }
         else
         {
@@ -101,7 +102,7 @@ public class DropItem : MonoBehaviour
         }      
     }
 
-    void SetScrollSprite(string itemInfo)
+    void SetScrollSprite(string itemInfo, GameObject dropItem)
     {
         string[] tokens = itemInfo.Split(' ');
 
@@ -122,7 +123,7 @@ public class DropItem : MonoBehaviour
 
         if (selectedSprite != null)
         {
-            GetComponent<SpriteRenderer>().sprite = selectedSprite;
+            dropItem.GetComponent<SpriteRenderer>().sprite = selectedSprite;
         }
         else
         {
@@ -130,7 +131,7 @@ public class DropItem : MonoBehaviour
         }
     }
 
-    void SetEnhancementTicketSprite(string itemInfo)
+    void SetEnhancementTicketSprite(string itemInfo, GameObject dropItem)
     {
         string[] tokens = itemInfo.Split(' ');
 
@@ -166,7 +167,7 @@ public class DropItem : MonoBehaviour
 
         if (selectedSprite != null)
         {
-            GetComponent<SpriteRenderer>().sprite = selectedSprite;
+            dropItem.GetComponent<SpriteRenderer>().sprite = selectedSprite;
         }
         else
         {

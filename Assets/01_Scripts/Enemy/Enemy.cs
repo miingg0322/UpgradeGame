@@ -8,11 +8,11 @@ using static UnityEngine.GraphicsBuffer;
 
 public class Enemy : MonoBehaviour
 {
-    public GameObject dropItem;
+    public DropItem dropItemSet;
     public EnemyData[] enemyData;
     public FarmingBossData[] bossData;
     public float hp;
-    private int maxHp;
+    public int maxHp;
     public int dmg;
 
     public Vector2 direction;
@@ -20,7 +20,7 @@ public class Enemy : MonoBehaviour
 
     bool isHit;
     bool isDead;
-    bool isDamaged;
+    bool isDamaged;   
 
     Rigidbody2D rigid;
     Collider2D coll;
@@ -31,6 +31,7 @@ public class Enemy : MonoBehaviour
     WaitForSeconds invincibility;
     void Awake()
     {
+        dropItemSet = FindObjectOfType<DropItem>();
         rigid = GetComponent<Rigidbody2D>();
         coll = GetComponent<Collider2D>();
         spriter = GetComponent<SpriteRenderer>();
@@ -303,18 +304,25 @@ public class Enemy : MonoBehaviour
 
     void DropItem()
     {
+        // 가중치에 따라 아이템 뽑기
         string[] randomPick = GameManager.Instance.ranItem.GetRandomPick();
 
+        // 뽑은 아이템이 null이 아닐때 로직 실행
         if (randomPick[0] != "null")
         {
             string itemName = randomPick[0];
             string grade = randomPick[1];
 
+            // 드랍 아이템 객체 생성
             GameObject ranDropItem = GameManager.Instance.pool.Get(2);
             ranDropItem.transform.position = transform.position;
-            DropItem dropItem = ranDropItem.GetComponent<DropItem>();
-            dropItem.ReadItemInfo(itemName);
-            Sprite sprite = dropItem.GetComponent<SpriteRenderer>().sprite;
+            // 생성한 아이템에 가져온 아이템의 이름, 등급 설정
+            DropItemEffect itemSet = ranDropItem.GetComponent<DropItemEffect>();
+            itemSet.itemName = itemName;
+            itemSet.itemGrade = grade;
+            // 생성한 객체에 Sprite 할당
+            dropItemSet.ReadItemInfo(itemName, ranDropItem);
+            Sprite sprite = ranDropItem.GetComponent<SpriteRenderer>().sprite;
 
             // 얻은 아이템 저장
             Debug.Log("아이템 저장");
