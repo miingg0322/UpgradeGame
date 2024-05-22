@@ -14,6 +14,8 @@ public class SampleSceneUI : MonoBehaviour
 
     public GameObject[] dungeonEnterBtns;
     public GameObject characterInfo;
+    public GameObject dungeonList;
+    public GameObject uiList;
 
     private void Awake()
     {
@@ -112,5 +114,31 @@ public class SampleSceneUI : MonoBehaviour
     public void CancleCharacterInfo()
     {
         characterInfo.SetActive(false);
+    }
+
+    public void ActiveDungeonList()
+    {
+        // 이미 활성화 되어있다면 버튼을 누를시 꺼지게 구현
+        if (dungeonList.activeSelf)
+        {
+            dungeonList.SetActive(false);
+        }
+        else
+        {
+            dungeonList.SetActive(true);
+        }
+    }
+    public void ClickMenu()
+    {
+        if (uiList.activeSelf)
+        {
+            uiList.SetActive(false);
+            if (dungeonList.activeSelf)
+                dungeonList.SetActive(false);
+        }
+        else
+        {
+            uiList.SetActive(true);           
+        }
     }
 }
