@@ -46,7 +46,7 @@ public class LoginManager : MonoBehaviour
         }
         else if (idField.isFocused == true)
         {
-            idField.placeholder.GetComponent<TextMeshProUGUI>().text = "";
+            //idField.placeholder.GetComponent<TextMeshProUGUI>().text = "";
             if (Input.GetKeyDown(KeyCode.Tab))
             {
                 passwordField.Select();
@@ -54,7 +54,7 @@ public class LoginManager : MonoBehaviour
         }
         else if (passwordField.isFocused == true)
         {
-            passwordField.placeholder.GetComponent<TextMeshProUGUI>().text = "";
+            //passwordField.placeholder.GetComponent<TextMeshProUGUI>().text = "";
             if (Input.GetKeyDown(KeyCode.Tab))
             {
                 idField.Select();
