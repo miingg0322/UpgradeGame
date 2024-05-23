@@ -1,16 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class SampleSceneUI : MonoBehaviour
 {
+    public Withdraw withdraw;
     public Image[] ticketIcon;
     public Image playerIcon;
 
     public Text[] playerInfoText;
-    public Text ticketValue;   
-    public Text timer;
+    public TextMeshProUGUI ticketValue;   
+    public TextMeshProUGUI timer;
 
     public GameObject[] dungeonEnterBtns;
     public GameObject characterInfo;
@@ -135,6 +137,10 @@ public class SampleSceneUI : MonoBehaviour
             uiList.SetActive(false);
             if (dungeonList.activeSelf)
                 dungeonList.SetActive(false);
+            if (characterInfo.activeSelf)
+                characterInfo.SetActive(false);
+            if (withdraw.confirmUi.activeSelf)
+                withdraw.confirmUi.SetActive(false);
         }
         else
         {
