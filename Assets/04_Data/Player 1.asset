@@ -21,4 +21,4 @@ MonoBehaviour:
   moveSpeed: 3.2
   attackSpeed: 0.8
   drainRate: 1
-  playerSprite: {fileID: -9095717837082945937, guid: bd3cb4af8406d4436a2ae8c2aafe1f8d, type: 3}
+  playerSprite: {fileID: -6251682230944352461, guid: 9fc5d6a43aa83eb429f6b99f0b96c44f, type: 3}
