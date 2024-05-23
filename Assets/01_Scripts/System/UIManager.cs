@@ -7,11 +7,19 @@ public class UIManager : MonoBehaviour
 {
     public Text notice;
     private void OnEnable()
-    {
-        int characterId = GameManager.Instance.deleteCharacter;
-        int classId = DBManager.Instance.GetCharacterClass(characterId);
-        string name = GameManager.Instance.playerData[classId].playerName;
+    {               
+        if (GameManager.Instance.isCreate)
+        {
+            string name = GameManager.Instance.playerData[GameManager.Instance.selectIndex].playerName;
+            notice.text = $"정말로 \"{name}\" 캐릭터를 생성하시겠습니까?";
+        }
+        else
+        {
+            int characterId = GameManager.Instance.deleteCharacter;
+            int classId = DBManager.Instance.GetCharacterClass(characterId);
+            string name = GameManager.Instance.playerData[classId].playerName;
 
-        notice.text = $"\"{name}\" 캐릭터를 정말로 삭제하시겠습니까?\n삭제된 데이터는 복구할 수 없습니다.";
+            notice.text = $"\"{name}\" 캐릭터를 정말로 삭제하시겠습니까?\n삭제된 데이터는 복구할 수 없습니다.";
+        }       
     }
 }
