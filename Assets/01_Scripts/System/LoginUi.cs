@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,6 +10,8 @@ public class LoginUi : MonoBehaviour
 {
     public SignupManager signupManager;
 
+    public TMP_InputField idField;
+    public TMP_InputField passwordField;
     public GameObject loginGroup;
     public GameObject signupGroup;
     public GameObject loginFail;
@@ -22,12 +25,15 @@ public class LoginUi : MonoBehaviour
     public GameObject signupNotice;
     public GameObject slotNotice;
     public GameObject deleteNotice;
+    public GameObject createNotice;
+    public GameObject createNoticeCreateBtn;
 
     public GameObject[] selectBtn;
     public GameObject[] deleteBtn;
     public GameObject[] createChBtn;
 
-    public Image[] characterIcons;
+    public Image[] selectCharacterIcons;
+    public Image[] createCharacterIcons;
     public Text[] characterTexts;
 
     void Awake()
@@ -43,13 +49,14 @@ public class LoginUi : MonoBehaviour
             selectBtn[selectIndex].GetComponent<Button>().onClick.AddListener(()=> GameManager.Instance.SelectCharacter(selectIndex));
         }
 
-        chdelBtn.GetComponent<Button>().onClick.AddListener(() => GameManager.Instance.DeleteCharacter());
-
-        for (int index = 0; index < createChBtn.Length; index++)
+        for (int index = 0; index < createCharacterIcons.Length; index++)
         {
-            int createIndex = index;
-            createChBtn[createIndex].GetComponent<Button>().onClick.AddListener(() => GameManager.Instance.CreateCharacter(createIndex));
+            int selectIndex = index;
+            createCharacterIcons[selectIndex].sprite = GameManager.Instance.playerData[selectIndex].playerSprite;
         }
+
+        chdelBtn.GetComponent<Button>().onClick.AddListener(() => GameManager.Instance.DeleteCharacter());
+        createNoticeCreateBtn.GetComponent<Button>().onClick.AddListener(() => GameManager.Instance.CreateCharacter());
     }
     public void Login()
     {
@@ -63,6 +70,9 @@ public class LoginUi : MonoBehaviour
     }
     public void ActiveSignUp()
     {
+        idField.text = "";
+        passwordField.text = "";
+
         loginGroup.SetActive(false);
         signupGroup.SetActive(true);
     }
@@ -141,6 +151,13 @@ public class LoginUi : MonoBehaviour
             delBtn.SetActive(true);
         }          
     }
+
+    public void ActiveCreateCheck(int index)
+    {
+        GameManager.Instance.selectIndex = index;
+        GameManager.Instance.isCreate = true;
+        createNotice.SetActive(true);
+    }
     public void ActiveDeleteCheck(int index)
     {
         GameManager.Instance.selectIndex = index;
@@ -151,6 +168,11 @@ public class LoginUi : MonoBehaviour
     public void CancleDeleteCheck()
     {
         deleteNotice.SetActive(false);
+    }
+
+    public void CancleCreateCheck()
+    {
+        createNotice.SetActive(false);
     }
     public void ActiveCreateCharacter()
     {
