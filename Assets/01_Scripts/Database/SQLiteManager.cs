@@ -5,8 +5,10 @@ using Mono.Data.Sqlite;
 
 public class SQLiteManager : MonoBehaviour
 {
+
     readonly string inventoryDB = "/Inventory.db";
     readonly string inventoryTable = "Inventory";
+    readonly string characterTable = "Character";
 
     SqliteConnection inventoryConn;
     SqliteCommand dbCommand;
@@ -151,7 +153,14 @@ public class SQLiteManager : MonoBehaviour
     }
     // 아이템 변경 (강화 등)
 
-
+    // 캐릭터 생성
+    IEnumerator CreateCharacter(Character character, int slot)
+    {
+        string[] cols = { "Index", "Class", "Clear", "Created", "Score", "Delete" };
+        string[] values = { slot.ToString(), character.charClass.ToString(), character.clear.ToString(),
+        character.created, character.score.ToString(), character.isDeleted.ToString()};
+        yield return InsertQuery(characterTable, cols, values);
+    }
 }
 
 public class Item
