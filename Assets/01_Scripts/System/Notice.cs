@@ -11,6 +11,7 @@ public class Notice : MonoBehaviour
     public GameObject exitUi;
     public GameObject clearlUi;
     public GameObject exitBtn;
+    public GameObject specialMoveBtn;
     public GameObject cleaner;
     public Image noticeIcon;
     public Text noticeText;
@@ -37,6 +38,7 @@ public class Notice : MonoBehaviour
             int selectIndex = index;
             testClearBtns[selectIndex].GetComponent<Button>().onClick.AddListener(() => GameManager.Instance.BossClear(selectIndex + 1));
         }
+        specialMoveBtn.GetComponent<Button>().onClick.AddListener(() => Player.Instance.SpecialMove());
     }
 
     private void Update()
@@ -73,8 +75,11 @@ public class Notice : MonoBehaviour
 
     public void DungeonClear()
     {
+        // 나가기 버튼 비활성화
         exitBtn.SetActive(false);
+        // 아이템 획득 알림 비활성화
         noticeUi.SetActive(false);
+        // 맵의 적과 무기 청소
         cleaner.SetActive(true);
 
         Invoke("ShowClearUI", 3f);
@@ -82,14 +87,18 @@ public class Notice : MonoBehaviour
 
     public void ShowClearUI()
     {
+ 
         cleaner.SetActive(false);
         clearlUi.SetActive(true);
 
+        // 저장해둔 아이템 가져오기
         List<CollectItem> collectItems = new List<CollectItem>();
         collectItems = GameManager.Instance.collectedItems;
 
+        // ui 초기화
         ClearSlotInit();
 
+        // UI에 저장해둔 아이템의 정보 할당
         for (int index = 0; index < collectItems.Count; index++)
         {
             if (index == slots.Length)
@@ -156,5 +165,9 @@ public class Notice : MonoBehaviour
                 slots[index].SetActive(false);
             }
         }
+    }
+    public void ActiveSpecialMove()
+    {
+        specialMoveBtn.SetActive(true);
     }
 }

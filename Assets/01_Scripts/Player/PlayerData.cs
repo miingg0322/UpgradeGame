@@ -11,6 +11,7 @@ public class PlayerData : ScriptableObject
     public PlayerType playerType;
     public int playerId;
     public string playerName;
+    public string playerTrait;
 
     [Header("# Player Data")]
     public float maxHp;

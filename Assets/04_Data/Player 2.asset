@@ -15,6 +15,7 @@ MonoBehaviour:
   playerType: 2
   playerId: 2
   playerName: "\uAC74\uC2AC\uB9C1\uAC70"
+  playerTrait: "\uBBFC\uCCA9\uD568"
   maxHp: 175
   curHp: 175
   moveSpeed: 3.5

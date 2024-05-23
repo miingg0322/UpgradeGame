@@ -7,7 +7,8 @@ public class Spawner : MonoBehaviour
     public Transform[] spawnPoint;
     public SpawnData[] spawnData;
 
-    public int maxSpawnCount = 30;
+    public int bossSpawnCount = 30;
+    public int renewalSpecialMove = 20;
 
     float timer;
     int spawnDataIndex;
@@ -22,6 +23,8 @@ public class Spawner : MonoBehaviour
     void Start()
     {
         spawnDataIndex = GameManager.Instance.DungeonLevel;
+        count = 0;
+        Debug.Log("count 초기화");
     }
     void Update()
     {
@@ -36,14 +39,20 @@ public class Spawner : MonoBehaviour
             Spawn();
             count++;
 
-            if (count == maxSpawnCount)
+            if (count == bossSpawnCount)
                 isBossSpawn = true;
+        }
+        if(count == renewalSpecialMove)
+        {
+            Player.Instance.specialMove = true;
+            GameManager.Instance.notice.ActiveSpecialMove();
         }
 
         if (isBossSpawn)
         {
             Debug.Log("보스 소환");
             SpawnBoss();
+            isBossSpawn = false;
         }
             
     }
@@ -58,9 +67,8 @@ public class Spawner : MonoBehaviour
     void SpawnBoss()
     {
         GameObject boss = GameManager.Instance.pool.Get(0);
-        boss.transform.position = spawnPoint[8].position;
-        boss.GetComponent<Enemy>().BossInit(spawnDataIndex);
-        isBossSpawn = false;
+        boss.transform.position = spawnPoint[9].position;
+        boss.GetComponent<Enemy>().BossInit(spawnDataIndex);        
     }
 }
 

@@ -4,10 +4,13 @@ using UnityEngine;
 
 public class DropItemEffect : MonoBehaviour
 {
+    public string itemName;
+    public string itemGrade;
+
     public float rotationSpeed = 360f; 
     public float floatSpeed = 1f; 
-    public float lifeTime = 1f; 
-
+    public float lifeTime = 1f;
+   
     private void OnEnable()
     {
         StartCoroutine(FloatingAndRotating());

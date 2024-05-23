@@ -15,6 +15,7 @@ public class SceneSwitcher : MonoBehaviour
         if (GameManager.Instance.dungeonTicket > 0)
         {
             GameManager.Instance.dungeonTicket--;
+            GameManager.Instance.SaveData();
             Debug.Log("던전에 입장하였습니다. 남은 입장권 개수: " + GameManager.Instance.dungeonTicket);
 
             SceneManager.LoadScene("AutoFarming");
@@ -51,6 +52,7 @@ public class SceneSwitcher : MonoBehaviour
         if (GameManager.Instance.dungeonTicket > 0)
         {
             GameManager.Instance.dungeonTicket--;
+            GameManager.Instance.SaveData();
             Debug.Log("던전에 입장하였습니다. 남은 입장권 개수: " + GameManager.Instance.dungeonTicket);
 
             SceneManager.LoadScene("AutoFarming");

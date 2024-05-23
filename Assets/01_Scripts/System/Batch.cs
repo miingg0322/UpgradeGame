@@ -9,7 +9,7 @@ public class Batch : MonoBehaviour
     public int speed = -150;
 
     float timer;
-    float AttackTime = 2f;
+    float AttackTime = 1.5f;
     void Start()
     {
         BatchMelee();
@@ -38,6 +38,7 @@ public class Batch : MonoBehaviour
 
     void BatchMelee()
     {
+        // 직업이 건슬링거인 경우
         if (Player.Instance.playerId == 2)
         {
             float angleStep = 360 / count;
@@ -50,7 +51,7 @@ public class Batch : MonoBehaviour
                 positions[i] = transform.position + new Vector3(Mathf.Cos(angle) * 1.5f, Mathf.Sin(angle) * 1.5f, 0);
             }
 
-            // 프로젝트 생성 및 비행 시작
+            // 오브젝트 생성 및 포물선 운동 시작
             for (int i = 0; i < count; i++)
             {
                 GameObject projectile = GameManager.Instance.pool.Get(3);
@@ -87,15 +88,22 @@ public class Batch : MonoBehaviour
     {
         Vector3 startPosition = transform.position;
         float elapsedTime = 0;
-        Vector3 relativeTargetPosition = targetPosition - startPosition;
+        float duration = 0.5f; // 이동에 걸리는 시간
 
-        while (elapsedTime < 1)
+        float height = 2f; // 포물선의 최대 높이
+
+        while (elapsedTime < duration)
         {
-            float t = elapsedTime / 1;
-            // 포물선 공식 사용: y = h * 4 * t * (1 - t)
-            Vector3 currentPosition = Vector3.Lerp(Vector3.zero, relativeTargetPosition, t); // 상대적인 이동량을 기반으로 계산합니다.
-            currentPosition.y = targetPosition.y + 4 * t * (1 - t);
-            projectile.transform.position = startPosition + currentPosition; // 시작 위치를 더하여 실제 위치를 계산합니다.
+            float t = elapsedTime / duration;
+
+            // 수평 위치 계산
+            Vector3 horizontalPosition = Vector3.Lerp(startPosition, targetPosition, t);
+
+            // 수직 위치 계산
+            float verticalPosition = Mathf.Lerp(startPosition.y, targetPosition.y, t) + height * 4 * t * (1 - t);
+
+            // 현재 위치 계산
+            projectile.transform.position = new Vector3(horizontalPosition.x, verticalPosition, horizontalPosition.z);
 
             elapsedTime += Time.deltaTime;
             yield return null;

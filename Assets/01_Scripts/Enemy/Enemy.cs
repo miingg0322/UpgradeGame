@@ -8,11 +8,11 @@ using static UnityEngine.GraphicsBuffer;
 
 public class Enemy : MonoBehaviour
 {
-    public GameObject dropItem;
+    public DropItem dropItemSet;
     public EnemyData[] enemyData;
     public FarmingBossData[] bossData;
     public float hp;
-    private int maxHp;
+    public int maxHp;
     public int dmg;
 
     public Vector2 direction;
@@ -20,7 +20,7 @@ public class Enemy : MonoBehaviour
 
     bool isHit;
     bool isDead;
-    bool isDamaged;
+    bool isDamaged;   
 
     Rigidbody2D rigid;
     Collider2D coll;
@@ -31,6 +31,7 @@ public class Enemy : MonoBehaviour
     WaitForSeconds invincibility;
     void Awake()
     {
+        dropItemSet = FindObjectOfType<DropItem>();
         rigid = GetComponent<Rigidbody2D>();
         coll = GetComponent<Collider2D>();
         spriter = GetComponent<SpriteRenderer>();
@@ -77,6 +78,7 @@ public class Enemy : MonoBehaviour
 
     public void BossInit(int level)
     {
+        Debug.Log("보스 데이터 초기화");
         FarmingBossData data = bossData[level];
 
         // 임시로 크기 증가 써둠
@@ -105,7 +107,7 @@ public class Enemy : MonoBehaviour
 
             gameObject.SetActive(false);
         }
-        else if (collision.CompareTag("Range"))
+        if (collision.CompareTag("Range") && !isDead)
         {
             float damage = collision.GetComponent<Range>().damage;
             damage += Random.Range(-0.15f * damage, 0.15f * damage);
@@ -128,13 +130,13 @@ public class Enemy : MonoBehaviour
             }
             else
             {
-                if(gameObject.layer == LayerMask.NameToLayer("Boss"))
+                if(gameObject.layer == LayerMask.NameToLayer("Boss") && !GameManager.Instance.isDungeonClear)
                 {
+                    GameManager.Instance.isDungeonClear = true;
                     StartCoroutine(Dead());
                     DropItem();
                     // 임시 구현
-                    Debug.Log("스테이지 클리어");
-                    GameManager.Instance.isDungeonClear = true;
+                    Debug.Log("스테이지 클리어");                   
 
                     // 먹은 아이템들을 보여주는 ui 출력
                     GameManager.Instance.notice.DungeonClear();
@@ -148,7 +150,7 @@ public class Enemy : MonoBehaviour
                              
             }
         }
-        else if(collision.CompareTag("Melee") && !isDamaged)
+        if(collision.CompareTag("Melee") && !isDamaged && !isDead)
         {
             float damage = collision.GetComponent<Melee>().damage;
             damage += Random.Range(-0.15f * damage, 0.15f * damage);
@@ -171,14 +173,14 @@ public class Enemy : MonoBehaviour
             }
             else
             {
-                if (gameObject.layer == LayerMask.NameToLayer("Boss"))
+                if (gameObject.layer == LayerMask.NameToLayer("Boss") && !GameManager.Instance.isDungeonClear)
                 {
+                    GameManager.Instance.isDungeonClear = true;
                     StartCoroutine(Dead());
                     DropItem();
                     // 임시 구현
                     Debug.Log("스테이지 클리어");
-                    GameManager.Instance.isDungeonClear = true;
-
+                    
                     // 먹은 아이템들을 보여주는 ui 출력
                     GameManager.Instance.notice.DungeonClear();
                 }
@@ -189,7 +191,7 @@ public class Enemy : MonoBehaviour
                 }
             }        
         }
-        else if (collision.CompareTag("Explosion"))
+        if (collision.CompareTag("Explosion") && !isDead)
         {
             float damage = collision.GetComponent<Explosion>().damage;
             damage += Random.Range(-0.15f * damage, 0.15f * damage);
@@ -212,14 +214,14 @@ public class Enemy : MonoBehaviour
             }
             else
             {
-                if (gameObject.layer == LayerMask.NameToLayer("Boss"))
+                if (gameObject.layer == LayerMask.NameToLayer("Boss") && !GameManager.Instance.isDungeonClear)
                 {
+                    GameManager.Instance.isDungeonClear = true;
                     StartCoroutine(Dead());
                     DropItem();
                     // 임시 구현
                     Debug.Log("스테이지 클리어");
-                    GameManager.Instance.isDungeonClear = true;
-
+                    
                     // 먹은 아이템들을 보여주는 ui 출력
                     GameManager.Instance.notice.DungeonClear();
                 }
@@ -230,10 +232,48 @@ public class Enemy : MonoBehaviour
                 }
             }
         }
-        else if (collision.CompareTag("Cleaner"))
+        if (collision.CompareTag("Skill") && !isDead)
         {
-            hp -= maxHp;
-            StartCoroutine(Dead());
+            float damage = collision.GetComponent<SpecialMove>().damage;
+            damage += Random.Range(-0.15f * damage, 0.15f * damage);
+
+            // 적이 받은 데미지만큼 체력 감소
+            hp -= damage;
+
+            // PoolManager로 데미지 Text를 생성
+            GameObject damageText = GameManager.Instance.pool.Get(4);
+            Vector3 randomPos = transform.position + new Vector3(Random.Range(-0.3f, 0.3f), Random.Range(-0.3f, 0.3f), 0); // 텍스트가 랜덤한 위치에서 생성
+            damageText.GetComponent<TextMeshProUGUI>().rectTransform.position = Camera.main.WorldToScreenPoint(randomPos); // 객체의 위치를 rectTransform으로 변환
+            damageText.GetComponent<DamageText>().Damaged(damage);
+
+            if (gameObject.activeSelf)
+                StartCoroutine(KnockBack());
+
+            if (hp > 0)
+            {
+                // 피격 애니메이션, 효과음 재생
+            }
+            else
+            {
+                if (gameObject.layer == LayerMask.NameToLayer("Boss") && !GameManager.Instance.isDungeonClear)
+                {
+                    GameManager.Instance.isDungeonClear = true;
+                    StartCoroutine(Dead());
+                    DropItem();
+                    // 임시 구현
+                    Debug.Log("스테이지 클리어");
+
+                    // 먹은 아이템들을 보여주는 ui 출력
+                    GameManager.Instance.notice.DungeonClear();
+                }
+                else
+                {
+                    StartCoroutine(Dead());
+                    DropItem();
+
+                }
+
+            }
         }
     }
 
@@ -250,7 +290,7 @@ public class Enemy : MonoBehaviour
         isDamaged = false;
     }
 
-    IEnumerator Dead()
+    public IEnumerator Dead()
     {
         coll.enabled = false;
         rigid.simulated = false;
@@ -264,20 +304,28 @@ public class Enemy : MonoBehaviour
 
     void DropItem()
     {
+        // 가중치에 따라 아이템 뽑기
         string[] randomPick = GameManager.Instance.ranItem.GetRandomPick();
 
+        // 뽑은 아이템이 null이 아닐때 로직 실행
         if (randomPick[0] != "null")
         {
             string itemName = randomPick[0];
             string grade = randomPick[1];
 
+            // 드랍 아이템 객체 생성
             GameObject ranDropItem = GameManager.Instance.pool.Get(2);
             ranDropItem.transform.position = transform.position;
-            DropItem dropItem = ranDropItem.GetComponent<DropItem>();
-            dropItem.ReadItemInfo(itemName);
-            Sprite sprite = dropItem.GetComponent<SpriteRenderer>().sprite;
+            // 생성한 아이템에 가져온 아이템의 이름, 등급 설정
+            DropItemEffect itemSet = ranDropItem.GetComponent<DropItemEffect>();
+            itemSet.itemName = itemName;
+            itemSet.itemGrade = grade;
+            // 생성한 객체에 Sprite 할당
+            dropItemSet.ReadItemInfo(itemName, ranDropItem);
+            Sprite sprite = ranDropItem.GetComponent<SpriteRenderer>().sprite;
 
             // 얻은 아이템 저장
+            Debug.Log("아이템 저장");
             GameManager.Instance.CollectItem(itemName, grade, sprite);
 
             if (!gameObject.activeSelf)

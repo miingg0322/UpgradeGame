@@ -15,10 +15,10 @@ public class Explosion : MonoBehaviour
     }
     void Update()
     {
-        if (timer < 0.3f)
+        if (timer < 0.15f)
         {
             timer += Time.deltaTime;
-            transform.localScale += Vector3.one * 5f * Time.deltaTime;
+            transform.localScale += Vector3.one * 10f * Time.deltaTime;
         }
         else
         {
