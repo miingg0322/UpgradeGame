@@ -47,6 +47,7 @@ public class GameManager : MonoBehaviour
 
     public bool isDungeonClear;
     public bool isCharacterSelect;
+    public bool isCreate;
 
     /// <summary>
     /// Key = Upgrade, Cost, Destroy
@@ -147,7 +148,7 @@ public class GameManager : MonoBehaviour
         {
             if (userSlots[index] == 0)
             {
-                loginUi.characterIcons[index].sprite = null;
+                loginUi.selectCharacterIcons[index].sprite = null;
                 loginUi.characterTexts[index].text = "Empty";
                 loginUi.selectBtn[index].SetActive(false);
             }
@@ -155,7 +156,7 @@ public class GameManager : MonoBehaviour
             {
                int chClass = DBManager.Instance.GetCharacterClass(userSlots[index]);
 
-                loginUi.characterIcons[index].sprite = playerData[chClass].playerSprite;
+                loginUi.selectCharacterIcons[index].sprite = playerData[chClass].playerSprite;
                 loginUi.characterTexts[index].text = playerData[chClass].playerName;
                 loginUi.selectBtn[index].SetActive(true);
             }
@@ -180,7 +181,7 @@ public class GameManager : MonoBehaviour
         Init();
     }
 
-    public void CreateCharacter(int character)
+    public void CreateCharacter()
     {
         if (userSlots[userSlots.Length - 1] != 0)
         {
@@ -189,7 +190,7 @@ public class GameManager : MonoBehaviour
             
         string id = userId;
         // DB�� ������ ����
-        int characterId = DBManager.Instance.CreateCharacter(id, character);
+        int characterId = DBManager.Instance.CreateCharacter(id, selectIndex);
         
         for(int index = 0;index < userSlots.Length;index++)
         {
@@ -204,6 +205,7 @@ public class GameManager : MonoBehaviour
         loginUi.createUi.SetActive(false);
         loginUi.selectUi.SetActive(true);
         loginUi.createBtn.SetActive(true);
+        loginUi.createNotice.SetActive(false);
     }
 
     public void DeleteCharacter()
