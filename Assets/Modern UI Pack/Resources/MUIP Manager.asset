@@ -58,7 +58,7 @@ MonoBehaviour:
   scrollbarColor: {r: 1, g: 1, b: 1, a: 1}
   scrollbarBackgroundColor: {r: 1, g: 1, b: 1, a: 0.09803922}
   sliderLabelFont: {fileID: 11400000, guid: 84dd14695854bbc43a5faa24fcf93d0d, type: 2}
-  sliderThemeType: 0
+  sliderThemeType: 1
   sliderColor: {r: 1, g: 1, b: 1, a: 1}
   sliderBackgroundColor: {r: 1, g: 1, b: 1, a: 0.09803922}
   sliderLabelColor: {r: 1, g: 1, b: 1, a: 1}
