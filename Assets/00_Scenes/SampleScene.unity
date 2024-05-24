@@ -1920,6 +1920,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114332392936358560, guid: 9d9a13fa5e868ce48a2d74278d1cf21c, type: 3}
+      propertyPath: playType
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 224991871374891558, guid: 9d9a13fa5e868ce48a2d74278d1cf21c, type: 3}
       propertyPath: m_Pivot.x
       value: 1
@@ -10081,6 +10085,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e30f4a161413b5d4089b8936d6f48348, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  SceneUI: {fileID: 1841072752}
   confirmUi: {fileID: 104715269}
   withdrawBtn: {fileID: 1382521434}
   withdrawField: {fileID: 1557039279}
@@ -12051,9 +12056,10 @@ MonoBehaviour:
   - {fileID: 389151732}
   - {fileID: 35502285}
   - {fileID: 667487562}
-  characterInfo: {fileID: 1784054446}
+  characterInfo: {fileID: 907741685}
   dungeonList: {fileID: 32350258}
   uiList: {fileID: 6710776544518832566}
+  menuUi: {fileID: 155059788}
 --- !u!4 &1841072753
 Transform:
   m_ObjectHideFlags: 0

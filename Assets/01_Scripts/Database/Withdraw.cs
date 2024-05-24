@@ -8,6 +8,7 @@ using UnityEngine.UI;
 
 public class Withdraw : MonoBehaviour
 {
+    public SampleSceneUI SceneUI;
     public GameObject confirmUi;
     public Button withdrawBtn;
     public TMP_InputField withdrawField;
@@ -24,16 +25,16 @@ public class Withdraw : MonoBehaviour
     {
         if(confirmUi.activeSelf)
         {
-            confirmUi.SetActive(false);
+            SceneUI.CloseUI(confirmUi);
         }
         else
         {
-            confirmUi.SetActive(true);
+            SceneUI.OpenUI(confirmUi);
         }      
     }
     public void ConfirmWithdrawCancle()
     {
-        confirmUi.SetActive(false);
+        SceneUI.CloseUI(confirmUi);
     }
     public void UserWithdraw()
     {
