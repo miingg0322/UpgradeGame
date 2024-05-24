@@ -23,7 +23,7 @@ public class SceneSwitcher : MonoBehaviour
             SceneManager.sceneLoaded += OnSceneLoaded;
 
             levelValue = value;
-
+            AudioManager.instance.PlayBgm(true);
         }
         else
         {
@@ -60,6 +60,7 @@ public class SceneSwitcher : MonoBehaviour
             SceneManager.sceneLoaded += OnSceneLoaded;
 
             levelValue = GameManager.Instance.DungeonLevel;
+            AudioManager.instance.PlayBgm(true);
         }
         else
         {
