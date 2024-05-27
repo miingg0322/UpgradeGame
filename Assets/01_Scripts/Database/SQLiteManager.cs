@@ -1,32 +1,52 @@
 using UnityEngine;
+using System;
 using System.Collections;
 using System.Data;
 using Mono.Data.Sqlite;
+using System.Collections.Generic;
 
 public class SQLiteManager : MonoBehaviour
 {
-
+    private static SQLiteManager instance;
+    public static SQLiteManager Instance
+    {
+        get { return instance; }
+    }
     readonly string dbName = "/Player.db";
-    private string inventoryTable = "Inventory";
+    readonly string inventoryTable = "Inventory";
     readonly string characterTable = "Character";
 
     SqliteConnection dbConn;
 
-    Character playingCharacter;
-    void Start()
+    public Character playingCharacter;
+    private void Awake()
     {
+        if(instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(this);
+        }
+        else
+        {
+            Destroy(this);
+        }
+
         Character tester = new Character(0, 0);
         playingCharacter = tester;
         Connect();
 
         //StartCoroutine(CreateCharacter(tester));
 
-        Item testItem = new Item("기본 강화석", 1, 999);
+        Item testItem = new Item("기본 강화석", 1, 0);
         StartCoroutine(AddItemToInventoryCo(testItem));
 
-        Item testNewItem = new Item("또 다른 재료", 1, 10);
+        Item testNewItem = new Item("또 다른 재료", 1, 0);
         StartCoroutine(AddItemToInventoryCo(testNewItem));
         StartCoroutine(UseItemFromInventoryCo(testItem, 5));
+    }
+    void Start()
+    {
+
     }
 
     private void Connect()
@@ -135,18 +155,41 @@ public class SQLiteManager : MonoBehaviour
         createCharacterCommand.CommandText = query;
         yield return createCharacterCommand.ExecuteNonQuery();
     }
+
+
+    public List<Item> GetAllItems()
+    {
+        string table = $"{inventoryTable}_{playingCharacter.slot}";
+        string query = $"SELECT * FROM {table} ORDER BY Type ASC, Grade DESC, Item ASC";
+        SqliteCommand dbCommand = dbConn.CreateCommand();
+        dbCommand.CommandText = query;
+        SqliteDataReader dataReader = dbCommand.ExecuteReader();
+        List<Item> itemList = new List<Item>();
+        while (dataReader.Read())
+        {
+            string itemName = dataReader.GetString(0);
+            int type = dataReader.GetInt32(1);
+            int grade = dataReader.GetInt32(2);
+            int amount = dataReader.GetInt32(3);
+            Item item = new Item(itemName, type, grade, amount);
+            itemList.Add(item);
+        }
+        return itemList;
+    }
 }
 
 public class Item
 {
     public string name;
     public int type;
-    public int max;
+    public int grade;
+    public int amount;
 
-    public Item(string name, int type, int max)
+    public Item(string name, int type, int grade, int amount = 1)
     {
         this.name = name;
         this.type = type;
-        this.max = max;
+        this.grade = grade;
+        this.amount = amount;
     }
 }
