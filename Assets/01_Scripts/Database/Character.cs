@@ -7,7 +7,7 @@ public enum CharacterClass
 {
     Class1, Class2, Class3
 }
-public class Character : MonoBehaviour
+public class Character
 {
     public CharacterClass charClass = CharacterClass.Class1;
     public int clear = 0;
@@ -25,15 +25,5 @@ public class Character : MonoBehaviour
         this.slot = slot;
         this.isDeleted = false;
         Debug.Log(created);
-    }
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }
