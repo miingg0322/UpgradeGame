@@ -13,14 +13,16 @@ public class Character : MonoBehaviour
     public int clear = 0;
     public string created;
     public int score;
+    public int slot;
     public bool isDeleted;
 
-    public Character(int charClass)
+    public Character(int charClass, int slot)
     {
         this.charClass = (CharacterClass)charClass;
         this.clear = 0;
         this.created = DateTime.Now.ToString();
         this.score = 0;
+        this.slot = slot;
         this.isDeleted = false;
         Debug.Log(created);
     }

@@ -117,7 +117,7 @@ public class SheetManager : MonoBehaviour
         }
         else
         {
-            GameManager.Instance.ActiveLoginFail();
+            //GameManager.Instance.ActiveLoginFail();
         }
 
     }

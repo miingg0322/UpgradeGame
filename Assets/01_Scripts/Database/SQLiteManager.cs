@@ -6,160 +6,134 @@ using Mono.Data.Sqlite;
 public class SQLiteManager : MonoBehaviour
 {
 
-    readonly string inventoryDB = "/Inventory.db";
-    readonly string inventoryTable = "Inventory";
+    readonly string dbName = "/Player.db";
+    private string inventoryTable = "Inventory";
     readonly string characterTable = "Character";
 
-    SqliteConnection inventoryConn;
-    SqliteCommand dbCommand;
+    SqliteConnection dbConn;
+
+    Character playingCharacter;
     void Start()
     {
-        string connectionString = string.Concat("URI=file:", Application.streamingAssetsPath, inventoryDB);
-        inventoryConn = new SqliteConnection(connectionString);
-        inventoryConn.Open();
+        Character tester = new Character(0, 0);
+        playingCharacter = tester;
+        Connect();
+
+        //StartCoroutine(CreateCharacter(tester));
+
         Item testItem = new Item("기본 강화석", 1, 999);
         StartCoroutine(AddItemToInventoryCo(testItem));
+
         Item testNewItem = new Item("또 다른 재료", 1, 10);
         StartCoroutine(AddItemToInventoryCo(testNewItem));
         StartCoroutine(UseItemFromInventoryCo(testItem, 5));
     }
-    public void ReadSQLiteData(string db, string query)
-    {
-        string dbname = "/ItemTestDB.db";
-        string connectionString = "URI=file:" + Application.streamingAssetsPath + dbname;
-        IDbConnection dbConnection = new SqliteConnection(connectionString);
-        dbConnection.Open();
 
-        string tablename = "Items";
-        IDbCommand dbCommand = dbConnection.CreateCommand();
-        dbCommand.CommandText = "SELECT * FROM " + tablename;
-        IDataReader dataReader = dbCommand.ExecuteReader();
-        Debug.Log(dataReader.FieldCount);
-        while (dataReader.Read())
-        {
-            string name = dataReader.GetString(0);
-            int type = dataReader.GetInt32(1);
-            int max = dataReader.GetInt32(2);
-            Debug.Log($"{name}, {type}, {max}");
-        }
-        dataReader.Close();
-    }
-
-    public void ConnectDB(string dbpath)
+    private void Connect()
     {
-        //string connectionString = string.Concat("URI=file:", Application.streamingAssetsPath, dbpath);
-        //dbConnection = new SqliteConnection(connectionString);
-        //dbConnection.Open();
-        
+        string connectionString = $"URI=file:{Application.streamingAssetsPath}{dbName}";
+        dbConn = new SqliteConnection(connectionString);
+        dbConn.Open();
     }
 
     SqliteDataReader SelectQuery(string target, string table, string where)
     {
         string query = $"SELECT {target} FROM {table} {where}";
-        Debug.Log($"SELECT Query: {query}");
-        SqliteCommand dbCommand = inventoryConn.CreateCommand();
+        //Debug.Log($"SELECT Query: {query}");
+        SqliteCommand dbCommand = dbConn.CreateCommand();
         dbCommand.CommandText = query;
         return dbCommand.ExecuteReader();
-    }
-
-    int UpdateQuery(string table, string[] cols, string[] values, string where)
-    {
-        string query = $"UPDATE {table} SET {cols[0]} = '{values[0]}'";
-        for (int i = 1; i < cols.Length; i++)
-        {
-            query = string.Concat(", ", query, cols[i], " = '", values[i], "'");
-        }
-        query = string.Concat(query, " ", where);
-        Debug.Log($"UPDATE Query: {query}");
-        SqliteCommand dbCommand = inventoryConn.CreateCommand();
-        dbCommand.CommandText = query;
-        return dbCommand.ExecuteNonQuery();
-    }
-    int InsertQuery(string table, string[] cols, string[] values) 
-    {
-        string query = $"INSERT INTO {table} ({cols[0]}";
-        for (int i = 1; i < cols.Length; i++)
-        {
-            query = string.Concat(query, ",", cols[i]);
-        }
-        query = string.Concat(query, ") VALUES ('", values[0], "'");
-        for (int i = 1; i < values.Length; i++)
-        {
-            query = string.Concat(query, ",", values[i]);
-        }
-        query = string.Concat(query, ")");
-        Debug.Log(query);
-        SqliteCommand dbCommand = inventoryConn.CreateCommand();
-        dbCommand.CommandText = query;
-        return dbCommand.ExecuteNonQuery();
     }
 
     // 아이템 획득
     IEnumerator AddItemToInventoryCo(Item item, int amount = 1)
     {
         SqliteDataReader dataReader;
-        yield return dataReader = SelectQuery("Amount", inventoryTable, $"WHERE Item = '{item.name}'");
-        int result;
+        SqliteCommand dbCommand;
+        dbCommand = dbConn.CreateCommand();
+        string table = $"{inventoryTable}_{playingCharacter.slot}";
+        yield return dataReader = SelectQuery("Amount", table, $"WHERE Item = '{item.name}'");
+
         if(dataReader.HasRows)
         {
             dataReader.Read();
-            int curAmount = int.Parse(dataReader.GetString(0));
-            Debug.Log(curAmount);
-            string[] cols = { "Amount" };
-            string[] values = { (curAmount + amount).ToString() };
-            string where = $"WHERE Item = '{item.name}'";
-            yield return result = UpdateQuery(inventoryTable, cols, values, where);
+            int curAmount = dataReader.GetInt32(0);
+            //Debug.Log($"추가 전 {curAmount} 개 있음");
+            StartCoroutine(UpdateExistItemAmount(item.name, curAmount + amount));
         }
         else
         {
-            string[] cols = { "Item", "Type", "Amount" };
-            string[] values = { item.name, item.type.ToString(), amount.ToString() };
-            yield return result = InsertQuery(inventoryTable, cols, values);
+            StartCoroutine(InsertNewItem(item, amount));
         }
 
-        if (result > 0)
-            Debug.Log("Success");
-        else
-            Debug.Log("Fail");
-
+    }
+    IEnumerator UpdateExistItemAmount(string item, int amount)
+    {
+        SqliteCommand updateCommand = dbConn.CreateCommand();
+        updateCommand.Parameters.Add(new SqliteParameter("@Amount", amount));
+        updateCommand.Parameters.Add(new SqliteParameter("@Item", item));
+        string table = $"{inventoryTable}_{playingCharacter.slot}";
+        string query = $"UPDATE {table} SET Amount = @Amount WHERE Item = @Item";
+        //Debug.Log(query);
+        updateCommand.CommandText = query;
+        yield return updateCommand.ExecuteNonQuery();
+        updateCommand.Dispose();
+    }
+    IEnumerator InsertNewItem(Item item, int amount)
+    {
+        SqliteCommand insertCommand = dbConn.CreateCommand();
+        insertCommand.Parameters.Add(new SqliteParameter("@Amount", amount));
+        insertCommand.Parameters.Add(new SqliteParameter("@Item", item.name));
+        insertCommand.Parameters.Add(new SqliteParameter("@Type", item.type));
+        string table = $"{inventoryTable}_{playingCharacter.slot}";
+        string query = $"INSERT INTO {table} (Item, Type, Amount) VALUES (@Item, @Type, @Amount)";
+        Debug.Log(query);
+        insertCommand.CommandText = query;
+        yield return insertCommand.ExecuteNonQuery();
+        insertCommand.Dispose();
     }
 
     // 아이템 사용
     IEnumerator UseItemFromInventoryCo(Item item, int amount = 1)
     {
         SqliteDataReader dataReader;
-        yield return dataReader = SelectQuery("Amount", inventoryTable, $"WHERE Item = '{item.name}'");
-        int result;
+        string table = $"{inventoryTable}_{playingCharacter.slot}";
+        yield return dataReader = SelectQuery("Amount", table, $"WHERE Item = '{item.name}'");
         if (dataReader.HasRows)
         {
             dataReader.Read();
-            int curAmount = int.Parse(dataReader.GetString(0));
-            Debug.Log(curAmount);
-            string[] cols = { "Amount" };
-            string[] values = { (curAmount - amount).ToString() };
-            string where = $"WHERE Item = '{item.name}'";
-            yield return result = UpdateQuery(inventoryTable, cols, values, where);
+            int curAmount = dataReader.GetInt32(0);
+            //Debug.Log($"사용 전 {curAmount} 개 있음");
+            if (curAmount >= amount)
+                StartCoroutine(UpdateExistItemAmount(item.name, curAmount - amount));
+            else
+                yield return false;
         }
         else
         {
-            result = -1;
+            yield return false;
         }
-
-        if (result > 0)
-            Debug.Log("Success");
-        else
-            Debug.Log("Fail");
 
     }
     // 아이템 변경 (강화 등)
 
-    // 캐릭터 생성
-    IEnumerator CreateCharacter(Character character, int slot)
+    IEnumerator CreateCharacter(Character character)
     {
-        string[] cols = { "Index", "Class", "Clear", "Created", "Score", "Delete" };
-        string[] values = { slot.ToString(), character.charClass.ToString(), character.clear.ToString(),
-        character.created, character.score.ToString(), character.isDeleted.ToString()};
-        yield return InsertQuery(characterTable, cols, values);
+        SqliteCommand createCharacterCommand = dbConn.CreateCommand();
+        createCharacterCommand.Parameters.Add(new SqliteParameter("@Slot", character.slot));
+        createCharacterCommand.Parameters.Add(new SqliteParameter("@Class", (int)character.charClass));
+        createCharacterCommand.Parameters.Add(new SqliteParameter("@Created", character.created));
+        string query = $"INSERT INTO {characterTable} (Slot, Class, Created) VALUES (@Slot, @Class, @Created)";
+        createCharacterCommand.CommandText = query;
+        yield return createCharacterCommand.ExecuteNonQuery();
+    }
+
+    IEnumerator DeleteCharacter(int slot)
+    {
+        SqliteCommand createCharacterCommand = dbConn.CreateCommand();
+        string query = $"DELETE FROM {characterTable} WHERE Slot = {slot}";
+        createCharacterCommand.CommandText = query;
+        yield return createCharacterCommand.ExecuteNonQuery();
     }
 }
 
