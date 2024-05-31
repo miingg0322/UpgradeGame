@@ -36,6 +36,7 @@ public class AudioManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+        bgmVolume = PlayerPrefs.GetInt("bgmVolumeValue", 70) / 100;
         Init();
     }
 
@@ -95,4 +96,9 @@ public class AudioManager : MonoBehaviour
             break;
         }
     }
+
+    public void BGMVolumeSetting(float volume)
+    {
+        bgmPlayer.volume = volume;
+    } 
 }
