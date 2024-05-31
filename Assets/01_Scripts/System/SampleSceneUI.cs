@@ -18,6 +18,8 @@ public class SampleSceneUI : MonoBehaviour
 
     public GameObject[] dungeonEnterBtns;
     public GameObject characterInfo;
+    public GameObject settingCancleNotice;
+    public GameObject settingUi;
     public GameObject dungeonList;
     public GameObject uiList;
     public GameObject menuUi;
@@ -124,6 +126,41 @@ public class SampleSceneUI : MonoBehaviour
         
     }
 
+    public void ActiveSettingUi()
+    {
+        // 이미 활성화 되어있다면 버튼을 누를시 꺼지게 구현
+        if (settingUi.activeSelf)
+        {
+            CloseUI(settingUi);
+        }
+        else
+        {
+            OpenUI(settingUi);
+        }
+
+    }
+
+    public void ActiveSettingCancleNotice()
+    {
+        if (GameManager.Instance.isChangeSetting)
+        {
+            OpenUI(settingCancleNotice);
+        }
+        else
+        {
+            CloseUI(settingUi);
+        }      
+    }
+
+    public void CancleSetting()
+    {
+        CloseUI(settingCancleNotice);
+        CloseUI(settingUi);
+    }
+    public void CancleSettingCancleNotice()
+    {
+        CloseUI(settingCancleNotice);
+    }
     public void CancleCharacterInfo()
     {
         CloseUI(characterInfo);
@@ -168,6 +205,7 @@ public class SampleSceneUI : MonoBehaviour
         {
             uiStack.Push(ui);
             ui.SetActive(true);
+            Debug.Log(uiStack.Count);
         }
     }
 
