@@ -139,7 +139,7 @@ public class LoginUi : MonoBehaviour
 
         for(int i = 0; i < GameManager.Instance.userSlots.Length; i++)
         {
-            if (GameManager.Instance.userSlots[i] == 0)
+            if (GameManager.Instance.userSlots[i] == -1)
                 count++;
         }
 
@@ -148,7 +148,7 @@ public class LoginUi : MonoBehaviour
 
         for (int index = 0; index < selectBtn.Length; index++)
         {
-            if (GameManager.Instance.userSlots[index] != 0)
+            if (GameManager.Instance.userSlots[index] != -1)
             {
                 selectBtn[index].SetActive(false);
                 deleteBtn[index].SetActive(true);
@@ -162,7 +162,7 @@ public class LoginUi : MonoBehaviour
     {
         for (int index = 0; index < selectBtn.Length; index++)
         {
-            if (GameManager.Instance.userSlots[index] != 0)
+            if (GameManager.Instance.userSlots[index] != -1)
             {
                 selectBtn[index].SetActive(true);
                 deleteBtn[index].SetActive(false);
@@ -204,7 +204,15 @@ public class LoginUi : MonoBehaviour
     }
     public void ActiveCreateCharacter()
     {
-        if (GameManager.Instance.userSlots[GameManager.Instance.userSlots.Length - 1] != 0)
+        int count = 0;
+        for (int index = 0; index <  GameManager.Instance.userSlots.Length; index++)
+        {       
+            if (GameManager.Instance.userSlots[index] != -1)
+            {
+                count++;
+            }
+        }
+        if(count == GameManager.Instance.userSlots.Length)
         {
             slotNotice.SetActive(true);
             activeUi = slotNotice;
