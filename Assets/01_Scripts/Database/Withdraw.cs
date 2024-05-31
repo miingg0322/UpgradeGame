@@ -12,7 +12,7 @@ public class Withdraw : MonoBehaviour
     public GameObject confirmUi;
     public Button withdrawBtn;
     public TMP_InputField withdrawField;
-    public Text withdrawText;
+    public TMP_InputField withdrawText;
     public Text feedbackText;
 
     string confirmText;
