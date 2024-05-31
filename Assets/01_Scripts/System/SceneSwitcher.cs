@@ -36,6 +36,8 @@ public class SceneSwitcher : MonoBehaviour
         SceneManager.LoadScene("SampleScene");
 
         SceneManager.sceneLoaded += OnSceneLoaded;
+
+        AudioManager.instance.PlayBgm(false);
     }
 
     public void GiveUpSwitchSampleScene()
@@ -45,6 +47,8 @@ public class SceneSwitcher : MonoBehaviour
         GameManager.Instance.Init();
 
         SceneManager.sceneLoaded += OnSceneLoaded;
+
+        AudioManager.instance.PlayBgm(false);
     }
 
     public void ReLoadAutoFarmingScene()
