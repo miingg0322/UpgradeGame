@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour
         set { instance = value; }
     }
 
+    public GameObject cursorPrefab;
     public PlayerData[] playerData;
     public PoolManager pool;
     public Player player;
@@ -48,6 +49,7 @@ public class GameManager : MonoBehaviour
     public bool isDungeonClear;
     public bool isCharacterSelect;
     public bool isCreate;
+    public bool isChangeSetting;
 
     /// <summary>
     /// Key = Upgrade, Cost, Destroy
@@ -146,7 +148,7 @@ public class GameManager : MonoBehaviour
 
         for(int index = 0; index < userSlots.Length; index++)
         {
-            if (userSlots[index] == 0)
+            if (userSlots[index] == -1)
             {
                 loginUi.selectCharacterIcons[index].sprite = null;
                 loginUi.characterTexts[index].text = "Empty";
@@ -182,19 +184,14 @@ public class GameManager : MonoBehaviour
     }
 
     public void CreateCharacter()
-    {
-        if (userSlots[userSlots.Length - 1] != 0)
-        {
-            return;
-        }
-            
+    {                 
         string id = userId;
         // DB�� ������ ����
         int characterId = DBManager.Instance.CreateCharacter(id, selectIndex);
         
         for(int index = 0;index < userSlots.Length;index++)
         {
-            if (userSlots[index] == 0)
+            if (userSlots[index] == -1)
             {
                 userSlots[index] = characterId;
                 break;
@@ -214,7 +211,7 @@ public class GameManager : MonoBehaviour
         loginUi.deleteNotice.SetActive(false);
         loginUi.CancleDelete();
 
-        userSlots[selectIndex] = 0;
+        userSlots[selectIndex] = -1;
         SetUserSlots(userSlots);
     }
 
