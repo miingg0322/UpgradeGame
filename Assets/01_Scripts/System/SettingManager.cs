@@ -36,12 +36,15 @@ public class SettingManager : MonoBehaviour
 
     void Start()
     {
+        // 전체 사운드 Value 값 설정
         maxVolume = PlayerPrefs.HasKey("volumeValue") ? PlayerPrefs.GetInt("volumeValue") : basicVolumeValue;
 
+        // 슬라이더의 On Value Changed에 메서드 등록
         volumeSlider.onValueChanged.AddListener(delegate { OnVolumeChanged(); });
         bgmVolumeSlider.onValueChanged.AddListener(delegate { OnBGMVolumeChanged(); });
         sensitivitySlider.onValueChanged.AddListener(delegate { OnSensitivityChanged(); });
 
+        // 슬라이더와 InputField에 저장된 값 or 기본 값 할당
         volumeSlider.value = maxVolume;
         soundValue.text = maxVolume.ToString();
         bgmVolumeSlider.value = PlayerPrefs.HasKey("bgmVolumeValue") ? Mathf.Min(PlayerPrefs.GetInt("bgmVolumeValue"), maxVolume) : maxVolume;
@@ -49,6 +52,7 @@ public class SettingManager : MonoBehaviour
         sensitivitySlider.value = PlayerPrefs.HasKey("cursorSensitivity") ? PlayerPrefs.GetInt("cursorSensitivity") : basicSensitivityValue;
         sensitivityValue.text = sensitivitySlider.value.ToString();
  
+        // Toggle 초기상태 설정
         totalSoundToggle.isOn = PlayerPrefs.HasKey("isMuteTotalSound") ? (PlayerPrefs.GetInt("isMuteTotalSound") == 1 ? true : false) : false;
 
         if (totalSoundToggle.isOn)
@@ -65,6 +69,8 @@ public class SettingManager : MonoBehaviour
         // 음량을 슬라이더의 값에 따라 조절
         float volume = volumeSlider.value / 100f;
         soundValue.text = Mathf.FloorToInt(volumeSlider.value).ToString();
+
+        // 음소거 상태일때는 전체 사운드가 0이 되게 설정
         if (totalSoundToggle.isOn)
         {
             AudioListener.volume = 0f;
@@ -72,8 +78,7 @@ public class SettingManager : MonoBehaviour
         else
         {
             AudioListener.volume = volume;
-        }
-        
+        }       
         UpdateVolumeSliderMax();
         CheckChangeSetting();
     }
@@ -83,7 +88,7 @@ public class SettingManager : MonoBehaviour
     {
         // 텍스트 필드의 값을 읽어와 슬라이더의 값으로 설정
         float value = volumeSlider.value;
-        if (float.TryParse(soundValue.text, out value))
+        if (float.TryParse(soundValue.text, out value)) // 입력된 값이 float 값이여야 변경
         {
             value = Mathf.Clamp(value, 0f, 100f);
             volumeSlider.value = value;
@@ -92,13 +97,14 @@ public class SettingManager : MonoBehaviour
         CheckChangeSetting();
     }
 
+    // 음소거 Toggle을 누를때 호출되는 함수
     public void MuteTotalSound()
     {
-        if (totalSoundToggle.isOn)
+        if (totalSoundToggle.isOn) // 토글이 켜져있다면 꺼지도록 설정
         {
             SetMuteTotalSound();
         }
-        else
+        else // 토글이 꺼져있다면 켜지도록 설정
         {
             SetActiveTotalSound();          
         }
@@ -108,6 +114,7 @@ public class SettingManager : MonoBehaviour
 
     void SetMuteTotalSound()
     {
+        // 슬라이더가 회색으로 비활성화 된 이미지로 수정
         ColorBlock colors = volumeSlider.colors;
         colors.normalColor = new Color32(80, 80, 80, 255);
         volumeSlider.colors = colors;
@@ -115,11 +122,13 @@ public class SettingManager : MonoBehaviour
         volumeSliderHandle.color = new Color32(80, 80, 80, 255);
         bgmVolumeSliderHandle.color = new Color32(80, 80, 80, 255);
 
+        // 사운드 0으로 설정
         AudioListener.volume = 0f;
     }
 
     void SetActiveTotalSound()
     {
+        // 슬라이더가 원래의 색으로 활성화 된 이미지로 수정
         ColorBlock colors = volumeSlider.colors;
         colors.normalColor = new Color32(255, 255, 255, 255);
         volumeSlider.colors = colors;
@@ -127,14 +136,14 @@ public class SettingManager : MonoBehaviour
         volumeSliderHandle.color = new Color32(255, 255, 255, 255);
         bgmVolumeSliderHandle.color = new Color32(255, 255, 255, 255);
 
-
+        // Volume에 설정된 값으로 할당
         float volume = volumeSlider.value / 100f;
         AudioListener.volume = volume;
     }
 
     void OnBGMVolumeChanged()
     {
-        if (bgmVolumeSlider.value > volumeSlider.value)
+        if (bgmVolumeSlider.value > volumeSlider.value) // Total Sound보다 작을때만 수정되도록 구현
         {
             bgmVolumeSlider.value = volumeSlider.value;
             float volume = bgmVolumeSlider.value / 100;
@@ -166,7 +175,7 @@ public class SettingManager : MonoBehaviour
 
     void OnSensitivityChanged()
     {
-        if (isChanging) return;
+        if (isChanging) return; // 감도를 변경이 끝나면 값이 적용되도록 구현
 
         // 마우스 감도를 슬라이더의 값에 따라 조절
         isChanging = true;
@@ -180,6 +189,7 @@ public class SettingManager : MonoBehaviour
         ApplySensitivityChange();
     }
 
+    // 마우스 감도를 조절하는 함수
     void ApplySensitivityChange()
     {       
         float value = sensitivitySlider.value / 100f;
@@ -191,7 +201,7 @@ public class SettingManager : MonoBehaviour
     // 사용자가 텍스트 필드에 값을 입력할 때마다 호출되는 함수
     public void OnSensitivityInputValueChanged()
     {
-        if (isChanging) return;
+        if (isChanging) return; 
 
         // 텍스트 필드의 값을 읽어와 슬라이더의 값으로 설정
         isChanging = true;
@@ -204,6 +214,7 @@ public class SettingManager : MonoBehaviour
         ApplySensitivityChange();
         isChanging = false;
     }
+    // 설정한 정보를 저장하는 함수
     public void SaveSetting()
     {
         PlayerPrefs.SetInt("volumeValue", Mathf.FloorToInt(volumeSlider.value));
@@ -213,6 +224,7 @@ public class SettingManager : MonoBehaviour
 
         GameManager.Instance.isChangeSetting = false;
     }
+    // 설정창을 끌때 원래의 세팅으로 되돌리는 함수
     public void CancleSetting()
     {
         volumeSlider.value = PlayerPrefs.GetInt("volumeValue", basicVolumeValue);
@@ -223,23 +235,25 @@ public class SettingManager : MonoBehaviour
         UpdateVolumeSliderMax();
         GameManager.Instance.isChangeSetting = false;
     }
-
+    // 바뀐 값이 있는지 비교하는 함수
     void CheckChangeSetting()
     {
+        // 저장된 값들
         int savedVolume = PlayerPrefs.GetInt("volumeValue", basicVolumeValue);
         int savedBgmVolume = PlayerPrefs.GetInt("bgmVolumeValue", maxVolume);
         int savedSensitivity = PlayerPrefs.GetInt("cursorSensitivity", basicSensitivityValue);
         bool savedIsMuteTotalSound = PlayerPrefs.GetInt("isMuteTotalSound", 0) == 1 ? true : false;
 
+        // 현재 값들
         int curVolume = Mathf.FloorToInt(volumeSlider.value);
         int curBgmVolume = Mathf.FloorToInt(bgmVolumeSlider.value);
         int curSensitivity = Mathf.FloorToInt(sensitivitySlider.value);
         bool curIsMuteTotalSound = totalSoundToggle.isOn;
 
         if (savedVolume != curVolume || savedSensitivity != curSensitivity || savedBgmVolume != curBgmVolume 
-            || savedIsMuteTotalSound != curIsMuteTotalSound)
+            || savedIsMuteTotalSound != curIsMuteTotalSound) // 현재 설정과 저장된 설정이 일치하는지 확인
         {
-            GameManager.Instance.isChangeSetting = true;
+            GameManager.Instance.isChangeSetting = true; // isChangeSetting이 true일 경우 설정을 되돌릴건지 확인하는 UI 출력
         }
         else
         {
@@ -247,6 +261,7 @@ public class SettingManager : MonoBehaviour
         }
     }
 
+    // bgm 효과음 등은 Total Sound의 값보다 높게 설정되지 않게 설정하는 함수
     void UpdateVolumeSliderMax()
     {
         float curVolume = volumeSlider.value;

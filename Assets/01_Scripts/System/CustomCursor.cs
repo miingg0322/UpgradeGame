@@ -18,8 +18,9 @@ public class CustomCursor : MonoBehaviour
     RectTransform canvasRectTransform;
     GameObject currentDraggable;
 
-    private void Awake()
+    void Awake()
     {
+        // 씬에서 Canvas 탐색후 부모로 설정
         canvas = FindCanvas();       
         gameObject.transform.SetParent(canvas.transform);
         Cursor.visible = false; // 기본 커서 숨기기
@@ -29,7 +30,7 @@ public class CustomCursor : MonoBehaviour
     {
         sensitivity = 60.0f;
         LoadSensitivity(); // 저장된 감도 값 불러오기  
-        SetCursorToCenter();
+        SetCursorToCenter(); // 씬 시작시 커서를 중앙에 위치
     }
 
     // Update is called once per frame
@@ -55,12 +56,14 @@ public class CustomCursor : MonoBehaviour
 
         transform.position = worldPosition;
 
+        // 마우스 클릭과 드래그 구현
         if (Input.GetMouseButtonDown(0))
         {
             MouseDrag(worldPosition);
             SimulateClick(worldPosition);
         }
         
+        // 마우스 휠 스크롤 구현
         float scroll = Input.GetAxis("Mouse ScrollWheel") * 10;
         if (scroll != 0)
         {
@@ -83,9 +86,11 @@ public class CustomCursor : MonoBehaviour
     public void LoadSensitivity()
     {
         sensitivity = 60f;
+        // 감도 설정중이 아닐때 저장된 감도 값 할당
         if (!isSetting)
         {
             float saveMagnification = PlayerPrefs.GetInt("cursorSensitivity", 50) / 100f;
+            // 감도값이 0일경우 움직이지 않게 되니 최소값 설정
             if(saveMagnification < 0.1f)
             {
                 saveMagnification = 0.1f;
