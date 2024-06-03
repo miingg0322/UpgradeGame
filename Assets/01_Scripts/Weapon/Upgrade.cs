@@ -60,7 +60,7 @@ public class Upgrade : MonoBehaviour
     }
     private void UpgradeFail()
     {
-        destroy = GameManager.Instance.dataTables["Destroy"][weapon.weaponData.tier][weapon.Level];
+        destroy = GameManager.Instance.dataTables["Destroy"][weapon.weaponData.grade][weapon.Level];
         if (destroy == 0)
             return;
 
