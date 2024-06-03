@@ -15,7 +15,6 @@ public class Inventory : MonoBehaviour
     {
         gridGroup = GetComponent<GridLayoutGroup>();
         gridGroup.constraintCount = cols;
-
         invenSlots = transform.GetComponentsInChildren<InvenSlot>();
 
         inventory = SQLiteManager.Instance.GetAllItems();
@@ -23,10 +22,10 @@ public class Inventory : MonoBehaviour
         {
             Debug.Log($"{item.name}::{item.type}:::{item.grade} - {item.amount}");
         }
-        SetInventory();
+        SetInventorySlots();
     }
     
-    public void SetInventory()
+    public void SetInventorySlots()
     {
         for (int i = 0; i < invenSlots.Length; i++)
         {
@@ -40,5 +39,26 @@ public class Inventory : MonoBehaviour
                 invenSlots[i].gameObject.SetActive(false);
             }
         }
+    }
+
+    public Item FindItemExists(int type, int grade)
+    {
+        foreach (var item in inventory)
+        {
+            if(item.type.Equals(type) && item.grade.Equals(grade))
+            {
+                return item;
+            }
+        }
+        return null;
+    }
+    public void AddItemToInventory()
+    {
+
+    }
+
+    public void UpdateItem()
+    {
+
     }
 }
