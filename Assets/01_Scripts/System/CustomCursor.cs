@@ -17,6 +17,7 @@ public class CustomCursor : MonoBehaviour
     Vector2 cursorPosition;
     RectTransform canvasRectTransform;
     GameObject currentDraggable;
+    PointerEventData dragPointerData;
 
     void Awake()
     {
@@ -59,28 +60,24 @@ public class CustomCursor : MonoBehaviour
         // 마우스 클릭과 드래그 구현
         if (Input.GetMouseButtonDown(0))
         {
-            MouseDrag(worldPosition);
             SimulateClick(worldPosition);
+            MouseDragStart(worldPosition);
         }
-        
+        else if (Input.GetMouseButton(0))
+        {
+            MouseDragUpdate(worldPosition);
+        }
+        else if (Input.GetMouseButtonUp(0))
+        {
+            MouseDragEnd(worldPosition);
+        }
+
         // 마우스 휠 스크롤 구현
         float scroll = Input.GetAxis("Mouse ScrollWheel") * 10;
         if (scroll != 0)
         {
             HandleScroll(worldPosition, scroll);
-        }
-
-        if (isDragging)
-        {
-            PointerEventData pointerData = new PointerEventData(EventSystem.current);
-            pointerData.position = cursorPosition;
-            ExecuteEvents.Execute(currentDraggable, pointerData, ExecuteEvents.dragHandler);
-        }
-
-        if (Input.GetMouseButtonUp(0))
-        {
-            MouseDragEnd(worldPosition);
-        }
+        }       
     }
 
     public void LoadSensitivity()
@@ -130,6 +127,50 @@ public class CustomCursor : MonoBehaviour
         }
     }
 
+    void MouseDragStart(Vector2 position)
+    {
+        PointerEventData pointerData = new PointerEventData(EventSystem.current);
+        pointerData.position = position;
+
+        List<RaycastResult> results = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(pointerData, results);
+
+        foreach (RaycastResult result in results)
+        {
+            if (result.gameObject.GetComponent<IDragHandler>() != null)
+            {
+                //if (result.gameObject.GetComponent<InputField>() != null)
+                //    SetCaretPosition(result.gameObject.GetComponent<InputField>(), position);
+
+                currentDraggable = result.gameObject;
+                dragPointerData = pointerData;
+                ExecuteEvents.Execute(result.gameObject, pointerData, ExecuteEvents.pointerClickHandler);
+                ExecuteEvents.Execute(result.gameObject, pointerData, ExecuteEvents.pointerDownHandler);
+                isDragging = true;
+                break;
+            }
+        }
+    }
+    public void MouseDragUpdate(Vector2 position)
+    {
+        if (isDragging)
+        {
+            dragPointerData.position = position;
+            ExecuteEvents.Execute(currentDraggable, dragPointerData, ExecuteEvents.dragHandler); // 드래그 업데이트 이벤트 추가
+        }
+    }
+    void MouseDragEnd(Vector2 position)
+    {
+        if (isDragging)
+        {
+            dragPointerData.position = position;
+            ExecuteEvents.Execute(currentDraggable, dragPointerData, ExecuteEvents.pointerUpHandler);
+            ExecuteEvents.Execute(currentDraggable, dragPointerData, ExecuteEvents.endDragHandler);
+            isDragging = false;
+            currentDraggable = null;
+        }
+    }
+
     void HandleScroll(Vector2 position, float scrollAmount)
     {
         PointerEventData pointerData = new PointerEventData(EventSystem.current)
@@ -152,37 +193,7 @@ public class CustomCursor : MonoBehaviour
             }
         }
     }
-    void MouseDrag(Vector2 position)
-    {
-        PointerEventData pointerData = new PointerEventData(EventSystem.current);
-        pointerData.position = position;
-
-        List<RaycastResult> results = new List<RaycastResult>();
-        EventSystem.current.RaycastAll(pointerData, results);
-
-        foreach (RaycastResult result in results)
-        {
-            if (result.gameObject.GetComponent<IDragHandler>() != null)
-            {
-                currentDraggable = result.gameObject;
-                ExecuteEvents.Execute(result.gameObject, pointerData, ExecuteEvents.pointerDownHandler);
-                isDragging = true;
-                break;
-            }
-        }
-    }
-
-    void MouseDragEnd(Vector2 position)
-    {
-        if (isDragging)
-        {
-            PointerEventData pointerData = new PointerEventData(EventSystem.current);
-            pointerData.position = position;
-            ExecuteEvents.Execute(currentDraggable, pointerData, ExecuteEvents.pointerUpHandler);
-            isDragging = false;
-            currentDraggable = null;
-        }
-    }
+ 
     Canvas FindCanvas()
     {
         Canvas canvas = FindObjectOfType<Canvas>();
@@ -202,4 +213,27 @@ public class CustomCursor : MonoBehaviour
             transform.position = worldPosition;
         }
     }
+
+    //void SetCaretPosition(InputField inputField, Vector2 position)
+    //{
+    //    TextGenerator textGen = inputField.textComponent.cachedTextGenerator;
+    //    int charIndex = GetCharacterIndexFromPosition(inputField, position, textGen);
+
+    //    inputField.caretPosition = charIndex;
+    //    inputField.selectionAnchorPosition = charIndex;
+    //    inputField.selectionFocusPosition = charIndex;
+    //}
+
+    //int GetCharacterIndexFromPosition(InputField inputField, Vector2 localMousePosition, TextGenerator textGen)
+    //{
+    //    for (int i = 0; i < textGen.characterCountVisible; i++)
+    //    {
+    //        UICharInfo charInfo = textGen.characters[i];
+    //        if (localMousePosition.x < charInfo.cursorPos.x)
+    //        {
+    //            return i;
+    //        }
+    //    }
+    //    return textGen.characterCountVisible;
+    //}
 }

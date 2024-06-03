@@ -8737,6 +8737,34 @@ PrefabInstance:
       propertyPath: m_IsOn
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114008589502034240, guid: 4498e22a880a14c4fae5091f69805a0d, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114008589502034240, guid: 4498e22a880a14c4fae5091f69805a0d, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114008589502034240, guid: 4498e22a880a14c4fae5091f69805a0d, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 555428089}
+    - target: {fileID: 114008589502034240, guid: 4498e22a880a14c4fae5091f69805a0d, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 114008589502034240, guid: 4498e22a880a14c4fae5091f69805a0d, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: MuteBgmSound
+      objectReference: {fileID: 0}
+    - target: {fileID: 114008589502034240, guid: 4498e22a880a14c4fae5091f69805a0d, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: SettingManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 114008589502034240, guid: 4498e22a880a14c4fae5091f69805a0d, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 224206444258058692, guid: 4498e22a880a14c4fae5091f69805a0d, type: 3}
       propertyPath: m_SizeDelta.x
       value: 25
