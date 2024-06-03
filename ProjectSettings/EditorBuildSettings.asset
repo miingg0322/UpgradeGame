@@ -5,14 +5,17 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
+  - enabled: 1
     path: Assets/00_Scenes/SampleScene.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
-  - enabled: 0
+  - enabled: 1
     path: Assets/00_Scenes/AutoFarming.unity
     guid: 67cad4dad6947d54d9334ebb2854cc3a
   - enabled: 1
     path: Assets/00_Scenes/Inventory.unity
     guid: 7014663cfcaa38240a2489d889238072
+  - enabled: 1
+    path: Assets/00_Scenes/Boss.unity
+    guid: ff84b905bd205014db2f79cdec44aaf4
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: ff9eff758921ccd48b8250fde1f287b6, type: 2}
