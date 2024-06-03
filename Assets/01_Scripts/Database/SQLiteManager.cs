@@ -4,6 +4,7 @@ using System.Collections;
 using System.Data;
 using Mono.Data.Sqlite;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class SQLiteManager : MonoBehaviour
 {
@@ -17,6 +18,9 @@ public class SQLiteManager : MonoBehaviour
     readonly string characterTable = "Character";
 
     SqliteConnection dbConn;
+    public Inventory inventory;
+    ScrollRect invenView;
+    FollowDetail followDetail;
 
     public Character playingCharacter;
     private void Awake()
@@ -30,6 +34,8 @@ public class SQLiteManager : MonoBehaviour
         {
             Destroy(this);
         }
+        invenView = inventory.GetComponentInParent<ScrollRect>();
+        followDetail = invenView.GetComponentInChildren<FollowDetail>();
 
         Character tester = new Character(0, 0);
         playingCharacter = tester;
@@ -48,7 +54,21 @@ public class SQLiteManager : MonoBehaviour
     {
 
     }
-
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            if (invenView.gameObject.activeSelf)
+            {
+                followDetail.gameObject.SetActive(false);
+                invenView.gameObject.SetActive(false);
+            }
+            else
+            {
+                invenView.gameObject.SetActive(true);
+            }
+        }
+    }
     private void Connect()
     {
         string connectionString = $"URI=file:{Application.streamingAssetsPath}{dbName}";
@@ -87,6 +107,7 @@ public class SQLiteManager : MonoBehaviour
         }
 
     }
+
     IEnumerator UpdateExistItemAmount(string item, int amount)
     {
         SqliteCommand updateCommand = dbConn.CreateCommand();
@@ -114,6 +135,10 @@ public class SQLiteManager : MonoBehaviour
     }
 
     // 아이템 사용
+    public void UseItemFromInventory(Item item, int amount = 1)
+    {
+        StartCoroutine(UseItemFromInventoryCo(item, amount));
+    }
     IEnumerator UseItemFromInventoryCo(Item item, int amount = 1)
     {
         SqliteDataReader dataReader;
