@@ -1,21 +1,30 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class SampleSceneUI : MonoBehaviour
 {
+    public Withdraw withdraw;
     public Image[] ticketIcon;
     public Image playerIcon;
 
     public Text[] playerInfoText;
-    public Text ticketValue;   
-    public Text timer;
+    public TextMeshProUGUI ticketValue;   
+    public TextMeshProUGUI timer;
 
     public GameObject[] dungeonEnterBtns;
     public GameObject characterInfo;
+    public GameObject settingCancleNotice;
+    public GameObject settingUi;
     public GameObject dungeonList;
     public GameObject uiList;
+    public GameObject menuUi;
+
+    Stack<GameObject> uiStack = new Stack<GameObject>();
 
     private void Awake()
     {
@@ -31,6 +40,12 @@ public class SampleSceneUI : MonoBehaviour
         UpdateTimer();
         UpdateTicketValue();
         UpdateTicketIcon();
+
+        // ESC 키 입력 처리
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            CloseTopUI();
+        }
     }
     // 입장권 충전까지 남은 시간 표시
     void UpdateTimer()
@@ -102,18 +117,53 @@ public class SampleSceneUI : MonoBehaviour
         // 이미 활성화 되어있다면 버튼을 누를시 꺼지게 구현
         if (characterInfo.activeSelf)
         {
-            characterInfo.SetActive(false);
+            CloseUI(characterInfo);
         }
         else
         {
-            characterInfo.SetActive(true);
+            OpenUI(characterInfo);          
         }
         
     }
 
+    public void ActiveSettingUi()
+    {
+        // 이미 활성화 되어있다면 버튼을 누를시 꺼지게 구현
+        if (settingUi.activeSelf)
+        {
+            CloseUI(settingUi);
+        }
+        else
+        {
+            OpenUI(settingUi);
+        }
+
+    }
+
+    public void ActiveSettingCancleNotice()
+    {
+        if (GameManager.Instance.isChangeSetting)
+        {
+            OpenUI(settingCancleNotice);
+        }
+        else
+        {
+            CloseUI(settingUi);
+        }      
+    }
+
+    public void CancleSetting()
+    {
+        CloseUI(settingCancleNotice);
+        CloseUI(settingUi);
+    }
+    public void CancleSettingCancleNotice()
+    {
+        CloseUI(settingCancleNotice);
+    }
     public void CancleCharacterInfo()
     {
-        characterInfo.SetActive(false);
+        CloseUI(characterInfo);
     }
 
     public void ActiveDungeonList()
@@ -121,24 +171,68 @@ public class SampleSceneUI : MonoBehaviour
         // 이미 활성화 되어있다면 버튼을 누를시 꺼지게 구현
         if (dungeonList.activeSelf)
         {
-            dungeonList.SetActive(false);
+            CloseUI(dungeonList);
         }
         else
         {
-            dungeonList.SetActive(true);
+            OpenUI(dungeonList);           
         }
     }
     public void ClickMenu()
     {
         if (uiList.activeSelf)
         {
-            uiList.SetActive(false);
+            menuUi.GetComponent<Animator>().Play("Out");
+            CloseUI(uiList);
             if (dungeonList.activeSelf)
-                dungeonList.SetActive(false);
+                CloseUI(dungeonList);
+            if (characterInfo.activeSelf)
+                CloseUI(characterInfo);
+            if (withdraw.confirmUi.activeSelf)
+                CloseUI(withdraw.confirmUi);
         }
         else
         {
-            uiList.SetActive(true);           
+            menuUi.GetComponent<Animator>().Play("In");
+            OpenUI(uiList);      
+        }
+    }
+
+    // UI를 스택에 추가하는 메서드
+    public void OpenUI(GameObject ui)
+    {
+        if (!uiStack.Contains(ui))
+        {
+            uiStack.Push(ui);
+            ui.SetActive(true);
+            Debug.Log(uiStack.Count);
+        }
+    }
+
+    // UI를 스택에서 제거하는 메서드
+    public void CloseUI(GameObject ui)
+    {
+        if (uiStack.Contains(ui))
+        {
+            uiStack = new Stack<GameObject>(new Stack<GameObject>(uiStack).Where(x => x != ui));
+            ui.SetActive(false);
+            Debug.Log(uiStack.Count);
+        }
+    }
+
+    // 스택 최상단 UI를 비활성화하는 메서드
+    void CloseTopUI()
+    {
+        if (uiStack.Count > 1)
+        {
+            GameObject topUI = uiStack.Pop();
+            topUI.SetActive(false);
+        }
+        else if(uiStack.Count == 1)
+        {
+            GameObject topUI = uiStack.Pop();
+            topUI.SetActive(false);
+            menuUi.GetComponent<Animator>().Play("Out");
         }
     }
 }

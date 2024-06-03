@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,6 +10,8 @@ public class LoginUi : MonoBehaviour
 {
     public SignupManager signupManager;
 
+    public TMP_InputField idField;
+    public TMP_InputField passwordField;
     public GameObject loginGroup;
     public GameObject signupGroup;
     public GameObject loginFail;
@@ -22,14 +25,18 @@ public class LoginUi : MonoBehaviour
     public GameObject signupNotice;
     public GameObject slotNotice;
     public GameObject deleteNotice;
+    public GameObject createNotice;
+    public GameObject createNoticeCreateBtn;
 
     public GameObject[] selectBtn;
     public GameObject[] deleteBtn;
     public GameObject[] createChBtn;
 
-    public Image[] characterIcons;
+    public Image[] selectCharacterIcons;
+    public Image[] createCharacterIcons;
     public Text[] characterTexts;
 
+    GameObject activeUi;
     void Awake()
     {
         GameManager.Instance.AssignLoginUi(this);
@@ -43,12 +50,30 @@ public class LoginUi : MonoBehaviour
             selectBtn[selectIndex].GetComponent<Button>().onClick.AddListener(()=> GameManager.Instance.SelectCharacter(selectIndex));
         }
 
-        chdelBtn.GetComponent<Button>().onClick.AddListener(() => GameManager.Instance.DeleteCharacter());
-
-        for (int index = 0; index < createChBtn.Length; index++)
+        for (int index = 0; index < createCharacterIcons.Length; index++)
         {
-            int createIndex = index;
-            createChBtn[createIndex].GetComponent<Button>().onClick.AddListener(() => GameManager.Instance.CreateCharacter(createIndex));
+            int selectIndex = index;
+            createCharacterIcons[selectIndex].sprite = GameManager.Instance.playerData[selectIndex].playerSprite;
+        }
+
+        chdelBtn.GetComponent<Button>().onClick.AddListener(() => GameManager.Instance.DeleteCharacter());
+        createNoticeCreateBtn.GetComponent<Button>().onClick.AddListener(() => GameManager.Instance.CreateCharacter());
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape) && activeUi != null)
+        {           
+            if (activeUi == signupGroup)
+            {
+                loginGroup.SetActive(true);
+            }
+            if (activeUi == signupNotice)
+            {
+                signupGroup.SetActive(false);
+                loginGroup.SetActive(true);
+            }
+            activeUi.SetActive(false);
         }
     }
     public void Login()
@@ -63,8 +88,12 @@ public class LoginUi : MonoBehaviour
     }
     public void ActiveSignUp()
     {
+        idField.text = "";
+        passwordField.text = "";
+
         loginGroup.SetActive(false);
         signupGroup.SetActive(true);
+        activeUi = signupGroup;
     }
 
     public void CancleSignUp()
@@ -72,11 +101,13 @@ public class LoginUi : MonoBehaviour
         loginGroup.SetActive(true);
         signupGroup.SetActive(false);
         signupManager.Init();
+        activeUi = null;
     }
 
     public void ActiveSignUpNotice()
     {
         signupNotice.SetActive(true);
+        activeUi = signupNotice;
     }
 
     public void CancleSignUpNotice()
@@ -84,6 +115,7 @@ public class LoginUi : MonoBehaviour
         signupNotice.SetActive(false);
         signupGroup.SetActive(false);
         loginGroup.SetActive(true);
+        activeUi = null;
     }
 
     public void CancleSlotNotice()
@@ -93,10 +125,12 @@ public class LoginUi : MonoBehaviour
     public void ActiveLoginFail()
     {
         loginFail.SetActive(true);
+        activeUi = loginFail;
     }
     public void CancleLoginFail()
     {
         loginFail.SetActive(false);
+        activeUi = null;
     }
 
     public void ActiveDelete()
@@ -105,7 +139,7 @@ public class LoginUi : MonoBehaviour
 
         for(int i = 0; i < GameManager.Instance.userSlots.Length; i++)
         {
-            if (GameManager.Instance.userSlots[i] == 0)
+            if (GameManager.Instance.userSlots[i] == -1)
                 count++;
         }
 
@@ -114,7 +148,7 @@ public class LoginUi : MonoBehaviour
 
         for (int index = 0; index < selectBtn.Length; index++)
         {
-            if (GameManager.Instance.userSlots[index] != 0)
+            if (GameManager.Instance.userSlots[index] != -1)
             {
                 selectBtn[index].SetActive(false);
                 deleteBtn[index].SetActive(true);
@@ -128,7 +162,7 @@ public class LoginUi : MonoBehaviour
     {
         for (int index = 0; index < selectBtn.Length; index++)
         {
-            if (GameManager.Instance.userSlots[index] != 0)
+            if (GameManager.Instance.userSlots[index] != -1)
             {
                 selectBtn[index].SetActive(true);
                 deleteBtn[index].SetActive(false);
@@ -141,22 +175,47 @@ public class LoginUi : MonoBehaviour
             delBtn.SetActive(true);
         }          
     }
+
+    public void ActiveCreateCheck(int index)
+    {
+        GameManager.Instance.selectIndex = index;
+        GameManager.Instance.isCreate = true;
+        createNotice.SetActive(true);
+        activeUi = createNotice;
+    }
     public void ActiveDeleteCheck(int index)
     {
         GameManager.Instance.selectIndex = index;
         GameManager.Instance.deleteCharacter = GameManager.Instance.userSlots[index];
         deleteNotice.SetActive(true);
+        activeUi = deleteNotice;
     }
 
     public void CancleDeleteCheck()
     {
         deleteNotice.SetActive(false);
+        activeUi = null;
+    }
+
+    public void CancleCreateCheck()
+    {
+        createNotice.SetActive(false);
+        activeUi = null;
     }
     public void ActiveCreateCharacter()
     {
-        if (GameManager.Instance.userSlots[GameManager.Instance.userSlots.Length - 1] != 0)
+        int count = 0;
+        for (int index = 0; index <  GameManager.Instance.userSlots.Length; index++)
+        {       
+            if (GameManager.Instance.userSlots[index] != -1)
+            {
+                count++;
+            }
+        }
+        if(count == GameManager.Instance.userSlots.Length)
         {
             slotNotice.SetActive(true);
+            activeUi = slotNotice;
         }
         else
         {

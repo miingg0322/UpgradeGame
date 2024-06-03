@@ -79,11 +79,18 @@ public class DBManager : MonoBehaviour
     {
         OpenConnection();
 
-        string query = $"INSERT INTO users (nickname, id, pw) VALUES ('{nickname}', '{id}', '{password}')";
+        string OffQuery = $"SET foreign_key_checks = 0;";
+        MySqlCommand offCommand = new MySqlCommand(OffQuery, connection);
+        offCommand.ExecuteNonQuery();
 
+        string query = $"INSERT INTO users (nickname, id, pw) VALUES ('{nickname}', '{id}', '{password}')";
         MySqlCommand command = new MySqlCommand(query, connection);
         command.ExecuteNonQuery();
-       
+
+        string OnQuery = $"SET foreign_key_checks = 1;";
+        MySqlCommand onCommand = new MySqlCommand(OnQuery, connection);
+        onCommand.ExecuteNonQuery();
+
         CloseConnection();
     }
 
@@ -150,7 +157,7 @@ public class DBManager : MonoBehaviour
                 }
                 else
                 {
-                    slots[i] = 0; 
+                    slots[i] = -1; 
                 }
             }
         }

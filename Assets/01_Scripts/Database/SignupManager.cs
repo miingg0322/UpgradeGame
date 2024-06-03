@@ -150,7 +150,7 @@ public class SignupManager : MonoBehaviour
     {
         if (nicknameField.isFocused == true)
         {
-            nicknameField.placeholder.GetComponent<TextMeshProUGUI>().text = "";
+            //nicknameField.placeholder.GetComponent<TextMeshProUGUI>().text = "";
             if (Input.GetKeyDown(KeyCode.Tab))
             {
                 idField.Select();
@@ -158,7 +158,7 @@ public class SignupManager : MonoBehaviour
         }
         else if (idField.isFocused == true)
         {
-            idField.placeholder.GetComponent<TextMeshProUGUI>().text = "";
+            //idField.placeholder.GetComponent<TextMeshProUGUI>().text = "";
             if (Input.GetKeyDown(KeyCode.Tab))
             {
                 passwordField.Select();
@@ -166,7 +166,7 @@ public class SignupManager : MonoBehaviour
         }
         else if (passwordField.isFocused == true)
         {
-            passwordField.placeholder.GetComponent<TextMeshProUGUI>().text = "";
+            //passwordField.placeholder.GetComponent<TextMeshProUGUI>().text = "";
             if (Input.GetKeyDown(KeyCode.Tab))
             {
                 confirmPasswordField.Select();
@@ -174,7 +174,7 @@ public class SignupManager : MonoBehaviour
         }
         else if (confirmPasswordField.isFocused == true)
         {
-            confirmPasswordField.placeholder.GetComponent<TextMeshProUGUI>().text = "";
+            //confirmPasswordField.placeholder.GetComponent<TextMeshProUGUI>().text = "";
             if (Input.GetKeyDown(KeyCode.Tab))
             {
                 nicknameField.Select();

@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour
         set { instance = value; }
     }
 
+    public GameObject cursorPrefab;
     public PlayerData[] playerData;
     public PoolManager pool;
     public Player player;
@@ -47,6 +48,8 @@ public class GameManager : MonoBehaviour
 
     public bool isDungeonClear;
     public bool isCharacterSelect;
+    public bool isCreate;
+    public bool isChangeSetting;
 
     /// <summary>
     /// Key = Upgrade, Cost, Destroy
@@ -145,9 +148,9 @@ public class GameManager : MonoBehaviour
 
         for(int index = 0; index < userSlots.Length; index++)
         {
-            if (userSlots[index] == 0)
+            if (userSlots[index] == -1)
             {
-                loginUi.characterIcons[index].sprite = null;
+                loginUi.selectCharacterIcons[index].sprite = null;
                 loginUi.characterTexts[index].text = "Empty";
                 loginUi.selectBtn[index].SetActive(false);
             }
@@ -155,7 +158,7 @@ public class GameManager : MonoBehaviour
             {
                int chClass = DBManager.Instance.GetCharacterClass(userSlots[index]);
 
-                loginUi.characterIcons[index].sprite = playerData[chClass].playerSprite;
+                loginUi.selectCharacterIcons[index].sprite = playerData[chClass].playerSprite;
                 loginUi.characterTexts[index].text = playerData[chClass].playerName;
                 loginUi.selectBtn[index].SetActive(true);
             }
@@ -180,20 +183,15 @@ public class GameManager : MonoBehaviour
         Init();
     }
 
-    public void CreateCharacter(int character)
-    {
-        if (userSlots[userSlots.Length - 1] != 0)
-        {
-            return;
-        }
-            
+    public void CreateCharacter()
+    {                 
         string id = userId;
         // DB�� ������ ����
-        int characterId = DBManager.Instance.CreateCharacter(id, character);
+        int characterId = DBManager.Instance.CreateCharacter(id, selectIndex);
         
         for(int index = 0;index < userSlots.Length;index++)
         {
-            if (userSlots[index] == 0)
+            if (userSlots[index] == -1)
             {
                 userSlots[index] = characterId;
                 break;
@@ -204,6 +202,7 @@ public class GameManager : MonoBehaviour
         loginUi.createUi.SetActive(false);
         loginUi.selectUi.SetActive(true);
         loginUi.createBtn.SetActive(true);
+        loginUi.createNotice.SetActive(false);
     }
 
     public void DeleteCharacter()
@@ -212,7 +211,7 @@ public class GameManager : MonoBehaviour
         loginUi.deleteNotice.SetActive(false);
         loginUi.CancleDelete();
 
-        userSlots[selectIndex] = 0;
+        userSlots[selectIndex] = -1;
         SetUserSlots(userSlots);
     }
 

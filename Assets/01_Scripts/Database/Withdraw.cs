@@ -8,45 +8,33 @@ using UnityEngine.UI;
 
 public class Withdraw : MonoBehaviour
 {
+    public SampleSceneUI SceneUI;
     public GameObject confirmUi;
     public Button withdrawBtn;
     public TMP_InputField withdrawField;
-    public Text withdrawText;
+    public TMP_InputField withdrawText;
     public Text feedbackText;
 
     string confirmText;
     private void Start()
     {
         feedbackText.text = "";
-    }
-    private void Update()
-    {
-        confirmText = withdrawField.text;
-
-        
-        if(string.IsNullOrEmpty(confirmText))
-        {
-            feedbackText.text = "";
-            withdrawBtn.interactable = false;
-        }
-        else if (confirmText != withdrawText.text)
-        {
-            feedbackText.text = "문구가 일치하지 않습니다 다시 한번 확인해주세요.";
-            withdrawBtn.interactable = false;
-        }
-        else if(confirmText == withdrawText.text)
-        {
-            withdrawBtn.interactable = true;
-            feedbackText.text = "";
-        }
+        withdrawBtn.interactable = false;
     }
     public void ConfirmWithdraw()
     {
-        confirmUi.SetActive(true);
+        if(confirmUi.activeSelf)
+        {
+            SceneUI.CloseUI(confirmUi);
+        }
+        else
+        {
+            SceneUI.OpenUI(confirmUi);
+        }      
     }
     public void ConfirmWithdrawCancle()
     {
-        confirmUi.SetActive(false);
+        SceneUI.CloseUI(confirmUi);
     }
     public void UserWithdraw()
     {
@@ -69,5 +57,26 @@ public class Withdraw : MonoBehaviour
         GameManager.Instance.selectedCharacterId = -1;
         GameManager.Instance.isCharacterSelect = false;
         GameManager.Instance.SaveData();
+    }
+
+    public void ConfirmInputField()
+    {
+        confirmText = withdrawField.text;
+
+        if (string.IsNullOrEmpty(confirmText))
+        {
+            feedbackText.text = "";
+            withdrawBtn.interactable = false;
+        }
+        if (confirmText != withdrawText.text)
+        {
+            feedbackText.text = "문구가 일치하지 않습니다 다시 한번 확인해주세요.";
+            withdrawBtn.interactable = false;
+        }
+        if (confirmText == withdrawText.text)
+        {
+            withdrawBtn.interactable = true;
+            feedbackText.text = "";
+        }
     }
 }
