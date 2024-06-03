@@ -19,6 +19,9 @@ public class CustomCursor : MonoBehaviour
     GameObject currentDraggable;
     PointerEventData dragPointerData;
 
+    List<GameObject> currentPointerEnterObjects = new List<GameObject>();
+    List<GameObject> previousPointerEnterObjects = new List<GameObject>();
+
     void Awake()
     {
         // 씬에서 Canvas 탐색후 부모로 설정
@@ -56,6 +59,9 @@ public class CustomCursor : MonoBehaviour
         RectTransformUtility.ScreenPointToWorldPointInRectangle(canvasRectTransform, cursorPosition, canvas.worldCamera, out Vector3 worldPosition);
 
         transform.position = worldPosition;
+
+        // 포인터 위치에 대한 이벤트 체크
+        CheckPointerEvents(worldPosition);
 
         // 마우스 클릭과 드래그 구현
         if (Input.GetMouseButtonDown(0))
@@ -99,6 +105,39 @@ public class CustomCursor : MonoBehaviour
         isSetting = false;
     }
 
+    void CheckPointerEvents(Vector2 position)
+    {
+        PointerEventData pointerData = new PointerEventData(EventSystem.current)
+        {
+            position = position
+        };
+
+        List<RaycastResult> results = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(pointerData, results);
+
+        currentPointerEnterObjects.Clear();
+
+        foreach (RaycastResult result in results)
+        {
+            currentPointerEnterObjects.Add(result.gameObject);
+            if (result.gameObject != previousPointerEnterObjects.Find(obj => obj == result.gameObject))
+            {
+                ExecuteEvents.Execute(result.gameObject, pointerData, ExecuteEvents.pointerEnterHandler);
+            }
+        }
+
+        foreach (GameObject prevObj in previousPointerEnterObjects)
+        {
+            if (!currentPointerEnterObjects.Contains(prevObj))
+            {
+                ExecuteEvents.Execute(prevObj, pointerData, ExecuteEvents.pointerExitHandler);
+            }
+        }
+
+        previousPointerEnterObjects.Clear();
+        previousPointerEnterObjects.AddRange(currentPointerEnterObjects);
+    }
+
     void SimulateClick(Vector2 position)
     {
         PointerEventData pointerData = new PointerEventData(EventSystem.current);
@@ -113,14 +152,12 @@ public class CustomCursor : MonoBehaviour
             IPointerClickHandler clickHandler = result.gameObject.GetComponent<IPointerClickHandler>();
             if (button != null)
             {
-                Debug.Log("버튼 클릭 실행");
                 button.onClick.Invoke();              
             }
             else
             {
                 if(clickHandler != null)
                 {
-                    Debug.Log("클릭 이벤트 실행");
                     clickHandler.OnPointerClick(pointerData);
                 }
             }
@@ -189,7 +226,6 @@ public class CustomCursor : MonoBehaviour
             {
                 // ScrollRect에 스크롤 이벤트 전달
                 scrollRect.OnScroll(pointerData);
-                Debug.Log("Scrolled: " + scrollRect.name);
             }
         }
     }
