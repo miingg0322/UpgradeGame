@@ -35,7 +35,6 @@ public class Weapon : MonoBehaviour
     void Start()
     {
         Level = 0;
-        Debug.Log(Application.dataPath);
     }
 
     public void DestroyWeapon()

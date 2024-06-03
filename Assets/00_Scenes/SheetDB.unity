@@ -5432,14 +5432,24 @@ MonoBehaviour:
   player: {fileID: 0}
   ranItem: {fileID: 0}
   notice: {fileID: 0}
-  startGroup: {fileID: 1256550216}
-  signupGroup: {fileID: 463805107}
-  loginFail: {fileID: 2064991728}
-  selectUi: {fileID: 0}
-  createUi: {fileID: 0}
-  createBtn: {fileID: 0}
+  weapon: {fileID: 0}
+  loginUi: {fileID: 0}
+  cleaner: {fileID: 0}
   userId: 
   DungeonLevel: 0
+  selectedCharacterClass: 0
+  selectedCharacterId: 0
+  selectIndex: 0
+  deleteCharacter: 0
+  bossClear: 0
+  dungeonTicket: 0
+  maxDungeonTicket: 5
+  ticketGenerationTime: 600
+  timer: 0
+  userSlots: 
+  collectedItems: []
+  isDungeonClear: 0
+  isCharacterSelect: 0
   probBase: 1000
 --- !u!4 &1758712023
 Transform:
