@@ -26,7 +26,7 @@ public class SheetLogin : MonoBehaviour
             return;
         }
         string encryptedPw = Encryptor.SHA256Encryt(password);
-        Debug.Log($"로그인 정보: {id}, {password},{encryptedPw}");
+        //Debug.Log($"로그인 정보: {id}, {password},{encryptedPw}");
         SheetManager.Instance.Login(id, encryptedPw);
     }
 }
