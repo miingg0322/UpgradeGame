@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Repair : MonoBehaviour
 {
-
+    public WeaponSlot weaponSlot;
     public int lowerAmount;
     public Weapon weapon;
     public Weapon weapon1;
