@@ -2,12 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Threading;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using static UnityEngine.Rendering.DebugUI;
 
 public class SceneSwitcher : MonoBehaviour
 {
+    public InputActionAsset playerAction;
+
     int levelValue;
     string transUserId;
     public void SwitchAutoFarmingScene(int value)
@@ -84,6 +88,25 @@ public class SceneSwitcher : MonoBehaviour
         Destroy(GameManager.Instance.player.gameObject);
     }
 
+    public void SwitchBossScene()
+    {
+        GameManager.Instance.SaveData();
+
+        Player.Instance.GetComponent<PlayerInput>().actions = playerAction;
+
+        SceneManager.LoadScene("Boss");
+
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    public void SwitchBossToSampleScene()
+    {
+        SceneManager.LoadScene("SampleScene");
+
+        Player.Instance.GetComponent<PlayerInput>().actions = null;
+
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         if (scene.name == "AutoFarming")
