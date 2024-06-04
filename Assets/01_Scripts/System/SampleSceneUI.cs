@@ -13,10 +13,12 @@ public class SampleSceneUI : MonoBehaviour
     public Image playerIcon;
 
     public Text[] playerInfoText;
+    public TextMeshProUGUI[] dungeonDescription;
     public TextMeshProUGUI ticketValue;   
     public TextMeshProUGUI timer;
 
     public GameObject[] dungeonEnterBtns;
+    public GameObject[] dungeonLockImage;
     public GameObject characterInfo;
     public GameObject settingCancleNotice;
     public GameObject settingUi;
@@ -28,7 +30,7 @@ public class SampleSceneUI : MonoBehaviour
 
     private void Awake()
     {
-        UpdateFarminDungeon();       
+        UpdateFarmingDungeon();
     }
 
     private void Start()
@@ -88,13 +90,15 @@ public class SampleSceneUI : MonoBehaviour
     }
 
     // clear 정보를 가져와서 던전을 활성화
-    void UpdateFarminDungeon()
+    void UpdateFarmingDungeon()
     {
         int clear = DBManager.Instance.GetBossClear(GameManager.Instance.selectedCharacterId);
-
+        Debug.Log(clear);
         for (int index = 0; index < clear; index++)
         {
             dungeonEnterBtns[index].SetActive(true);
+            dungeonLockImage[index].SetActive(false);
+            dungeonDescription[index].text = "던전 설명 던전 설명 던전 설명 던전 설명 던전 설명";
         }
     }
     // 캐릭터 정보 UI에 정보 할당
@@ -205,7 +209,6 @@ public class SampleSceneUI : MonoBehaviour
         {
             uiStack.Push(ui);
             ui.SetActive(true);
-            Debug.Log(uiStack.Count);
         }
     }
 
@@ -216,7 +219,6 @@ public class SampleSceneUI : MonoBehaviour
         {
             uiStack = new Stack<GameObject>(new Stack<GameObject>(uiStack).Where(x => x != ui));
             ui.SetActive(false);
-            Debug.Log(uiStack.Count);
         }
     }
 

@@ -17,6 +17,10 @@ public class CustomCursor : MonoBehaviour
     Vector2 cursorPosition;
     RectTransform canvasRectTransform;
     GameObject currentDraggable;
+    PointerEventData dragPointerData;
+
+    List<GameObject> currentPointerEnterObjects = new List<GameObject>();
+    List<GameObject> previousPointerEnterObjects = new List<GameObject>();
 
     void Awake()
     {
@@ -56,31 +60,34 @@ public class CustomCursor : MonoBehaviour
 
         transform.position = worldPosition;
 
+        // 포인터 위치에 대한 이벤트 체크
+        CheckPointerEvents(worldPosition);
+
         // 마우스 클릭과 드래그 구현
         if (Input.GetMouseButtonDown(0))
         {
-            MouseDrag(worldPosition);
-            SimulateClick(worldPosition);
+            SimulateClick(worldPosition, -1); // 왼쪽 클릭
+            MouseDragStart(worldPosition);
         }
-        
+        else if (Input.GetMouseButton(0))
+        {
+            MouseDragUpdate(worldPosition);
+        }
+        else if (Input.GetMouseButtonUp(0))
+        {
+            MouseDragEnd(worldPosition);
+        }
+        else if(Input.GetMouseButtonDown(1))
+        {
+            SimulateClick(worldPosition, -2); // 오른쪽 클릭
+        }
+
         // 마우스 휠 스크롤 구현
         float scroll = Input.GetAxis("Mouse ScrollWheel") * 10;
         if (scroll != 0)
         {
             HandleScroll(worldPosition, scroll);
-        }
-
-        if (isDragging)
-        {
-            PointerEventData pointerData = new PointerEventData(EventSystem.current);
-            pointerData.position = cursorPosition;
-            ExecuteEvents.Execute(currentDraggable, pointerData, ExecuteEvents.dragHandler);
-        }
-
-        if (Input.GetMouseButtonUp(0))
-        {
-            MouseDragEnd(worldPosition);
-        }
+        }       
     }
 
     public void LoadSensitivity()
@@ -102,10 +109,44 @@ public class CustomCursor : MonoBehaviour
         isSetting = false;
     }
 
-    void SimulateClick(Vector2 position)
+    void CheckPointerEvents(Vector2 position)
+    {
+        PointerEventData pointerData = new PointerEventData(EventSystem.current)
+        {
+            position = position
+        };
+
+        List<RaycastResult> results = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(pointerData, results);
+
+        currentPointerEnterObjects.Clear();
+
+        foreach (RaycastResult result in results)
+        {
+            currentPointerEnterObjects.Add(result.gameObject);
+            if (result.gameObject != previousPointerEnterObjects.Find(obj => obj == result.gameObject))
+            {
+                ExecuteEvents.Execute(result.gameObject, pointerData, ExecuteEvents.pointerEnterHandler);
+            }
+        }
+
+        foreach (GameObject prevObj in previousPointerEnterObjects)
+        {
+            if (!currentPointerEnterObjects.Contains(prevObj))
+            {
+                ExecuteEvents.Execute(prevObj, pointerData, ExecuteEvents.pointerExitHandler);
+            }
+        }
+
+        previousPointerEnterObjects.Clear();
+        previousPointerEnterObjects.AddRange(currentPointerEnterObjects);
+    }
+
+    void SimulateClick(Vector2 position, int pointerId)
     {
         PointerEventData pointerData = new PointerEventData(EventSystem.current);
         pointerData.position = position;
+        pointerData.pointerId = pointerId;
 
         List<RaycastResult> results = new List<RaycastResult>();
         EventSystem.current.RaycastAll(pointerData, results);
@@ -116,17 +157,59 @@ public class CustomCursor : MonoBehaviour
             IPointerClickHandler clickHandler = result.gameObject.GetComponent<IPointerClickHandler>();
             if (button != null)
             {
-                Debug.Log("버튼 클릭 실행");
                 button.onClick.Invoke();              
             }
             else
             {
                 if(clickHandler != null)
                 {
-                    Debug.Log("클릭 이벤트 실행");
                     clickHandler.OnPointerClick(pointerData);
                 }
             }
+        }
+    }
+
+    void MouseDragStart(Vector2 position)
+    {
+        PointerEventData pointerData = new PointerEventData(EventSystem.current);
+        pointerData.position = position;
+
+        List<RaycastResult> results = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(pointerData, results);
+
+        foreach (RaycastResult result in results)
+        {
+            if (result.gameObject.GetComponent<IDragHandler>() != null)
+            {
+                //if (result.gameObject.GetComponent<InputField>() != null)
+                //    SetCaretPosition(result.gameObject.GetComponent<InputField>(), position);
+
+                currentDraggable = result.gameObject;
+                dragPointerData = pointerData;
+                ExecuteEvents.Execute(result.gameObject, pointerData, ExecuteEvents.pointerClickHandler);
+                ExecuteEvents.Execute(result.gameObject, pointerData, ExecuteEvents.pointerDownHandler);
+                isDragging = true;
+                break;
+            }
+        }
+    }
+    public void MouseDragUpdate(Vector2 position)
+    {
+        if (isDragging)
+        {
+            dragPointerData.position = position;
+            ExecuteEvents.Execute(currentDraggable, dragPointerData, ExecuteEvents.dragHandler); // 드래그 업데이트 이벤트 추가
+        }
+    }
+    void MouseDragEnd(Vector2 position)
+    {
+        if (isDragging)
+        {
+            dragPointerData.position = position;
+            ExecuteEvents.Execute(currentDraggable, dragPointerData, ExecuteEvents.pointerUpHandler);
+            ExecuteEvents.Execute(currentDraggable, dragPointerData, ExecuteEvents.endDragHandler);
+            isDragging = false;
+            currentDraggable = null;
         }
     }
 
@@ -148,41 +231,10 @@ public class CustomCursor : MonoBehaviour
             {
                 // ScrollRect에 스크롤 이벤트 전달
                 scrollRect.OnScroll(pointerData);
-                Debug.Log("Scrolled: " + scrollRect.name);
             }
         }
     }
-    void MouseDrag(Vector2 position)
-    {
-        PointerEventData pointerData = new PointerEventData(EventSystem.current);
-        pointerData.position = position;
-
-        List<RaycastResult> results = new List<RaycastResult>();
-        EventSystem.current.RaycastAll(pointerData, results);
-
-        foreach (RaycastResult result in results)
-        {
-            if (result.gameObject.GetComponent<IDragHandler>() != null)
-            {
-                currentDraggable = result.gameObject;
-                ExecuteEvents.Execute(result.gameObject, pointerData, ExecuteEvents.pointerDownHandler);
-                isDragging = true;
-                break;
-            }
-        }
-    }
-
-    void MouseDragEnd(Vector2 position)
-    {
-        if (isDragging)
-        {
-            PointerEventData pointerData = new PointerEventData(EventSystem.current);
-            pointerData.position = position;
-            ExecuteEvents.Execute(currentDraggable, pointerData, ExecuteEvents.pointerUpHandler);
-            isDragging = false;
-            currentDraggable = null;
-        }
-    }
+ 
     Canvas FindCanvas()
     {
         Canvas canvas = FindObjectOfType<Canvas>();
@@ -202,4 +254,27 @@ public class CustomCursor : MonoBehaviour
             transform.position = worldPosition;
         }
     }
+
+    //void SetCaretPosition(InputField inputField, Vector2 position)
+    //{
+    //    TextGenerator textGen = inputField.textComponent.cachedTextGenerator;
+    //    int charIndex = GetCharacterIndexFromPosition(inputField, position, textGen);
+
+    //    inputField.caretPosition = charIndex;
+    //    inputField.selectionAnchorPosition = charIndex;
+    //    inputField.selectionFocusPosition = charIndex;
+    //}
+
+    //int GetCharacterIndexFromPosition(InputField inputField, Vector2 localMousePosition, TextGenerator textGen)
+    //{
+    //    for (int i = 0; i < textGen.characterCountVisible; i++)
+    //    {
+    //        UICharInfo charInfo = textGen.characters[i];
+    //        if (localMousePosition.x < charInfo.cursorPos.x)
+    //        {
+    //            return i;
+    //        }
+    //    }
+    //    return textGen.characterCountVisible;
+    //}
 }
