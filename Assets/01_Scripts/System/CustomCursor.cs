@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -67,15 +68,15 @@ public class CustomCursor : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             SimulateClick(worldPosition, -1); // 왼쪽 클릭
-            MouseDragStart(worldPosition);
+            MouseDragStart(worldPosition); // 드래그 시작
         }
         else if (Input.GetMouseButton(0))
         {
-            MouseDragUpdate(worldPosition);
+            MouseDragUpdate(worldPosition); // 드래그
         }
         else if (Input.GetMouseButtonUp(0))
         {
-            MouseDragEnd(worldPosition);
+            MouseDragEnd(worldPosition); // 드래그 종료
         }
         else if(Input.GetMouseButtonDown(1))
         {
@@ -109,6 +110,7 @@ public class CustomCursor : MonoBehaviour
         isSetting = false;
     }
 
+    // 오브젝트에 커서가 있을경우 pointerEnter, pointerExit 실행
     void CheckPointerEvents(Vector2 position)
     {
         PointerEventData pointerData = new PointerEventData(EventSystem.current)
@@ -181,8 +183,8 @@ public class CustomCursor : MonoBehaviour
         {
             if (result.gameObject.GetComponent<IDragHandler>() != null)
             {
-                //if (result.gameObject.GetComponent<InputField>() != null)
-                //    SetCaretPosition(result.gameObject.GetComponent<InputField>(), position);
+                if (result.gameObject.GetComponent<TMP_InputField>() != null)
+                    SetCaretPosition(result.gameObject.GetComponent<TMP_InputField>(), position);
 
                 currentDraggable = result.gameObject;
                 dragPointerData = pointerData;
@@ -255,26 +257,18 @@ public class CustomCursor : MonoBehaviour
         }
     }
 
-    //void SetCaretPosition(InputField inputField, Vector2 position)
-    //{
-    //    TextGenerator textGen = inputField.textComponent.cachedTextGenerator;
-    //    int charIndex = GetCharacterIndexFromPosition(inputField, position, textGen);
+    void SetCaretPosition(TMP_InputField inputField, Vector2 position)
+    {
+        int charIndex = GetCharacterIndexFromPosition(inputField, position);
 
-    //    inputField.caretPosition = charIndex;
-    //    inputField.selectionAnchorPosition = charIndex;
-    //    inputField.selectionFocusPosition = charIndex;
-    //}
+        inputField.caretPosition = charIndex;
+        inputField.selectionAnchorPosition = charIndex;
+        inputField.selectionFocusPosition = charIndex;
+    }
 
-    //int GetCharacterIndexFromPosition(InputField inputField, Vector2 localMousePosition, TextGenerator textGen)
-    //{
-    //    for (int i = 0; i < textGen.characterCountVisible; i++)
-    //    {
-    //        UICharInfo charInfo = textGen.characters[i];
-    //        if (localMousePosition.x < charInfo.cursorPos.x)
-    //        {
-    //            return i;
-    //        }
-    //    }
-    //    return textGen.characterCountVisible;
-    //}
+    int GetCharacterIndexFromPosition(TMP_InputField inputField, Vector2 localMousePosition)
+    {
+        int charIndex = TMP_TextUtilities.GetCursorIndexFromPosition(inputField.textComponent, localMousePosition, null);
+        return charIndex;
+    }
 }
