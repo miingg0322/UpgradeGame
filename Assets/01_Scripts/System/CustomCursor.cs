@@ -66,7 +66,7 @@ public class CustomCursor : MonoBehaviour
         // 마우스 클릭과 드래그 구현
         if (Input.GetMouseButtonDown(0))
         {
-            SimulateClick(worldPosition);
+            SimulateClick(worldPosition, -1); // 왼쪽 클릭
             MouseDragStart(worldPosition);
         }
         else if (Input.GetMouseButton(0))
@@ -76,6 +76,10 @@ public class CustomCursor : MonoBehaviour
         else if (Input.GetMouseButtonUp(0))
         {
             MouseDragEnd(worldPosition);
+        }
+        else if(Input.GetMouseButtonDown(1))
+        {
+            SimulateClick(worldPosition, -2); // 오른쪽 클릭
         }
 
         // 마우스 휠 스크롤 구현
@@ -138,10 +142,11 @@ public class CustomCursor : MonoBehaviour
         previousPointerEnterObjects.AddRange(currentPointerEnterObjects);
     }
 
-    void SimulateClick(Vector2 position)
+    void SimulateClick(Vector2 position, int pointerId)
     {
         PointerEventData pointerData = new PointerEventData(EventSystem.current);
         pointerData.position = position;
+        pointerData.pointerId = pointerId;
 
         List<RaycastResult> results = new List<RaycastResult>();
         EventSystem.current.RaycastAll(pointerData, results);
