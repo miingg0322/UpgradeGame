@@ -10,9 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4ff69f11fbd2e654c88d2fe747767ae2, type: 3}
-  m_Name: WeaponData_Tier_4
+  m_Name: WeaponData_Type_2_Grade_2
   m_EditorClassIdentifier: 
-  tier: 4
-  dmgBase: 0
-  dmgPerLevel: 0
+  tier: 0
+  dmgBase: 10
+  dmgPerLevel: 1
   maxSafeLevel: 20
+  maxLevel: 50

@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4ff69f11fbd2e654c88d2fe747767ae2, type: 3}
-  m_Name: WeaponData_Tier_3
+  m_Name: WeaponData_Type_0_Grade_3
   m_EditorClassIdentifier: 
   tier: 3
   dmgBase: 0
