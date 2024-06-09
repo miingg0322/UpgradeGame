@@ -5,11 +5,12 @@ using UnityEngine;
 
 public class Explosion : MonoBehaviour
 {
-    public float damage = 250f;
+    public float damage;
 
     float timer = 0f;
     private void OnEnable()
     {
+        damage = Player.Instance.weapon.dmg * 8;
         transform.localScale = Vector3.zero;
         timer = 0f;
     }

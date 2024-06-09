@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Melee : MonoBehaviour
 {
-    public int damage = 75;
+    public int damage;
 
     Rigidbody2D rigid;
     Transform trans;
@@ -18,6 +18,7 @@ public class Melee : MonoBehaviour
 
     private void Start()
     {
+        damage = Player.Instance.weapon.dmg * 4;
         //spriter.sprite = Player.Instance.weapon.weaponData.sprite;                
     }
 
