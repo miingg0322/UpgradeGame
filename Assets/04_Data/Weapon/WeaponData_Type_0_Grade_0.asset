@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ff69f11fbd2e654c88d2fe747767ae2, type: 3}
   m_Name: WeaponData_Type_0_Grade_0
   m_EditorClassIdentifier: 
-  tier: 0
-  dmgBase: 10
+  grade: 0
+  dmgBase: 300
   dmgPerLevel: 1
   maxSafeLevel: 20
   maxLevel: 50
