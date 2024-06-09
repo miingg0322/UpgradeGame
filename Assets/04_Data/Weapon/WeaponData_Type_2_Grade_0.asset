@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: WeaponData_Type_2_Grade_0
   m_EditorClassIdentifier: 
   grade: 0
-  dmgBase: 300
+  dmgBase: 20
   dmgPerLevel: 1
   maxSafeLevel: 20
   maxLevel: 50

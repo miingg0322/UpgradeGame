@@ -115,40 +115,9 @@ public class Enemy : MonoBehaviour
             // 적이 받은 데미지만큼 체력 감소
             hp -= damage;
 
-            // PoolManager로 데미지 Text를 생성
-            GameObject damageText = GameManager.Instance.pool.Get(4);
-            Vector3 randomPos = transform.position + new Vector3(Random.Range(-0.3f, 0.3f), Random.Range(-0.3f, 0.3f),0); // 텍스트가 랜덤한 위치에서 생성
-            damageText.GetComponent<TextMeshProUGUI>().rectTransform.position = Camera.main.WorldToScreenPoint(randomPos); // 객체의 위치를 rectTransform으로 변환
-            damageText.GetComponent<DamageText>().Damaged(damage);
+            ActiveDamageText(damage);
 
-            if (gameObject.activeSelf)
-                StartCoroutine(KnockBack());
-                
-            if(hp > 0)
-            {
-                // 피격 애니메이션, 효과음 재생
-            }
-            else
-            {
-                if(gameObject.layer == LayerMask.NameToLayer("Boss") && !GameManager.Instance.isDungeonClear)
-                {
-                    GameManager.Instance.isDungeonClear = true;
-                    StartCoroutine(Dead());
-                    DropItem();
-                    // 임시 구현
-                    Debug.Log("스테이지 클리어");                   
-
-                    // 먹은 아이템들을 보여주는 ui 출력
-                    GameManager.Instance.notice.DungeonClear();
-                }
-                else
-                {
-                    StartCoroutine(Dead());
-                    DropItem();
-
-                }
-                             
-            }
+            Damaged();
         }
         if(collision.CompareTag("Melee") && !isDamaged && !isDead)
         {
@@ -158,38 +127,9 @@ public class Enemy : MonoBehaviour
             // 적이 받은 데미지만큼 체력 감소
             hp -= damage;
 
-            // PoolManager로 데미지 Text를 생성
-            GameObject damageText = GameManager.Instance.pool.Get(4);
-            Vector3 randomPos = transform.position + new Vector3(Random.Range(-0.3f, 0.3f), Random.Range(-0.3f, 0.3f), 0); // 텍스트가 랜덤한 위치에서 생성
-            damageText.GetComponent<TextMeshProUGUI>().rectTransform.position = Camera.main.WorldToScreenPoint(randomPos); // 객체의 위치를 rectTransform으로 변환
-            damageText.GetComponent<DamageText>().Damaged(damage);
+            ActiveDamageText(damage);
 
-            if (gameObject.activeSelf)
-                StartCoroutine(KnockBack());
-
-            if (hp > 0)
-            {
-                // 피격 애니메이션, 효과음 재생
-            }
-            else
-            {
-                if (gameObject.layer == LayerMask.NameToLayer("Boss") && !GameManager.Instance.isDungeonClear)
-                {
-                    GameManager.Instance.isDungeonClear = true;
-                    StartCoroutine(Dead());
-                    DropItem();
-                    // 임시 구현
-                    Debug.Log("스테이지 클리어");
-                    
-                    // 먹은 아이템들을 보여주는 ui 출력
-                    GameManager.Instance.notice.DungeonClear();
-                }
-                else
-                {
-                    StartCoroutine(Dead());
-                    DropItem();
-                }
-            }        
+            Damaged();
         }
         if (collision.CompareTag("Explosion") && !isDead)
         {
@@ -199,38 +139,9 @@ public class Enemy : MonoBehaviour
             // 적이 받은 데미지만큼 체력 감소
             hp -= damage;
 
-            // PoolManager로 데미지 Text를 생성
-            GameObject damageText = GameManager.Instance.pool.Get(4);
-            Vector3 randomPos = transform.position + new Vector3(Random.Range(-0.3f, 0.3f), Random.Range(-0.3f, 0.3f), 0); // 텍스트가 랜덤한 위치에서 생성
-            damageText.GetComponent<TextMeshProUGUI>().rectTransform.position = Camera.main.WorldToScreenPoint(randomPos); // 객체의 위치를 rectTransform으로 변환
-            damageText.GetComponent<DamageText>().Damaged(damage);
+            ActiveDamageText(damage);
 
-            if (gameObject.activeSelf)
-                StartCoroutine(KnockBack());
-
-            if (hp > 0)
-            {
-                // 피격 애니메이션, 효과음 재생
-            }
-            else
-            {
-                if (gameObject.layer == LayerMask.NameToLayer("Boss") && !GameManager.Instance.isDungeonClear)
-                {
-                    GameManager.Instance.isDungeonClear = true;
-                    StartCoroutine(Dead());
-                    DropItem();
-                    // 임시 구현
-                    Debug.Log("스테이지 클리어");
-                    
-                    // 먹은 아이템들을 보여주는 ui 출력
-                    GameManager.Instance.notice.DungeonClear();
-                }
-                else
-                {
-                    StartCoroutine(Dead());
-                    DropItem();
-                }
-            }
+            Damaged();
         }
         if (collision.CompareTag("Skill") && !isDead)
         {
@@ -240,40 +151,8 @@ public class Enemy : MonoBehaviour
             // 적이 받은 데미지만큼 체력 감소
             hp -= damage;
 
-            // PoolManager로 데미지 Text를 생성
-            GameObject damageText = GameManager.Instance.pool.Get(4);
-            Vector3 randomPos = transform.position + new Vector3(Random.Range(-0.3f, 0.3f), Random.Range(-0.3f, 0.3f), 0); // 텍스트가 랜덤한 위치에서 생성
-            damageText.GetComponent<TextMeshProUGUI>().rectTransform.position = Camera.main.WorldToScreenPoint(randomPos); // 객체의 위치를 rectTransform으로 변환
-            damageText.GetComponent<DamageText>().Damaged(damage);
-
-            if (gameObject.activeSelf)
-                StartCoroutine(KnockBack());
-
-            if (hp > 0)
-            {
-                // 피격 애니메이션, 효과음 재생
-            }
-            else
-            {
-                if (gameObject.layer == LayerMask.NameToLayer("Boss") && !GameManager.Instance.isDungeonClear)
-                {
-                    GameManager.Instance.isDungeonClear = true;
-                    StartCoroutine(Dead());
-                    DropItem();
-                    // 임시 구현
-                    Debug.Log("스테이지 클리어");
-
-                    // 먹은 아이템들을 보여주는 ui 출력
-                    GameManager.Instance.notice.DungeonClear();
-                }
-                else
-                {
-                    StartCoroutine(Dead());
-                    DropItem();
-
-                }
-
-            }
+            ActiveDamageText(damage);          
+            Damaged();
         }
     }
 
@@ -304,6 +183,44 @@ public class Enemy : MonoBehaviour
         gameObject.SetActive(false);
     }
 
+    void Damaged()
+    {
+        if (gameObject.activeSelf)
+            StartCoroutine(KnockBack());
+
+        if (hp > 0)
+        {
+            // 피격 애니메이션, 효과음 재생
+        }
+        else
+        {
+            if (gameObject.layer == LayerMask.NameToLayer("Boss") && !GameManager.Instance.isDungeonClear)
+            {
+                GameManager.Instance.isDungeonClear = true;
+                StartCoroutine(Dead());
+                DropItem();
+                // 임시 구현
+                Debug.Log("스테이지 클리어");
+
+                // 먹은 아이템들을 보여주는 ui 출력
+                GameManager.Instance.notice.DungeonClear();
+            }
+            else
+            {
+                StartCoroutine(Dead());
+                DropItem();
+            }
+        }
+    }
+
+    void ActiveDamageText(float damage)
+    {
+        // PoolManager로 데미지 Text를 생성
+        GameObject damageText = GameManager.Instance.pool.Get(4);
+        Vector3 randomPos = transform.position + new Vector3(Random.Range(-0.3f, 0.3f), Random.Range(-0.3f, 0.3f), 0); // 텍스트가 랜덤한 위치에서 생성
+        damageText.GetComponent<TextMeshProUGUI>().rectTransform.position = Camera.main.WorldToScreenPoint(randomPos); // 객체의 위치를 rectTransform으로 변환
+        damageText.GetComponent<DamageText>().Damaged(damage);
+    }
     void DropItem()
     {
         // 가중치에 따라 아이템 뽑기
