@@ -13,11 +13,15 @@ public class Scanner : MonoBehaviour
     public Transform nearestTarget;
 
     bool bossFound;
+
     private void FixedUpdate()
     {
-        targets = Physics2D.CircleCastAll(transform.position, scanRange, Vector2.zero, 0, targetLayer);
-        boss = Physics2D.CircleCastAll(transform.position, scanRange, Vector2.zero, 0, targetLayerBoss);
-        nearestTarget = GetNearest();
+        if(nearestTarget == null || !nearestTarget.gameObject.activeInHierarchy || nearestTarget.position.x > transform.position.x)
+        {
+            targets = Physics2D.CircleCastAll(transform.position, scanRange, Vector2.zero, 0, targetLayer);
+            boss = Physics2D.CircleCastAll(transform.position, scanRange, Vector2.zero, 0, targetLayerBoss);
+            nearestTarget = GetNearest();
+        }     
     }
 
     Transform GetNearest()
@@ -44,7 +48,7 @@ public class Scanner : MonoBehaviour
             Vector3 myPos = transform.position;
             Vector3 targetPos = target.transform.position;
             float angle = Vector3.Angle(myPos, targetPos);
-            if (angle > scanAngle)
+            if (angle > scanAngle && myPos.x > targetPos.x)
             {
                 float curDiff = Vector3.Distance(myPos, targetPos);
 
