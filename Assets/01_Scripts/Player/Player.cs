@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 public class Player : MonoBehaviour
 {
     private static Player instance;
@@ -11,7 +12,7 @@ public class Player : MonoBehaviour
         set { instance = value; }
     }
 
-    public PlayerData[] playerDatas;
+    public PlayerData[] playerDatas;   
     public int playerId;
     public int playerClass;
     public string playerName;
@@ -23,12 +24,12 @@ public class Player : MonoBehaviour
     public float drainRate;
     public bool specialMove;
 
+    public WeaponDataManager weaponDataManager;
     public Vector2 inputVec;
     public Scanner scanner;
     public Weapon weapon;
     public Sprite sprite;
     public GameObject[] specialSkill;
-    
 
     Rigidbody2D rigid;
     SpriteRenderer spriter;
@@ -53,6 +54,25 @@ public class Player : MonoBehaviour
     {
         GameManager.Instance.AssignPlayer(this);
         Init(GameManager.Instance.selectedCharacterClass);
+    }
+
+    private void Update()
+    {
+        if (SceneManager.GetActiveScene().name != "Boss")
+        {
+            return; 
+        }
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            // 기본 공격
+            Debug.Log("기본 공격");
+        }
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            // 대쉬
+            Debug.Log("대쉬");
+        }
     }
     void OnMove(InputValue value)
     {
@@ -82,6 +102,21 @@ public class Player : MonoBehaviour
         drainRate = data.drainRate;
         sprite = data.playerSprite;
         spriter.sprite = data.playerSprite;
+
+        if (!GameManager.Instance.isTutorialClear)
+        {
+            WeaponBaseData weaponData = weaponDataManager.GetWeaponData(index, 0);
+            weapon.weaponData = weaponData;
+            weapon.dmg = weaponData.dmgBase;
+        }
+        else
+        {
+            // 장착한 무기의 데이터를 불러오게 구현예정
+            WeaponBaseData weaponData = weaponDataManager.GetWeaponData(index, 0);
+            weapon.weaponData = weaponData;
+            weapon.dmg = weaponData.dmgBase;
+        }
+        
     }
 
     // AutoFarming에서 사용가능한 필살기

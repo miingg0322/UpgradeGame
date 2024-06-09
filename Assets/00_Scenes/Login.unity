@@ -6918,6 +6918,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a1beb3b9b5eff468b3d42c722878f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerAction: {fileID: 0}
 --- !u!4 &824910733
 Transform:
   m_ObjectHideFlags: 0
@@ -8140,9 +8141,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bgmClip: {fileID: 8300000, guid: 4559935c00ef8e94b846e2e03e39f0d0, type: 3}
   bgmVolume: 0.7
-  sfxClips: []
-  sfxVolume: 0.7
-  channels: 0
+  gameSfxClips:
+  - {fileID: 8300000, guid: 79180f511d89441b9aa23ccae1992fe0, type: 3}
+  - {fileID: 8300000, guid: 881e3f52c86c94f26a60718d35627cd8, type: 3}
+  - {fileID: 8300000, guid: d46323e22e74e46baa241cbf48c85671, type: 3}
+  gameSfxVolume: 0
+  gameChannels: 16
+  skillSfxClips:
+  - {fileID: 8300000, guid: 7bd6b897eb5ca4b7d88a205c4a51640c, type: 3}
+  - {fileID: 8300000, guid: 5039414d94a6e4e70a5ab9e8833e992a, type: 3}
+  - {fileID: 8300000, guid: 80e397195ea2940b69ee7bdbded856a5, type: 3}
+  skillSfxVolume: 0
+  skillChannels: 16
+  uiSfxClips:
+  - {fileID: 8300000, guid: 32d4b1811dda14a6cb9e059ee8ad17d2, type: 3}
+  - {fileID: 8300000, guid: 81652031b64c342cc8dbc59c138d77c5, type: 3}
+  - {fileID: 8300000, guid: ffb159a21c8a04135a5616979c828fab, type: 3}
+  uiSfxVolume: 0
+  uiChannels: 16
 --- !u!4 &1170683493
 Transform:
   m_ObjectHideFlags: 0
@@ -11168,7 +11184,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 988d966fd977e93458130c02ada93953, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cursorPrefab: {fileID: 7125197804294638088, guid: 19f3bd51c33cf91478aefb992d368474, type: 3}
   playerData:
   - {fileID: 11400000, guid: ebff8097325bfce4892e1abc5cd8fc1b, type: 2}
   - {fileID: 11400000, guid: 54afc0867dd0c20449fb441f8b40ef35, type: 2}
@@ -11179,6 +11194,7 @@ MonoBehaviour:
   notice: {fileID: 0}
   weapon: {fileID: 0}
   loginUi: {fileID: 1971632491}
+  sampleSceneUI: {fileID: 0}
   cleaner: {fileID: 0}
   userId: 
   DungeonLevel: 0
@@ -11197,6 +11213,7 @@ MonoBehaviour:
   isCharacterSelect: 0
   isCreate: 0
   isChangeSetting: 0
+  isTutorialClear: 0
   probBase: 1000
 --- !u!4 &1758712023
 Transform:
