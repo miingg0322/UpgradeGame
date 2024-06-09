@@ -110,7 +110,7 @@ public class Enemy : MonoBehaviour
         if (collision.CompareTag("Range") && !isDead)
         {
             float damage = collision.GetComponent<Range>().damage;
-            damage += Random.Range(-0.15f * damage, 0.15f * damage);
+            damage += Random.Range(-0.07f * damage, 0.07f * damage);
 
             // 적이 받은 데미지만큼 체력 감소
             hp -= damage;
@@ -153,7 +153,7 @@ public class Enemy : MonoBehaviour
         if(collision.CompareTag("Melee") && !isDamaged && !isDead)
         {
             float damage = collision.GetComponent<Melee>().damage;
-            damage += Random.Range(-0.15f * damage, 0.15f * damage);
+            damage += Random.Range(-0.07f * damage, 0.07f * damage);
 
             // 적이 받은 데미지만큼 체력 감소
             hp -= damage;
@@ -194,7 +194,7 @@ public class Enemy : MonoBehaviour
         if (collision.CompareTag("Explosion") && !isDead)
         {
             float damage = collision.GetComponent<Explosion>().damage;
-            damage += Random.Range(-0.15f * damage, 0.15f * damage);
+            damage += Random.Range(-0.07f * damage, 0.07f * damage);
 
             // 적이 받은 데미지만큼 체력 감소
             hp -= damage;
@@ -235,7 +235,7 @@ public class Enemy : MonoBehaviour
         if (collision.CompareTag("Skill") && !isDead)
         {
             float damage = collision.GetComponent<SpecialMove>().damage;
-            damage += Random.Range(-0.15f * damage, 0.15f * damage);
+            damage += Random.Range(-0.07f * damage, 0.07f * damage);
 
             // 적이 받은 데미지만큼 체력 감소
             hp -= damage;
@@ -280,6 +280,7 @@ public class Enemy : MonoBehaviour
     IEnumerator KnockBack()
     {       
         yield return wait;
+        AudioManager.instance.PlayGameSfx(AudioManager.GameSfx.hitEnemy);
         isHit = true;
         isDamaged = true;
 
@@ -292,6 +293,7 @@ public class Enemy : MonoBehaviour
 
     public IEnumerator Dead()
     {
+        AudioManager.instance.PlaySkillSfx(AudioManager.SkillSfx.die);
         coll.enabled = false;
         rigid.simulated = false;
         spriter.sortingOrder = 0;
@@ -327,6 +329,7 @@ public class Enemy : MonoBehaviour
             // 얻은 아이템 저장
             Debug.Log("아이템 저장");
             GameManager.Instance.CollectItem(itemName, grade, sprite);
+            AudioManager.instance.PlayGameSfx(AudioManager.GameSfx.getItem);
 
             if (!gameObject.activeSelf)
             {
@@ -349,7 +352,7 @@ public class Enemy : MonoBehaviour
         {
             Debug.Log(grade);
             GameManager.Instance.notice.NoticeRoutine();
-            GameManager.Instance.notice.noticeText.text = itemName + "를 획득했습니다!";
+            GameManager.Instance.notice.noticeText.text = itemName;
             GameManager.Instance.notice.noticeIcon.sprite = sprite;
         }
         else

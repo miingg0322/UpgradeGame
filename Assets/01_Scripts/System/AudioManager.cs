@@ -17,14 +17,30 @@ public class AudioManager : MonoBehaviour
     AudioSource bgmPlayer;
     AudioHighPassFilter bgmEffect;
 
-    [Header("#SFX")]
-    public AudioClip[] sfxClips;
-    public float sfxVolume;
-    public int channels;
-    AudioSource[] sfxPlayers;
-    int channelIndex;
+    [Header("#GAME SFX")]
+    public AudioClip[] gameSfxClips;
+    public float gameSfxVolume;
+    public int gameChannels;
+    AudioSource[] gameSfxPlayers;
+    int gameChannelIndex;
 
-    public enum Sfx { }
+    [Header("#SKILL SFX")]
+    public AudioClip[] skillSfxClips;
+    public float skillSfxVolume;
+    public int skillChannels;
+    AudioSource[] skillSfxPlayers;
+    int skillChannelIndex;
+
+    [Header("#UI SFX")]
+    public AudioClip[] uiSfxClips;
+    public float uiSfxVolume;
+    public int uiChannels;
+    AudioSource[] uiSfxPlayers;
+    int uiChannelIndex;
+
+    public enum GameSfx { getItem, hitEnemy, playerAttack }
+    public enum SkillSfx { victory , lackTicket , die }
+    public enum UISfx { uiList, dungeonList, characterInfo }
     private void Awake()
     {
         if (instance == null)
@@ -36,12 +52,16 @@ public class AudioManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        bgmVolume = PlayerPrefs.GetInt("bgmVolumeValue", 70) / 100;
         Init();
     }
 
     void Init()
     {
+        bgmVolume = PlayerPrefs.GetInt("bgmVolumeValue", 70) / 100f;
+        gameSfxVolume = PlayerPrefs.GetInt("gameVolumeValue", 70) / 100f;
+        skillSfxVolume = PlayerPrefs.GetInt("skillVolumeValue", 70) / 100f;
+        uiSfxVolume = PlayerPrefs.GetInt("uiVolumeValue", 70) / 100f;
+
         GameObject bgmObject = new GameObject("BgmPlayer");
         bgmObject.transform.parent = transform;
         bgmPlayer = bgmObject.AddComponent<AudioSource>();
@@ -51,16 +71,43 @@ public class AudioManager : MonoBehaviour
         bgmPlayer.clip = bgmClip;
         bgmEffect = Camera.main.GetComponent<AudioHighPassFilter>();
 
-        GameObject sfxObject = new GameObject("SfxPlayer");
-        sfxObject.transform.parent = transform;
-        sfxPlayers = new AudioSource[channels];
+        // Game Sfx 초기화
+        GameObject gameSfxObject = new GameObject("GameSfxPlayer");
+        gameSfxObject.transform.parent = transform;
+        gameSfxPlayers = new AudioSource[gameChannels];
 
-        for (int i = 0; i < channels; i++)
+        for (int i = 0; i < gameChannels; i++)
         {
-            sfxPlayers[i] = sfxObject.AddComponent<AudioSource>();
-            sfxPlayers[i].playOnAwake = false;
-            sfxPlayers[i].bypassListenerEffects = true;
-            sfxPlayers[i].volume = sfxVolume;
+            gameSfxPlayers[i] = gameSfxObject.AddComponent<AudioSource>();
+            gameSfxPlayers[i].playOnAwake = false;
+            gameSfxPlayers[i].bypassListenerEffects = true;
+            gameSfxPlayers[i].volume = gameSfxVolume;
+        }
+
+        // Skill Sfx 초기화
+        GameObject skillSfxObject = new GameObject("SkillSfxPlayer");
+        skillSfxObject.transform.parent = transform;
+        skillSfxPlayers = new AudioSource[skillChannels];
+
+        for (int i = 0; i < skillChannels; i++)
+        {
+            skillSfxPlayers[i] = skillSfxObject.AddComponent<AudioSource>();
+            skillSfxPlayers[i].playOnAwake = false;
+            skillSfxPlayers[i].bypassListenerEffects = true;
+            skillSfxPlayers[i].volume = skillSfxVolume;
+        }
+
+        // UI Sfx 초기화
+        GameObject UiSfxObject = new GameObject("UiSfxPlayer");
+        UiSfxObject.transform.parent = transform;
+        uiSfxPlayers = new AudioSource[uiChannels];
+
+        for (int i = 0; i < gameChannels; i++)
+        {
+            uiSfxPlayers[i] = UiSfxObject.AddComponent<AudioSource>();
+            uiSfxPlayers[i].playOnAwake = false;
+            uiSfxPlayers[i].bypassListenerEffects = true;
+            uiSfxPlayers[i].volume = uiSfxVolume;
         }
     }
     public void PlayBgm(bool isPlay)
@@ -79,20 +126,54 @@ public class AudioManager : MonoBehaviour
     {
         bgmEffect.enabled = isPlay;
     }
-    public void PlaySfx(Sfx sfx)
+    public void PlayGameSfx(GameSfx sfx)
     {
-        for (int i = 0; i < channels; i++)
+        for (int i = 0; i < gameChannels; i++)
         {
-            int loopIndex = (i + channelIndex) % channels;
+            int loopIndex = (i + gameChannelIndex) % gameChannels;
 
-            if (sfxPlayers[loopIndex].isPlaying)
+            if (gameSfxPlayers[loopIndex].isPlaying)
                 continue;
 
             int ranIndex = 0;
 
-            channelIndex = loopIndex;
-            sfxPlayers[loopIndex].clip = sfxClips[(int)sfx + ranIndex];
-            sfxPlayers[loopIndex].Play();
+            gameChannelIndex = loopIndex;
+            gameSfxPlayers[loopIndex].clip = gameSfxClips[(int)sfx + ranIndex];
+            gameSfxPlayers[loopIndex].Play();
+            break;
+        }
+    }
+    public void PlaySkillSfx(SkillSfx sfx)
+    {
+        for (int i = 0; i < skillChannels; i++)
+        {
+            int loopIndex = (i + skillChannelIndex) % skillChannels;
+
+            if (skillSfxPlayers[loopIndex].isPlaying)
+                continue;
+
+            int ranIndex = 0;
+
+            skillChannelIndex = loopIndex;
+            skillSfxPlayers[loopIndex].clip = skillSfxClips[(int)sfx + ranIndex];
+            skillSfxPlayers[loopIndex].Play();
+            break;
+        }
+    }
+    public void PlayUISfx(UISfx sfx)
+    {
+        for (int i = 0; i < uiChannels; i++)
+        {
+            int loopIndex = (i + uiChannelIndex) % uiChannels;
+
+            if (uiSfxPlayers[loopIndex].isPlaying)
+                continue;
+
+            int ranIndex = 0;
+
+            uiChannelIndex = loopIndex;
+            uiSfxPlayers[loopIndex].clip = uiSfxClips[(int)sfx + ranIndex];
+            uiSfxPlayers[loopIndex].Play();
             break;
         }
     }
@@ -100,5 +181,26 @@ public class AudioManager : MonoBehaviour
     public void BGMVolumeSetting(float volume)
     {
         bgmPlayer.volume = volume;
-    } 
+    }
+    public void GameVolumeSetting(float volume)
+    {
+        for(int index = 0; index < gameChannels; index++)
+        {
+            gameSfxPlayers[index].volume = volume;
+        }       
+    }
+    public void SkillVolumeSetting(float volume)
+    {
+        for (int index = 0; index < skillChannels; index++)
+        {
+            skillSfxPlayers[index].volume = volume;
+        }
+    }
+    public void UIVolumeSetting(float volume)
+    {
+        for (int index = 0; index < uiChannels; index++)
+        {
+            uiSfxPlayers[index].volume = volume;
+        }
+    }
 }

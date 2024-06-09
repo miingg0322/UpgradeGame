@@ -88,6 +88,7 @@ public class LoginUi : MonoBehaviour
     }
     public void ActiveSignUp()
     {
+        AudioManager.Instance.PlayUISfx(AudioManager.UISfx.uiList);
         idField.text = "";
         passwordField.text = "";
 
