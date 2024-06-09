@@ -5,6 +5,7 @@ using MySql.Data.MySqlClient;
 using UnityEngine.SceneManagement;
 using UnityEngine.TextCore.Text;
 using System;
+using System.Runtime.ConstrainedExecution;
 public class DBManager : MonoBehaviour
 {
     private static DBManager instance;
@@ -83,7 +84,7 @@ public class DBManager : MonoBehaviour
         MySqlCommand offCommand = new MySqlCommand(OffQuery, connection);
         offCommand.ExecuteNonQuery();
 
-        string query = $"INSERT INTO users (nickname, id, pw) VALUES ('{nickname}', '{id}', '{password}')";
+        string query = $"INSERT INTO users (nickname, id, pw, tutorial) VALUES ('{nickname}', '{id}', '{password}', 0)";
         MySqlCommand command = new MySqlCommand(query, connection);
         command.ExecuteNonQuery();
 
@@ -109,6 +110,7 @@ public class DBManager : MonoBehaviour
         {
             GameManager.Instance.SetUserSlots(GetCharacterInfo(id));
             GameManager.Instance.userId = id;
+            GameManager.Instance.isTutorialClear = GetTutorialClear(id);
             GameManager.Instance.loginUi.Login();
         }
         else
@@ -168,6 +170,38 @@ public class DBManager : MonoBehaviour
         return slots;
     }
 
+    public bool GetTutorialClear(string userId)
+    {
+        OpenConnection();
+
+        int tutorial = -1;
+
+        string query = $"SELECT tutorial FROM users WHERE id = '{userId}'";
+        MySqlCommand command = new MySqlCommand(query, connection);
+        MySqlDataReader reader = command.ExecuteReader();
+
+        if (reader.Read())
+        {
+            tutorial = reader.GetInt32(0);
+        }
+
+        bool tutorialClear = tutorial == 1 ? true : false;
+
+        CloseConnection();
+
+        return tutorialClear;
+    }
+
+    public void TutorialClear(string userId)
+    {
+        OpenConnection();
+
+        string query = $"UPDATE users SET tutorial = 1 WHERE id = '{userId}'";
+        MySqlCommand command = new MySqlCommand(query, connection);
+        command.ExecuteNonQuery();
+
+        CloseConnection();
+    }
     public int CreateCharacter(string userId, int characterClass)
     {
         int characterId = -1;
