@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -27,6 +28,9 @@ public class LoginUi : MonoBehaviour
     public GameObject deleteNotice;
     public GameObject createNotice;
     public GameObject createNoticeCreateBtn;
+    public GameObject eyeOff;
+    public GameObject eyeOn;
+    public GameObject capsLockUi;
 
     public GameObject[] selectBtn;
     public GameObject[] deleteBtn;
@@ -75,6 +79,10 @@ public class LoginUi : MonoBehaviour
             }
             activeUi.SetActive(false);
         }
+
+
+        bool isCapsLockOn = IsCapsLockOn();
+        capsLockUi.GetComponent<Animator>().SetBool("CapsLockOn", isCapsLockOn);    
     }
     public void Login()
     {
@@ -85,6 +93,23 @@ public class LoginUi : MonoBehaviour
 
         if(GameManager.Instance.userSlots != null)
             CancleDelete();
+    }
+
+    // Password InputField에서 아이콘 클릭시 비밀번호가 보여지거나 숨겨지는 함수
+    public void SetShowPassword()
+    {
+        if(eyeOff.activeSelf)
+        {
+            eyeOff.SetActive(false);
+            eyeOn.SetActive(true);
+            passwordField.contentType = TMP_InputField.ContentType.Standard;
+        }
+        else
+        {
+            eyeOff.SetActive(true);
+            eyeOn.SetActive(false);
+            passwordField.contentType = TMP_InputField.ContentType.Password;
+        }
     }
     public void ActiveSignUp()
     {
@@ -242,4 +267,12 @@ public class LoginUi : MonoBehaviour
         GameManager.Instance.userId = null;
         GameManager.Instance.userSlots = new int[GameManager.Instance.userSlots.Length];
     }
+
+    bool IsCapsLockOn()
+    {
+        return (GetKeyState(0x14) & 0xffff) != 0;
+    }
+
+    [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
+    public static extern short GetKeyState(int keyCode);
 }
