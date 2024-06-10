@@ -22,6 +22,8 @@ public class FollowDetail : MonoBehaviour
     RectTransform rectTransform;
     Canvas canvas;
     Vector2 offset;
+    public CustomCursor cursor;
+
     void Start()
     {
         rectTransform = GetComponent<RectTransform>();
@@ -36,13 +38,17 @@ public class FollowDetail : MonoBehaviour
     {
         itemName.text = item.name;
         itemDetail.text = $"타입: {item.type}, 등급: {item.grade}";
+        if(item.type == 0)
+        {
+            itemDetail.text = string.Concat(itemDetail.text, $" {item.value}강");
+        }
     }
 
     private void Update()
     {
         Vector2 movePos;
 
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(canvas.transform as RectTransform, Input.mousePosition, canvas.worldCamera, out movePos);
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(canvas.transform as RectTransform, cursor.transform.position, canvas.worldCamera, out movePos);
 
         transform.position = canvas.transform.TransformPoint(movePos + offset);
     }
