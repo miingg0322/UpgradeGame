@@ -12,15 +12,13 @@ public class Upgrade : MonoBehaviour
 
     void Start()
     {
+
     }
 
-    public void GetWeapon(Weapon weapon)
-    {
-        this.weapon = weapon;
-    }
     public void UpgradeWeapon()
     {
-        if(weapon.Level<weapon.weaponData.maxLevel && weapon.Level>=0)
+        weapon = weaponSlot.weapon;
+        if (weapon.Level<weapon.weaponData.maxLevel && weapon.Level>=0)
         {
             // 강화 비용 처리
             cost = GameManager.Instance.dataTables["Cost"][weapon.weaponData.grade][weapon.Level];
@@ -28,28 +26,39 @@ public class Upgrade : MonoBehaviour
             // 비용 부족
             if (foundItem !=null)
             {
+                foundItem.PrintDetail();
                 if (foundItem.amount < cost)
+                {
                     return;
+                }
+                foundItem.amount -= cost;
+                SQLiteManager.Instance.UseItemFromInventory(foundItem, cost);
+                SQLiteManager.Instance.inventory.GetSlotOfItem(foundItem).SetItemAmountText(foundItem.amount);
             }
             else
             {
-                foundItem.amount -= cost;
-                SQLiteManager.Instance.UseItemFromInventory(foundItem, cost);
+                Debug.Log("재료 없음");
+                return;
             }
             // 강화 확률 처리
             success = GameManager.Instance.dataTables["Upgrade"][weapon.weaponData.grade][weapon.Level];
-            Debug.Log(success);
+            //Debug.Log(success);
             //Debug.Log(GameManager.Instance.probBase);
             int prob = Random.Range(0, GameManager.Instance.probBase);
             //Debug.Log(prob);
+            Debug.Log($"강화 전: {weapon.Level}");
             if (prob < success)
             {
+                Debug.Log("강화 성공");
                 UpgradeSuccess();
             }
             else
             {
                 UpgradeFail();
             }
+            Debug.Log($"강화 후: {weapon.Level}");
+            SQLiteManager.Instance.UpgradeWeapon(weaponSlot.item.name, weapon.Level);
+            SQLiteManager.Instance.inventory.FindItemExists(weaponSlot.item.type, weaponSlot.item.grade).value++;
         }
 
     }
