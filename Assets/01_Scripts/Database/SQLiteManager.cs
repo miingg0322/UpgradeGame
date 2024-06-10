@@ -36,7 +36,7 @@ public class SQLiteManager : MonoBehaviour
         }
         invenView = inventory.GetComponentInParent<ScrollRect>();
         followDetail = invenView.GetComponentInChildren<FollowDetail>();
-
+        invenView.gameObject.SetActive(false);
         Character tester = new Character(0, 0);
         playingCharacter = tester;
         Connect();
