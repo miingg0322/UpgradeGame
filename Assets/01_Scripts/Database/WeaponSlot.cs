@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class WeaponSlot : MonoBehaviour, IPointerClickHandler
 {
     public Item item;
+    public Weapon weapon;
     public Image image;
     
     public void OnPointerClick(PointerEventData eventData)
@@ -25,7 +26,7 @@ public class WeaponSlot : MonoBehaviour, IPointerClickHandler
         if(this.item != item)
         {
             this.item = item;
-            Debug.Log($"{item.name} µî·Ï");
+            this.item.PrintDetail();
         }
     }
 
@@ -36,7 +37,7 @@ public class WeaponSlot : MonoBehaviour, IPointerClickHandler
     }
     void Start()
     {
-
+        weapon = GetComponent<Weapon>();
     }
 
     // Update is called once per frame
