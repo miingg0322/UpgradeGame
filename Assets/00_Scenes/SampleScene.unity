@@ -175,6 +175,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -640
       objectReference: {fileID: 0}
+    - target: {fileID: 2342164849137713787, guid: a23fe5466c64b874892534b5c96c7eb5, type: 3}
+      propertyPath: m_Name
+      value: ChSelect
+      objectReference: {fileID: 0}
     - target: {fileID: 2527047751596642155, guid: a23fe5466c64b874892534b5c96c7eb5, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
@@ -218,6 +222,14 @@ PrefabInstance:
     - target: {fileID: 3215393063906147356, guid: a23fe5466c64b874892534b5c96c7eb5, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -295
+      objectReference: {fileID: 0}
+    - target: {fileID: 3257529861713573529, guid: a23fe5466c64b874892534b5c96c7eb5, type: 3}
+      propertyPath: m_Name
+      value: Logout
+      objectReference: {fileID: 0}
+    - target: {fileID: 4495419997163376516, guid: a23fe5466c64b874892534b5c96c7eb5, type: 3}
+      propertyPath: m_Name
+      value: Dungeon
       objectReference: {fileID: 0}
     - target: {fileID: 5902846025176601185, guid: a23fe5466c64b874892534b5c96c7eb5, type: 3}
       propertyPath: m_AnchorMax.y
@@ -347,6 +359,18 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6908073305824112316, guid: a23fe5466c64b874892534b5c96c7eb5, type: 3}
+      propertyPath: m_Name
+      value: Inventory
+      objectReference: {fileID: 0}
+    - target: {fileID: 7000983909926766985, guid: a23fe5466c64b874892534b5c96c7eb5, type: 3}
+      propertyPath: m_Name
+      value: Boss
+      objectReference: {fileID: 0}
+    - target: {fileID: 7240126493490347098, guid: a23fe5466c64b874892534b5c96c7eb5, type: 3}
+      propertyPath: m_Name
+      value: Ranking
+      objectReference: {fileID: 0}
     - target: {fileID: 8119627459185551087, guid: a23fe5466c64b874892534b5c96c7eb5, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
@@ -366,6 +390,10 @@ PrefabInstance:
     - target: {fileID: 8119627459185551087, guid: a23fe5466c64b874892534b5c96c7eb5, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -755
+      objectReference: {fileID: 0}
+    - target: {fileID: 8391825702486384812, guid: a23fe5466c64b874892534b5c96c7eb5, type: 3}
+      propertyPath: m_Name
+      value: Option
       objectReference: {fileID: 0}
     - target: {fileID: 8979216876984888574, guid: a23fe5466c64b874892534b5c96c7eb5, type: 3}
       propertyPath: m_AnchorMax.y
@@ -406,6 +434,10 @@ PrefabInstance:
     - target: {fileID: 9031236943774828797, guid: a23fe5466c64b874892534b5c96c7eb5, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -410
+      objectReference: {fileID: 0}
+    - target: {fileID: 9118995117695575555, guid: a23fe5466c64b874892534b5c96c7eb5, type: 3}
+      propertyPath: m_Name
+      value: CharacterInfo
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -16903,7 +16935,7 @@ GameObject:
   - component: {fileID: 1475240647}
   - component: {fileID: 1475240646}
   m_Layer: 5
-  m_Name: Image (8)
+  m_Name: Withdraw
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -18969,6 +19001,7 @@ MonoBehaviour:
   weaponData: {fileID: 0}
   dmg: 0
   sprite: {fileID: 0}
+  atkSpeed: 0
   destroyedLevel: -1
   isDestroyed: 0
   upCost: 0
