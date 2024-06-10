@@ -8,6 +8,7 @@ public class Weapon : MonoBehaviour
     public WeaponBaseData weaponData;
     public int dmg;
     public Sprite sprite;
+    public float atkSpeed;
     // -1 레벨 = 파괴된 상태
     private int level;
     public int Level
@@ -20,6 +21,11 @@ public class Weapon : MonoBehaviour
                 dmg = weaponData.dmgBase + weaponData.dmgPerLevel * level;
             else
                 dmg = (int)(weaponData.dmgBase * 0.75f);
+            if(level%5 == 0)
+            {
+                int count = level / 5;
+                atkSpeed  = weaponData.atkSpeed - count * 0.1f;
+            }
             Debug.Log($"{level}, {dmg}({weaponData.dmgBase} + {weaponData.dmgPerLevel * level})");
         }
     }
@@ -34,7 +40,7 @@ public class Weapon : MonoBehaviour
 
     void Start()
     {
-        Level = 0;
+
     }
 
     public void DestroyWeapon()
@@ -43,6 +49,12 @@ public class Weapon : MonoBehaviour
         isDestroyed = true;
         destroyedLevel = Level;
         Level = -1;
+    }
+
+    public void SetWeaponData(int job, int grade)
+    {
+        Debug.Log($"WeaponData/{job}/WeaponData_{grade}");
+        weaponData = Resources.Load<WeaponBaseData>($"WeaponData/{job}/WeaponData_{grade}");
     }
 }
 

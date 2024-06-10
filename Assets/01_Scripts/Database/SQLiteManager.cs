@@ -161,7 +161,23 @@ public class SQLiteManager : MonoBehaviour
 
     }
     // 아이템 변경 (강화 등)
+    public void UpgradeWeapon(string weaponName, int level)
+    {
+        StartCoroutine(UpgradeWeaponCo(weaponName, level));
+    }
+    IEnumerator UpgradeWeaponCo(string weaponName, int level)
+    {
+        string table = $"{inventoryTable}_{playingCharacter.slot}";
+        SqliteCommand updateCommand = dbConn.CreateCommand();
+        updateCommand.Parameters.Add(new SqliteParameter("@Value", level));
+        updateCommand.Parameters.Add(new SqliteParameter("@Item", weaponName));
+        string query = $"UPDATE {table} SET Value = @Value WHERE Item = @Item";
+        //Debug.Log(query);
+        updateCommand.CommandText = query;
+        yield return updateCommand.ExecuteNonQuery();
+        updateCommand.Dispose();
 
+    }
     IEnumerator CreateCharacter(Character character)
     {
         SqliteCommand createCharacterCommand = dbConn.CreateCommand();
@@ -196,10 +212,30 @@ public class SQLiteManager : MonoBehaviour
             int type = dataReader.GetInt32(1);
             int grade = dataReader.GetInt32(2);
             int amount = dataReader.GetInt32(3);
-            Item item = new Item(itemName, type, grade, amount);
+            int value = dataReader.GetInt32(4);
+            Item item = new Item(itemName, type, grade, amount, value);
             itemList.Add(item);
         }
         return itemList;
+    }
+
+    public Weapon GetEquppiedWeapon()
+    {
+        SqliteDataReader dataReader;
+        string table = $"{inventoryTable}_{playingCharacter.slot}";
+        dataReader = SelectQuery("Item, Grade, Value", table, $"WHERE Equipped = {1}");
+        if (dataReader.HasRows)
+        {
+            dataReader.Read();
+            string itemName = dataReader.GetString(0);
+            int itemGrade = dataReader.GetInt32(1);
+            int level = dataReader.GetInt32(2);
+            Weapon weapon = new Weapon();
+            weapon.weaponData = Resources.Load<WeaponBaseData>($"/WeaponData/{playingCharacter.slot}/WeaponData_{itemGrade}");
+            //$"{Application.streamingAssetsPath}/WeaponData/{playingCharacter.slot}/WeaponData_{itemGrade}";
+            return weapon;
+        }
+        return null;
     }
 }
 
@@ -209,12 +245,19 @@ public class Item
     public int type;
     public int grade;
     public int amount;
+    public int equipped = -1;
+    public int value;
 
-    public Item(string name, int type, int grade, int amount = 1)
+    public Item(string name, int type, int grade, int amount = 1 , int value = -1)
     {
         this.name = name;
         this.type = type;
         this.grade = grade;
         this.amount = amount;
+        this.value = value;
+    }
+    public void PrintDetail()
+    {
+        Debug.Log($"{name}, {type}, {grade}, {amount}, {value}");
     }
 }

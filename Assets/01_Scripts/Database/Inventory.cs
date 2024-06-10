@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Linq;
 
 public class Inventory : MonoBehaviour
 {
@@ -10,12 +11,14 @@ public class Inventory : MonoBehaviour
     GridLayoutGroup gridGroup;
     [SerializeField]
     private int cols;
-    public InvenSlot[] invenSlots;
+    public List<InvenSlot> invenSlots = new List<InvenSlot>();
+    public GameObject slotPrefab;
+
     void Start()
     {
         gridGroup = GetComponent<GridLayoutGroup>();
         gridGroup.constraintCount = cols;
-        invenSlots = transform.GetComponentsInChildren<InvenSlot>();
+        invenSlots = transform.GetComponentsInChildren<InvenSlot>().ToList();
 
         inventory = SQLiteManager.Instance.GetAllItems();
         foreach (var item in inventory)
@@ -27,7 +30,7 @@ public class Inventory : MonoBehaviour
     
     public void SetInventorySlots()
     {
-        for (int i = 0; i < invenSlots.Length; i++)
+        for (int i = 0; i < invenSlots.Count; i++)
         {
             if(i < inventory.Count)
             {
@@ -52,13 +55,26 @@ public class Inventory : MonoBehaviour
         }
         return null;
     }
-    public void AddItemToInventory()
-    {
 
+    public InvenSlot GetSlotOfItem(Item item)
+    {
+        foreach (var invenSlot in invenSlots)
+        {
+            if (item == invenSlot.slotItem)
+            {
+                return invenSlot;
+            }
+        }
+        return null;
     }
-
-    public void UpdateItem()
+    public void DeleteItemFromInventory(InvenSlot slot)
     {
-
+        invenSlots.Remove(slot);
+        inventory.Remove(slot.slotItem);
+        Destroy(slot.transform.parent.gameObject);
+        GameObject newSlot = Instantiate(slotPrefab);
+        newSlot.transform.SetParent(gridGroup.transform);
+        newSlot.transform.localScale = gridGroup.transform.localScale;
+        newSlot.transform.GetChild(0).gameObject.SetActive(false);
     }
 }

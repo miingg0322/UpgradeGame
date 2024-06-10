@@ -10,7 +10,7 @@ public class Repair : MonoBehaviour
     public Weapon weapon1;
     void Start()
     {
-        weapon.weaponData.dmgBase = 10;
+        //weapon.weaponData.dmgBase = 10;
     }
 
     public void NormalRepair()
