@@ -25,11 +25,14 @@ public class SampleSceneUI : MonoBehaviour
     public GameObject dungeonList;
     public GameObject uiList;
     public GameObject menuUi;
+    public GameObject tutorialUi;
+    public GameObject tutorialSkipUi;
 
     Stack<GameObject> uiStack = new Stack<GameObject>();
 
     private void Awake()
     {
+        GameManager.Instance.AssignSampleSceneUi(this);
         UpdateFarmingDungeon();
     }
 
@@ -116,8 +119,26 @@ public class SampleSceneUI : MonoBehaviour
         playerInfoText[5].text = "캐릭터 특성 : " + Player.Instance.playerTrait;
     }
 
+    public void ActiveTutorialSkip()
+    {
+        OpenUI(tutorialSkipUi);
+    }
+
+    public void TutorialSkip()
+    {
+        CloseUI(tutorialSkipUi);
+        tutorialUi.SetActive(false);
+        DBManager.Instance.TutorialClear(GameManager.Instance.userId);
+    }
+
+    public void CancleTutorialSkipUi()
+    {
+        CloseUI(tutorialSkipUi);
+    }
+
     public void ActiveCharacterInfo()
     {
+        AudioManager.instance.PlayUISfx(AudioManager.UISfx.characterInfo);
         // 이미 활성화 되어있다면 버튼을 누를시 꺼지게 구현
         if (characterInfo.activeSelf)
         {
@@ -172,6 +193,7 @@ public class SampleSceneUI : MonoBehaviour
 
     public void ActiveDungeonList()
     {
+        AudioManager.instance.PlayUISfx(AudioManager.UISfx.dungeonList);
         // 이미 활성화 되어있다면 버튼을 누를시 꺼지게 구현
         if (dungeonList.activeSelf)
         {
@@ -184,6 +206,7 @@ public class SampleSceneUI : MonoBehaviour
     }
     public void ClickMenu()
     {
+        AudioManager.instance.PlayUISfx(AudioManager.UISfx.uiList);
         if (uiList.activeSelf)
         {
             menuUi.GetComponent<Animator>().Play("Out");

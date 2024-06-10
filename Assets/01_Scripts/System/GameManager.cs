@@ -18,7 +18,6 @@ public class GameManager : MonoBehaviour
         set { instance = value; }
     }
 
-    public GameObject cursorPrefab;
     public PlayerData[] playerData;
     public PoolManager pool;
     public Player player;
@@ -26,6 +25,7 @@ public class GameManager : MonoBehaviour
     public Notice notice;
     public Weapon weapon;
     public LoginUi loginUi;
+    public SampleSceneUI sampleSceneUI;
 
     public GameObject cleaner;
 
@@ -50,6 +50,7 @@ public class GameManager : MonoBehaviour
     public bool isCharacterSelect;
     public bool isCreate;
     public bool isChangeSetting;
+    public bool isTutorialClear;
 
     /// <summary>
     /// Key = Upgrade, Cost, Destroy
@@ -66,7 +67,7 @@ public class GameManager : MonoBehaviour
         else
         {
             Destroy(gameObject);
-        }
+        }       
     }
 
     // Update is called once per frame
@@ -172,10 +173,21 @@ public class GameManager : MonoBehaviour
         bossClear = DBManager.Instance.GetClearInfo(selectedCharacterId);
         SceneManager.LoadScene("SampleScene");
 
+        StartCoroutine(Tutorial());
+
         isCharacterSelect = true;
         StartCoroutine(TicketInit());
     }
 
+    IEnumerator Tutorial()
+    {
+        yield return null;
+
+        if (!isTutorialClear)
+        {
+            sampleSceneUI.tutorialUi.SetActive(true);         
+        }
+    }
     IEnumerator TicketInit()
     {
         yield return null;
@@ -236,10 +248,8 @@ public class GameManager : MonoBehaviour
 
         CollectItem newItem = new CollectItem(name, grade, sprite, 1);
         collectedItems.Add(newItem);
-        Debug.Log("아이템 저장");
-        Debug.Log(collectedItems.Count);
+        collectedItems.Sort(new CollectItemComparer());
     }
-
     public void ReturnChSelect()
     {
         StartCoroutine(ReturnChSelectRoutine());
@@ -284,5 +294,24 @@ public class GameManager : MonoBehaviour
     public void AssignLoginUi(LoginUi login)
     {
         loginUi = login;
+    }
+    public void AssignSampleSceneUi(SampleSceneUI sampleScene)
+    {
+        sampleSceneUI = sampleScene;
+    }
+}
+
+public class CollectItemComparer : IComparer<CollectItem>
+{
+    public int Compare(CollectItem x, CollectItem y)
+    {
+        // rare 등급이 List의 앞에 배치되게 정렬
+        if (x.itemGrade == "rare" && y.itemGrade != "rare")
+            return -1;
+        if (x.itemGrade != "rare" && y.itemGrade == "rare")
+            return 1;
+
+        // 등급이 같으면 이름 순서로 정렬
+        return string.Compare(x.itemName, y.itemName, System.Globalization.CultureInfo.CurrentCulture, System.Globalization.CompareOptions.StringSort);
     }
 }

@@ -31,6 +31,7 @@ public class SceneSwitcher : MonoBehaviour
         }
         else
         {
+            AudioManager.instance.PlaySkillSfx(AudioManager.SkillSfx.lackTicket);
             Debug.Log("던전 입장권이 부족합니다.");
         }       
     }
@@ -72,6 +73,7 @@ public class SceneSwitcher : MonoBehaviour
         }
         else
         {
+            AudioManager.instance.PlaySkillSfx(AudioManager.SkillSfx.lackTicket);
             Debug.Log("던전 입장권이 부족합니다.");
         }
     }

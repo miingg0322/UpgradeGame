@@ -23,13 +23,15 @@ public class WeaponThrow : MonoBehaviour
         if (timer > speed)
         {
             timer = 0;
-            RangeAttack();
+            RangeAttack();        
         }
     }
     void RangeAttack()
     {
         if (!player.scanner.nearestTarget)
             return;
+
+        AudioManager.instance.PlayGameSfx(AudioManager.GameSfx.playerAttack);
 
         Vector3 targetPos = player.scanner.nearestTarget.position;
         Vector3 dir = targetPos - player.transform.position;
@@ -42,7 +44,7 @@ public class WeaponThrow : MonoBehaviour
         weapon.position = player.transform.position;
         weapon.rotation = Quaternion.FromToRotation(Vector3.up, dir);
 
-        int damage = 300; // 플레이어가 장착한 무기의 dmg를 받아오게 수정 예정
+        int damage = player.weapon.dmg * 2;
         weapon.GetComponent<Range>().Init(dir, damage);
     }
 

@@ -11,19 +11,32 @@ using UnityEngine.UI;
 
 public class SettingManager : MonoBehaviour
 {
+    public Slider sensitivitySlider;
     public Slider volumeSlider;
     public Slider bgmVolumeSlider;
-    public Slider sensitivitySlider;
+    public Slider gameVolumeSlider;
+    public Slider skillVolumeSlider;
+    public Slider uiVolumeSlider;
 
     public Image volumeSliderHandle;
     public Image bgmVolumeSliderHandle;
+    public Image gameVolumeSliderHandle;
+    public Image skillVolumeSliderHandle;
+    public Image uiVolumeSliderHandle;
 
+    public TMP_InputField sensitivityValue;
     public TMP_InputField soundValue;
     public TMP_InputField bgmSoundValue;
-    public TMP_InputField sensitivityValue;
+    public TMP_InputField gameSoundValue;
+    public TMP_InputField skillSoundValue;
+    public TMP_InputField uiSoundValue;
+
 
     public Toggle totalSoundToggle;
     public Toggle bgmSoundToggle;
+    public Toggle gameSoundToggle;
+    public Toggle skillSoundToggle;
+    public Toggle uiSoundToggle;
 
     public CustomCursor customCursor;
 
@@ -39,24 +52,39 @@ public class SettingManager : MonoBehaviour
         maxVolume = PlayerPrefs.HasKey("volumeValue") ? PlayerPrefs.GetInt("volumeValue") : basicVolumeValue;
 
         // 슬라이더의 On Value Changed에 메서드 등록
+        sensitivitySlider.onValueChanged.AddListener(delegate { OnSensitivityChanged(); });
         volumeSlider.onValueChanged.AddListener(delegate { OnVolumeChanged(); });
         bgmVolumeSlider.onValueChanged.AddListener(delegate { OnBGMVolumeChanged(); });
-        sensitivitySlider.onValueChanged.AddListener(delegate { OnSensitivityChanged(); });
+        gameVolumeSlider.onValueChanged.AddListener(delegate { OnGameVolumeChanged(); });
+        skillVolumeSlider.onValueChanged.AddListener(delegate { OnSkillVolumeChanged(); });
+        uiVolumeSlider.onValueChanged.AddListener(delegate { OnUIVolumeChanged(); });
 
         // 슬라이더와 InputField에 저장된 값 or 기본 값 할당
         volumeSlider.value = maxVolume;
         soundValue.text = maxVolume.ToString();
         bgmVolumeSlider.value = PlayerPrefs.HasKey("bgmVolumeValue") ? Mathf.Min(PlayerPrefs.GetInt("bgmVolumeValue"), maxVolume) : maxVolume;
         bgmSoundValue.text = bgmVolumeSlider.value.ToString();
+        gameVolumeSlider.value = PlayerPrefs.HasKey("gameVolumeValue") ? Mathf.Min(PlayerPrefs.GetInt("gameVolumeValue"), maxVolume) : maxVolume;
+        gameSoundValue.text = gameVolumeSlider.value.ToString();
+        skillVolumeSlider.value = PlayerPrefs.HasKey("skillVolumeValue") ? Mathf.Min(PlayerPrefs.GetInt("skillVolumeValue"), maxVolume) : maxVolume;
+        skillSoundValue.text = skillVolumeSlider.value.ToString();
+        uiVolumeSlider.value = PlayerPrefs.HasKey("uiVolumeValue") ? Mathf.Min(PlayerPrefs.GetInt("uiVolumeValue"), maxVolume) : maxVolume;
+        uiSoundValue.text = uiVolumeSlider.value.ToString();
         sensitivitySlider.value = PlayerPrefs.HasKey("cursorSensitivity") ? PlayerPrefs.GetInt("cursorSensitivity") : basicSensitivityValue;
         sensitivityValue.text = sensitivitySlider.value.ToString();
  
         // Toggle 초기상태 설정
         totalSoundToggle.isOn = PlayerPrefs.HasKey("isMuteTotalSound") ? (PlayerPrefs.GetInt("isMuteTotalSound") == 1 ? true : false) : false;
         bgmSoundToggle.isOn = PlayerPrefs.HasKey("isMuteBgmSound") ? (PlayerPrefs.GetInt("isMuteBgmSound") == 1 ? true : false) : false;
+        gameSoundToggle.isOn = PlayerPrefs.HasKey("isMuteGameSound") ? (PlayerPrefs.GetInt("isMuteGameSound") == 1 ? true : false) : false;
+        skillSoundToggle.isOn = PlayerPrefs.HasKey("isMuteSkillSound") ? (PlayerPrefs.GetInt("isMuteSkillSound") == 1 ? true : false) : false;
+        uiSoundToggle.isOn = PlayerPrefs.HasKey("isMuteUiSound") ? (PlayerPrefs.GetInt("isMuteUiSound") == 1 ? true : false) : false;
 
         SetTotalToggle();
         SetBgmToggle();
+        SetGameToggle();
+        SetSkillToggle();
+        SetUIToggle();
     }
     void OnVolumeChanged()
     {
@@ -111,10 +139,18 @@ public class SettingManager : MonoBehaviour
         // 슬라이더가 회색으로 비활성화 된 이미지로 수정
         ColorBlock colors = volumeSlider.colors;
         colors.normalColor = new Color32(80, 80, 80, 255);
+
         volumeSlider.colors = colors;
         bgmVolumeSlider.colors = colors;
+        gameVolumeSlider.colors = colors;
+        skillVolumeSlider.colors = colors;
+        uiVolumeSlider.colors = colors;
+
         volumeSliderHandle.color = new Color32(80, 80, 80, 255);
         bgmVolumeSliderHandle.color = new Color32(80, 80, 80, 255);
+        gameVolumeSliderHandle.color = new Color32(80, 80, 80, 255);
+        skillVolumeSliderHandle.color = new Color32(80, 80, 80, 255);
+        uiVolumeSliderHandle.color = new Color32(80, 80, 80, 255);
 
         // 사운드 0으로 설정
         AudioListener.volume = 0f;
@@ -128,13 +164,31 @@ public class SettingManager : MonoBehaviour
         volumeSlider.colors = colors;     
         volumeSliderHandle.color = new Color32(255, 255, 255, 255);
 
-        // bgm이 음소거 상태면 실행되지 않게 구현
+        // BGM이 음소거 상태면 실행되지 않게 구현
         if(!bgmSoundToggle.isOn)
         {
             bgmVolumeSlider.colors = colors;
             bgmVolumeSliderHandle.color = new Color32(255, 255, 255, 255);
         }
-        
+        // Game 사운드가 음소거 상태면 실행되지 않게 구현
+        if (!gameSoundToggle.isOn)
+        {
+            gameVolumeSlider.colors = colors;
+            gameVolumeSliderHandle.color = new Color32(255, 255, 255, 255);
+        }
+        // Skill 사운드가 음소거 상태면 실행되지 않게 구현
+        if (!skillSoundToggle.isOn)
+        {
+            skillVolumeSlider.colors = colors;
+            skillVolumeSliderHandle.color = new Color32(255, 255, 255, 255);
+        }
+        // UI 사운드가 음소거 상태면 실행되지 않게 구현
+        if (!uiSoundToggle.isOn)
+        {
+            uiVolumeSlider.colors = colors;
+            uiVolumeSliderHandle.color = new Color32(255, 255, 255, 255);
+        }
+
         // Volume에 설정된 값으로 할당
         float volume = volumeSlider.value / 100f;
         AudioListener.volume = volume;
@@ -153,6 +207,32 @@ public class SettingManager : MonoBehaviour
         else // 토글이 꺼져있다면 켜지도록 설정
         {
             SetActiveBgmSound();
+        }
+
+        if (gameSoundToggle.isOn) // 토글이 켜져있다면 꺼지도록 설정
+        {
+            SetMuteGameSound();
+        }
+        else // 토글이 꺼져있다면 켜지도록 설정
+        {
+            SetActiveGameSound();
+        }
+
+        if (skillSoundToggle.isOn) // 토글이 켜져있다면 꺼지도록 설정
+        {
+            SetMuteSkillSound();
+        }
+        else // 토글이 꺼져있다면 켜지도록 설정
+        {
+            SetActiveSkillSound();
+        }
+        if (uiSoundToggle.isOn) // 토글이 켜져있다면 꺼지도록 설정
+        {
+            SetMuteUISound();
+        }
+        else // 토글이 꺼져있다면 켜지도록 설정
+        {
+            SetActiveUISound();
         }
         CheckChangeSetting();
     }
@@ -213,7 +293,214 @@ public class SettingManager : MonoBehaviour
         }
         CheckChangeSetting();
     }
+    public void MuteGameSound()
+    {
+        if (totalSoundToggle.isOn)
+            return;
 
+        if (gameSoundToggle.isOn) // 토글이 켜져있다면 꺼지도록 설정
+        {
+            SetMuteGameSound();
+        }
+        else // 토글이 꺼져있다면 켜지도록 설정
+        {
+            SetActiveGameSound();
+        }
+        CheckChangeSetting();
+    }
+
+    void SetMuteGameSound()
+    {
+        // 슬라이더가 회색으로 비활성화 된 이미지로 수정
+        ColorBlock colors = volumeSlider.colors;
+        colors.normalColor = new Color32(80, 80, 80, 255);
+        gameVolumeSlider.colors = colors;
+        gameVolumeSliderHandle.color = new Color32(80, 80, 80, 255);
+
+        // 사운드 0으로 설정
+        AudioManager.Instance.GameVolumeSetting(0);
+    }
+
+    void SetActiveGameSound()
+    {
+        // 슬라이더가 원래의 색으로 활성화 된 이미지로 수정
+        ColorBlock colors = volumeSlider.colors;
+        colors.normalColor = new Color32(255, 255, 255, 255);
+        gameVolumeSlider.colors = colors;
+        gameVolumeSliderHandle.color = new Color32(255, 255, 255, 255);
+
+        // Volume에 설정된 값으로 할당
+        float volume = gameVolumeSlider.value / 100f;
+        AudioManager.Instance.GameVolumeSetting(volume);
+    }
+    public void OnGameVolumeChanged()
+    {
+        if (gameVolumeSlider.value > volumeSlider.value) // Total Sound보다 작을때만 수정되도록 구현
+        {
+            gameVolumeSlider.value = volumeSlider.value;
+            float volume = gameVolumeSlider.value / 100;
+            gameSoundValue.text = Mathf.FloorToInt(gameVolumeSlider.value).ToString();
+            AudioManager.Instance.GameVolumeSetting(volume);
+        }
+        else
+        {
+            // 음량을 슬라이더의 값에 따라 조절
+            float volume = gameVolumeSlider.value / 100;
+            gameSoundValue.text = Mathf.FloorToInt(gameVolumeSlider.value).ToString();
+            AudioManager.Instance.GameVolumeSetting(volume);
+        }
+        CheckChangeSetting();
+    }
+    public void OnInputGameValueChanged()
+    {
+        // 텍스트 필드의 값을 읽어와 슬라이더의 값으로 설정
+        float value = gameVolumeSlider.value;
+        if (float.TryParse(gameSoundValue.text, out value))
+        {
+            value = Mathf.Clamp(value, 0f, volumeSlider.value);
+            gameVolumeSlider.value = value;
+        }
+        CheckChangeSetting();
+    }
+
+    public void MuteSkillSound()
+    {
+        if (totalSoundToggle.isOn)
+            return;
+
+        if (skillSoundToggle.isOn) // 토글이 켜져있다면 꺼지도록 설정
+        {
+            SetMuteSkillSound();
+        }
+        else // 토글이 꺼져있다면 켜지도록 설정
+        {
+            SetActiveSkillSound();
+        }
+        CheckChangeSetting();
+    }
+
+    void SetMuteSkillSound()
+    {
+        // 슬라이더가 회색으로 비활성화 된 이미지로 수정
+        ColorBlock colors = volumeSlider.colors;
+        colors.normalColor = new Color32(80, 80, 80, 255);
+        skillVolumeSlider.colors = colors;
+        skillVolumeSliderHandle.color = new Color32(80, 80, 80, 255);
+
+        // 사운드 0으로 설정
+        AudioManager.Instance.SkillVolumeSetting(0);
+    }
+
+    void SetActiveSkillSound()
+    {
+        // 슬라이더가 원래의 색으로 활성화 된 이미지로 수정
+        ColorBlock colors = volumeSlider.colors;
+        colors.normalColor = new Color32(255, 255, 255, 255);
+        skillVolumeSlider.colors = colors;
+        skillVolumeSliderHandle.color = new Color32(255, 255, 255, 255);
+
+        // Volume에 설정된 값으로 할당
+        float volume = skillVolumeSlider.value / 100f;
+        AudioManager.Instance.SkillVolumeSetting(volume);
+    }
+    public void OnSkillVolumeChanged()
+    {
+        if (skillVolumeSlider.value > volumeSlider.value) // Total Sound보다 작을때만 수정되도록 구현
+        {
+            skillVolumeSlider.value = volumeSlider.value;
+            float volume = skillVolumeSlider.value / 100;
+            skillSoundValue.text = Mathf.FloorToInt(skillVolumeSlider.value).ToString();
+            AudioManager.Instance.SkillVolumeSetting(volume);
+        }
+        else
+        {
+            // 음량을 슬라이더의 값에 따라 조절
+            float volume = skillVolumeSlider.value / 100;
+            skillSoundValue.text = Mathf.FloorToInt(skillVolumeSlider.value).ToString();
+            AudioManager.Instance.SkillVolumeSetting(volume);
+        }
+        CheckChangeSetting();
+    }
+    public void OnInputSkillValueChanged()
+    {
+        // 텍스트 필드의 값을 읽어와 슬라이더의 값으로 설정
+        float value = skillVolumeSlider.value;
+        if (float.TryParse(skillSoundValue.text, out value))
+        {
+            value = Mathf.Clamp(value, 0f, volumeSlider.value);
+            skillVolumeSlider.value = value;
+        }
+        CheckChangeSetting();
+    }
+    public void MuteUiSound()
+    {
+        if (totalSoundToggle.isOn)
+            return;
+
+        if (uiSoundToggle.isOn) // 토글이 켜져있다면 꺼지도록 설정
+        {
+            SetMuteUISound();
+        }
+        else // 토글이 꺼져있다면 켜지도록 설정
+        {
+            SetActiveUISound();
+        }
+        CheckChangeSetting();
+    }
+
+    void SetMuteUISound()
+    {
+        // 슬라이더가 회색으로 비활성화 된 이미지로 수정
+        ColorBlock colors = volumeSlider.colors;
+        colors.normalColor = new Color32(80, 80, 80, 255);
+        uiVolumeSlider.colors = colors;
+        uiVolumeSliderHandle.color = new Color32(80, 80, 80, 255);
+
+        // 사운드 0으로 설정
+        AudioManager.Instance.UIVolumeSetting(0);
+    }
+
+    void SetActiveUISound()
+    {
+        // 슬라이더가 원래의 색으로 활성화 된 이미지로 수정
+        ColorBlock colors = volumeSlider.colors;
+        colors.normalColor = new Color32(255, 255, 255, 255);
+        uiVolumeSlider.colors = colors;
+        uiVolumeSliderHandle.color = new Color32(255, 255, 255, 255);
+
+        // Volume에 설정된 값으로 할당
+        float volume = uiVolumeSlider.value / 100f;
+        AudioManager.Instance.UIVolumeSetting(volume);
+    }
+    public void OnUIVolumeChanged()
+    {
+        if (uiVolumeSlider.value > volumeSlider.value) // Total Sound보다 작을때만 수정되도록 구현
+        {
+            uiVolumeSlider.value = volumeSlider.value;
+            float volume = uiVolumeSlider.value / 100;
+            uiSoundValue.text = Mathf.FloorToInt(uiVolumeSlider.value).ToString();
+            AudioManager.Instance.UIVolumeSetting(volume);
+        }
+        else
+        {
+            // 음량을 슬라이더의 값에 따라 조절
+            float volume = uiVolumeSlider.value / 100;
+            uiSoundValue.text = Mathf.FloorToInt(uiVolumeSlider.value).ToString();
+            AudioManager.Instance.UIVolumeSetting(volume);
+        }
+        CheckChangeSetting();
+    }
+    public void OnInputUIValueChanged()
+    {
+        // 텍스트 필드의 값을 읽어와 슬라이더의 값으로 설정
+        float value = uiVolumeSlider.value;
+        if (float.TryParse(uiSoundValue.text, out value))
+        {
+            value = Mathf.Clamp(value, 0f, volumeSlider.value);
+            uiVolumeSlider.value = value;
+        }
+        CheckChangeSetting();
+    }
     void OnSensitivityChanged()
     {
         if (isChanging) return; // 감도를 변경이 끝나면 값이 적용되도록 구현
@@ -260,9 +547,15 @@ public class SettingManager : MonoBehaviour
     {
         PlayerPrefs.SetInt("volumeValue", Mathf.FloorToInt(volumeSlider.value));
         PlayerPrefs.SetInt("bgmVolumeValue", Mathf.FloorToInt(bgmVolumeSlider.value));
+        PlayerPrefs.SetInt("gameVolumeValue", Mathf.FloorToInt(gameVolumeSlider.value));
+        PlayerPrefs.SetInt("skillVolumeValue", Mathf.FloorToInt(skillVolumeSlider.value));
+        PlayerPrefs.SetInt("uiVolumeValue", Mathf.FloorToInt(uiVolumeSlider.value));
         PlayerPrefs.SetInt("cursorSensitivity", Mathf.FloorToInt(sensitivitySlider.value));
         PlayerPrefs.SetInt("isMuteTotalSound", totalSoundToggle.isOn ? 1 : 0);
         PlayerPrefs.SetInt("isMuteBgmSound", bgmSoundToggle.isOn ? 1 : 0);
+        PlayerPrefs.SetInt("isMuteGameSound", gameSoundToggle.isOn ? 1 : 0);
+        PlayerPrefs.SetInt("isMuteSkillSound", skillSoundToggle.isOn ? 1 : 0);
+        PlayerPrefs.SetInt("isMuteUiSound", uiSoundToggle.isOn ? 1 : 0);
 
         GameManager.Instance.isChangeSetting = false;
     }
@@ -271,9 +564,15 @@ public class SettingManager : MonoBehaviour
     {
         volumeSlider.value = PlayerPrefs.GetInt("volumeValue", basicVolumeValue);
         bgmVolumeSlider.value = PlayerPrefs.GetInt("bgmVolumeValue", maxVolume);
+        gameVolumeSlider.value = PlayerPrefs.GetInt("gameVolumeValue", maxVolume);
+        skillVolumeSlider.value = PlayerPrefs.GetInt("skillVolumeValue", maxVolume);
+        uiVolumeSlider.value = PlayerPrefs.GetInt("uiVolumeValue", maxVolume);
         sensitivitySlider.value = PlayerPrefs.GetInt("cursorSensitivity", basicSensitivityValue);
         totalSoundToggle.isOn = PlayerPrefs.GetInt("isMuteTotalSound", 0) == 1 ? true : false;
         bgmSoundToggle.isOn = PlayerPrefs.GetInt("isMuteBgmSound", 0) == 1 ? true : false;
+        gameSoundToggle.isOn = PlayerPrefs.GetInt("isMuteGameSound", 0) == 1 ? true : false;
+        skillSoundToggle.isOn = PlayerPrefs.GetInt("isMuteSkillSound", 0) == 1 ? true : false;
+        uiSoundToggle.isOn = PlayerPrefs.GetInt("isMuteUiSound", 0) == 1 ? true : false;
 
         UpdateVolumeSliderMax();
         GameManager.Instance.isChangeSetting = false;
@@ -284,19 +583,30 @@ public class SettingManager : MonoBehaviour
         // 저장된 값들
         int savedVolume = PlayerPrefs.GetInt("volumeValue", basicVolumeValue);
         int savedBgmVolume = PlayerPrefs.GetInt("bgmVolumeValue", maxVolume);
+        int savedGameVolume = PlayerPrefs.GetInt("gameVolumeValue", maxVolume);
+        int savedSkillVolume = PlayerPrefs.GetInt("skillVolumeValue", maxVolume);
+        int savedUIVolume = PlayerPrefs.GetInt("uiVolumeValue", maxVolume);
         int savedSensitivity = PlayerPrefs.GetInt("cursorSensitivity", basicSensitivityValue);
         bool savedIsMuteTotalSound = PlayerPrefs.GetInt("isMuteTotalSound", 0) == 1 ? true : false;
         bool savedIsMuteBgmSound = PlayerPrefs.GetInt("isMuteBgmSound", 0) == 1 ? true : false;
+        bool savedIsMuteGameSound = PlayerPrefs.GetInt("isMuteGameSound", 0) == 1 ? true : false;
+        bool savedIsMuteSkillSound = PlayerPrefs.GetInt("isMuteSkillSound", 0) == 1 ? true : false;
+        bool savedIsMuteUISound = PlayerPrefs.GetInt("isMuteUiSound", 0) == 1 ? true : false;
 
         // 현재 값들
         int curVolume = Mathf.FloorToInt(volumeSlider.value);
         int curBgmVolume = Mathf.FloorToInt(bgmVolumeSlider.value);
+        int curGameVolume = Mathf.FloorToInt(gameVolumeSlider.value);
+        int curSkillVolume = Mathf.FloorToInt(skillVolumeSlider.value);
+        int curUIVolume = Mathf.FloorToInt(uiVolumeSlider.value);
         int curSensitivity = Mathf.FloorToInt(sensitivitySlider.value);
         bool curIsMuteTotalSound = totalSoundToggle.isOn;
         bool curIsMuteBgmSound = bgmSoundToggle.isOn;
+        bool curIsMuteGameSound = gameSoundToggle.isOn;
+        bool curIsMuteSkillSound = skillSoundToggle.isOn;
+        bool curIsMuteUISound = uiSoundToggle.isOn;
 
-        if (savedVolume != curVolume || savedSensitivity != curSensitivity || savedBgmVolume != curBgmVolume 
-            || savedIsMuteTotalSound != curIsMuteTotalSound || savedIsMuteBgmSound != curIsMuteBgmSound) // 현재 설정과 저장된 설정이 일치하는지 확인
+        if (savedVolume != curVolume || savedSensitivity != curSensitivity || savedBgmVolume != curBgmVolume || savedGameVolume != curGameVolume || savedSkillVolume != curSkillVolume || savedUIVolume != curUIVolume || savedIsMuteTotalSound != curIsMuteTotalSound || savedIsMuteBgmSound != curIsMuteBgmSound || savedIsMuteGameSound != curIsMuteGameSound || savedIsMuteSkillSound != curIsMuteSkillSound || savedIsMuteUISound != curIsMuteUISound) // 현재 설정과 저장된 설정이 일치하는지 확인
         {
             GameManager.Instance.isChangeSetting = true; // isChangeSetting이 true일 경우 설정을 되돌릴건지 확인하는 UI 출력
         }
@@ -313,6 +623,18 @@ public class SettingManager : MonoBehaviour
         if (bgmVolumeSlider.value > curVolume)
         {
             bgmVolumeSlider.value = curVolume;
+        }
+        if (gameVolumeSlider.value > curVolume)
+        {
+            gameVolumeSlider.value = curVolume;
+        }
+        if (skillVolumeSlider.value > curVolume)
+        {
+            skillVolumeSlider.value = curVolume;
+        }
+        if (uiVolumeSlider.value > curVolume)
+        {
+            uiVolumeSlider.value = curVolume;
         }
     }
 
@@ -339,6 +661,48 @@ public class SettingManager : MonoBehaviour
         else
         {
             SetActiveBgmSound();
+        }
+    }
+    void SetGameToggle()
+    {
+        if (totalSoundToggle.isOn)
+            return;
+
+        if (gameSoundToggle.isOn)
+        {
+            SetMuteGameSound();
+        }
+        else
+        {
+            SetActiveGameSound();
+        }
+    }
+    void SetSkillToggle()
+    {
+        if (totalSoundToggle.isOn)
+            return;
+
+        if (skillSoundToggle.isOn)
+        {
+            SetMuteSkillSound();
+        }
+        else
+        {
+            SetActiveSkillSound();
+        }
+    }
+    void SetUIToggle()
+    {
+        if (totalSoundToggle.isOn)
+            return;
+
+        if (uiSoundToggle.isOn)
+        {
+            SetMuteUISound();
+        }
+        else
+        {
+            SetActiveUISound();
         }
     }
 }

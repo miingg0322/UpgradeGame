@@ -75,6 +75,7 @@ public class Notice : MonoBehaviour
 
     public void DungeonClear()
     {
+        AudioManager.instance.PlaySkillSfx(AudioManager.SkillSfx.victory);
         // 나가기 버튼 비활성화
         exitBtn.SetActive(false);
         // 아이템 획득 알림 비활성화
@@ -121,6 +122,7 @@ public class Notice : MonoBehaviour
     public void NoticeRoutine()
     {
         noticeUi.SetActive(true);
+        noticeUi.GetComponent<Animator>().SetTrigger("Notice");
 
         Invoke("HideNotice", 4f);       
     }

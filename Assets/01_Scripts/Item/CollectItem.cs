@@ -16,5 +16,5 @@ public class CollectItem
         itemGrade = grade;
         itemImage = image;
         itemQuantity = qty;
-    }
+    }    
 }
