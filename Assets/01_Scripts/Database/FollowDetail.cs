@@ -31,6 +31,7 @@ public class FollowDetail : MonoBehaviour
         itemName = transform.GetChild(1).GetComponent<TextMeshProUGUI>();
         itemDetail = transform.GetChild(2).GetComponent<TextMeshProUGUI>();
         offset = new Vector2(rectTransform.sizeDelta.x / 2, - rectTransform.sizeDelta.y / 2);
+        cursor = (CustomCursor)FindAnyObjectByType(typeof(CustomCursor));
         gameObject.SetActive(false);
     }
 
