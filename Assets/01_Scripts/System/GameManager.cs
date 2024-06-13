@@ -157,7 +157,7 @@ public class GameManager : MonoBehaviour
             }
             else
             {
-               int chClass = DBManager.Instance.GetCharacterClass(userSlots[index]);
+                int chClass = slots[index];
 
                 loginUi.selectCharacterIcons[index].sprite = playerData[chClass].playerSprite;
                 loginUi.characterTexts[index].text = playerData[chClass].playerName;
@@ -168,9 +168,11 @@ public class GameManager : MonoBehaviour
 
     public void SelectCharacter(int slotIndex)
     {
-        selectedCharacterClass = DBManager.Instance.GetCharacterClass(userSlots[slotIndex]);
-        selectedCharacterId = userSlots[slotIndex];
-        bossClear = DBManager.Instance.GetClearInfo(selectedCharacterId);
+        selectIndex = slotIndex;
+        selectedCharacterClass = userSlots[slotIndex];
+        SheetManager.Instance.playingCharacter = SheetManager.Instance.characterDatas[slotIndex];
+        bossClear = SheetManager.Instance.characterDatas[slotIndex].clear;
+        isTutorialClear = SheetManager.Instance.characterDatas[slotIndex].tutorial;
         SceneManager.LoadScene("SampleScene");
 
         StartCoroutine(Tutorial());
@@ -197,19 +199,20 @@ public class GameManager : MonoBehaviour
 
     public void CreateCharacter()
     {                 
-        string id = userId;
-        // DB�� ������ ����
-        int characterId = DBManager.Instance.CreateCharacter(id, selectIndex);
-        
-        for(int index = 0;index < userSlots.Length;index++)
+        int slotIndex = -1;
+        for (int i = 0; i < userSlots.Length; i++)
         {
-            if (userSlots[index] == -1)
+            if (userSlots[i] == -1)
             {
-                userSlots[index] = characterId;
+                slotIndex = i;
                 break;
             }
         }
-
+        if(slotIndex > -1)
+        {
+            SheetManager.Instance.CreateCharacter(slotIndex, selectIndex);
+            userSlots[slotIndex] = selectIndex;
+        }
         SetUserSlots(userSlots);
         loginUi.createUi.SetActive(false);
         loginUi.selectUi.SetActive(true);
@@ -219,7 +222,7 @@ public class GameManager : MonoBehaviour
 
     public void DeleteCharacter()
     {
-        DBManager.Instance.DeleteCharacter(deleteCharacter);
+        SheetManager.Instance.DeleteCharacter(selectIndex);
         loginUi.deleteNotice.SetActive(false);
         loginUi.CancleDelete();
 

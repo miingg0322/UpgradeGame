@@ -95,7 +95,8 @@ public class SampleSceneUI : MonoBehaviour
     // clear 정보를 가져와서 던전을 활성화
     void UpdateFarmingDungeon()
     {
-        int clear = DBManager.Instance.GetBossClear(GameManager.Instance.selectedCharacterId);
+        int clear = SheetManager.Instance.characterDatas[GameManager.Instance.selectIndex].clear;
+        Debug.Log(GameManager.Instance.selectIndex);
         Debug.Log(clear);
         for (int index = 0; index < clear; index++)
         {
@@ -128,7 +129,7 @@ public class SampleSceneUI : MonoBehaviour
     {
         CloseUI(tutorialSkipUi);
         tutorialUi.SetActive(false);
-        DBManager.Instance.TutorialClear(GameManager.Instance.userId);
+        SheetManager.Instance.TutorialClear();
     }
 
     public void CancleTutorialSkipUi()
