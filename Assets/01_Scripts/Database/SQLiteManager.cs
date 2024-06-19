@@ -22,6 +22,7 @@ public class SQLiteManager : MonoBehaviour
     public Inventory inventory;
     ScrollRect invenView;
     FollowDetail followDetail;
+    public ItemList itemList;
     
     private void Awake()
     {
@@ -143,7 +144,6 @@ public class SQLiteManager : MonoBehaviour
         insertCommand.Parameters.Add(new SqliteParameter("@Type", item.type));
         string table = $"{inventoryTable}_{SheetManager.Instance.playingCharacter.slot}";
         string query = $"INSERT INTO {table} (Item, Type, Amount) VALUES (@Item, @Type, @Amount)";
-        Debug.Log(query);
         insertCommand.CommandText = query;
         yield return insertCommand.ExecuteNonQuery();
         insertCommand.Dispose();
@@ -213,14 +213,14 @@ public class SQLiteManager : MonoBehaviour
     }
 
 
-    public List<Item> GetAllItems()
+    public Dictionary<Item, int> GetAllItems()
     {
         string table = $"{inventoryTable}_{SheetManager.Instance.playingCharacter.slot}";
         string query = $"SELECT * FROM {table} ORDER BY Type ASC, Grade DESC, Item ASC";
         SqliteCommand dbCommand = dbConn.CreateCommand();
         dbCommand.CommandText = query;
         SqliteDataReader dataReader = dbCommand.ExecuteReader();
-        List<Item> itemList = new List<Item>();
+        Dictionary<Item, int> itemDict = new Dictionary<Item, int>();
         while (dataReader.Read())
         {
             string itemName = dataReader.GetString(0);
@@ -228,10 +228,10 @@ public class SQLiteManager : MonoBehaviour
             int grade = dataReader.GetInt32(2);
             int amount = dataReader.GetInt32(3);
             int value = dataReader.GetInt32(4);
-            Item item = new Item(itemName, type, grade, amount, value);
-            itemList.Add(item);
+            Item item = (Item)itemList.GetItemData(type, grade);
+            itemDict.Add(item, amount);
         }
-        return itemList;
+        return itemDict;
     }
 
     public Weapon GetEquppiedWeapon()
@@ -252,27 +252,15 @@ public class SQLiteManager : MonoBehaviour
         }
         return null;
     }
-}
 
-public class Item
-{
-    public string name;
-    public int type;
-    public int grade;
-    public int amount;
-    public int equipped = -1;
-    public int value;
-
-    public Item(string name, int type, int grade, int amount = 1 , int value = -1)
+    public void InitInventory()
     {
-        this.name = name;
-        this.type = type;
-        this.grade = grade;
-        this.amount = amount;
-        this.value = value;
-    }
-    public void PrintDetail()
-    {
-        Debug.Log($"{name}, {type}, {grade}, {amount}, {value}");
+        string table = $"{inventoryTable}_{SheetManager.Instance.playingCharacter.slot}";
+        Item basicWeapon = (Item)itemList.GetItemData(0, 0);
+        string query = $"DELETE FROM {table}; INSERT INTO {table} (Item, Type, Grade, Amount, Value, Equipped) VALUES ({basicWeapon.name}, {basicWeapon.type}, {basicWeapon.grade}, {1}, {0}, {1})";
+        SqliteCommand initCommand = dbConn.CreateCommand();
+        initCommand.CommandText = query;
+        initCommand.ExecuteNonQuery();
+        initCommand.Dispose();
     }
 }
