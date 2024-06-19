@@ -2,73 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
-using System.Linq;
 using System;
-
-public enum UserSchema
-{
-    ID = 1, PW, Nickname, Value
-}
-public enum CharSchema
-{
-    SLOT = 2, JOB, CLEAR, TUTORIAL = 6, SCORE, UPGRADE
-}
-public class SheetResponse
-{
-    string order;
-    public bool result;
-    public string msg;
-    public string[] data;
-    public int count;
-}
-
-public class UserData
-{
-    public string id;
-    public string nickname;
-    public UserData(string[] data)
-    {
-        id = data[(int)UserSchema.ID - 1];
-        nickname = data[(int)UserSchema.Nickname - 1];
-    }
-}
-public class CharacterData
-{
-    public int slot;
-    public int job;
-    public int clear;
-    public string created;
-    public bool tutorial;
-    public int score;
-    public int upgrade;
-
-    public CharacterData(int slot, int job, int clear, string created, int tutorial, int score , int upgrade)
-    {
-        this.slot = slot;
-        this.job = job;
-        this.clear = clear;
-        this.created = created;
-        if (tutorial == 1)
-            this.tutorial = true;
-        else
-            this.tutorial = false;
-        this.score = score;
-        this.upgrade = upgrade;
-    }
-    public CharacterData(string[] data)
-    {
-        slot = int.Parse(data[1]);
-        job = int.Parse(data[2]);
-        clear = int.Parse(data[3]);
-        created = data[4];
-        if (int.Parse(data[5]) == 1)
-            tutorial = true;
-        else
-            tutorial = false;
-        score = int.Parse(data[6]);
-        upgrade = int.Parse(data[7]);
-    }
-}
 
 public class SheetManager : MonoBehaviour
 {
@@ -78,11 +12,12 @@ public class SheetManager : MonoBehaviour
         get { return instance; }
         private set { }
     }
-    readonly string url = "https://script.google.com/macros/s/AKfycby5BjbG1ikG64zJ2ENrCSL4V3YuQ7v5FR2zKvVBY91PZ3lzboTkP4aUFdQfOAZGkVd_0Q/exec";
+    readonly string url = "https://script.google.com/macros/s/AKfycbyl3d1l6bLAg3wtyvV3l0YZTavtreQIJpnTqRdZdQ-xSFjNYyoluGKEjgB1BZdlyHGdjA/exec";
     private SheetResponse response;
     public UserData user;
     public List<CharacterData> characterDatas = new List<CharacterData>();
     public CharacterData playingCharacter;
+    public ItemList items;
     private void Awake()
     {
         if(Instance == null)
@@ -97,7 +32,8 @@ public class SheetManager : MonoBehaviour
     }
     void Start()
     {
-
+        items = GetComponent<ItemList>();
+        StartCoroutine(GetItemList());
     }
 
    
@@ -121,15 +57,6 @@ public class SheetManager : MonoBehaviour
             {
                 string result = www.downloadHandler.text;
                 response = JsonUtility.FromJson<SheetResponse>(result);
-                //if (response.data != null)
-                //{
-                //    Debug.Log($"{response.result}, {response.msg}");
-                //    Debug.Log(response.data[0]);
-                //    foreach (var data in response.data)
-                //    {
-                //        Debug.Log(data);
-                //    }
-                //}
                 Debug.Log(result);
             }
 
@@ -222,33 +149,21 @@ public class SheetManager : MonoBehaviour
         form.AddField("id", user.id);
         yield return StartCoroutine(Post(form));
         int[] slots = { -1, -1, -1};
-        if(response.count > 0)
+        characterDatas.Clear();
+        if (response.count > 0)
         {
-            //Debug.Log(response.count);
-            //Debug.Log(response.data.Length);
-            int len = response.data.Length / response.count;
-            string[,] splitData = new string[response.count,len];
-
-            for (int i = 0; i < response.count; i++)
+            string[][] parsed = response.ParseData();
+            //Debug.Log(parsed.Length);
+            for (int i = 0; i < parsed.Length; i++)
             {
-                Debug.Log($"{len * i} ::: {len * (i + 1)}");
-                for (int j = len * i; j < len * (i + 1); j++)
-                {
-                    //Debug.Log($"{i}, {j}");
-                    splitData[i,j%len] = response.data[j];
-                    //Debug.Log($"i:{i}, j:{j}, data: {splitData[i, j%len]}");
-                }
-            }
-            //Debug.Log(splitData.Length);
-            for (int i = 0; i < response.count; i++)
-            {
-                int slotIndex = int.Parse(splitData[i,1]);
-                int job = int.Parse(splitData[i,2]);
+                int slotIndex = int.Parse(parsed[i][1]);
+                int job = int.Parse(parsed[i][2]);
                 slots[slotIndex] = job;
+                int len = parsed[i].Length;
                 string[] data = new string[len];
                 for (int j = 0; j < len; j++)
                 {
-                    data[j] = splitData[i, j];
+                    data[j] = parsed[i][j];
                 }
                 CharacterData chData = new CharacterData(data);
                 characterDatas.Add(chData);
@@ -271,6 +186,7 @@ public class SheetManager : MonoBehaviour
     public void DeleteCharacter(int slot)
     {
         Debug.Log("Delete");
+        characterDatas.Remove(characterDatas[slot]);
         WWWForm form = new WWWForm();
         form.AddField("order", "delete");
         form.AddField("slot", slot);
@@ -281,5 +197,21 @@ public class SheetManager : MonoBehaviour
     {
         characterDatas[GameManager.Instance.selectIndex].tutorial = true;
         SetValue((int)CharSchema.TUTORIAL, 1, 1, characterDatas[GameManager.Instance.selectIndex].slot);
+    }
+
+    private IEnumerator GetItemList()
+    {
+        WWWForm form = new WWWForm();
+        form.AddField("order", "getItem");
+        yield return StartCoroutine(Post(form));
+        string[][] data = response.ParseData();
+        items.SortItem(data);
+        //for (int i = 0; i < data.Length; i++)
+        //{
+        //    for (int j = 0; j < data[i].Length; j++)
+        //    {
+        //        Debug.Log(data[i][j]);
+        //    }
+        //}
     }
 }
