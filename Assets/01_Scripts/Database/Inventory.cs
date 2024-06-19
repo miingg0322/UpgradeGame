@@ -7,7 +7,7 @@ using System.Linq;
 
 public class Inventory : MonoBehaviour
 {
-    public List<Item> inventory = new List<Item>();
+    public Dictionary<Item, int> inventory = new Dictionary<Item, int>();
     GridLayoutGroup gridGroup;
     [SerializeField]
     private int cols;
@@ -23,7 +23,7 @@ public class Inventory : MonoBehaviour
         inventory = SQLiteManager.Instance.GetAllItems();
         foreach (var item in inventory)
         {
-            Debug.Log($"{item.name}::{item.type}:::{item.grade} - {item.amount}");
+            //Debug.Log($"{item.name}::{item.type}:::{item.grade}");
         }
         SetInventorySlots();
     }
@@ -34,8 +34,8 @@ public class Inventory : MonoBehaviour
         {
             if(i < inventory.Count)
             {
-                invenSlots[i].slotItem = inventory[i];
-                invenSlots[i].GetComponentInChildren<TextMeshProUGUI>().text = invenSlots[i].slotItem.amount.ToString();
+                invenSlots[i].slotItem = inventory.ElementAt(i).Key;
+                invenSlots[i].GetComponentInChildren<TextMeshProUGUI>().text = inventory.ElementAt(i).Value.ToString();
             }
             else
             {
@@ -48,9 +48,9 @@ public class Inventory : MonoBehaviour
     {
         foreach (var item in inventory)
         {
-            if(item.type.Equals(type) && item.grade.Equals(grade))
+            if(item.Key.type.Equals(type) && item.Key.grade.Equals(grade))
             {
-                return item;
+                return item.Key;
             }
         }
         return null;
