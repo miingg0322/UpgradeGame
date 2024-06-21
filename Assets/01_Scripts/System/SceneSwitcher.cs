@@ -22,7 +22,7 @@ public class SceneSwitcher : MonoBehaviour
             GameManager.Instance.SaveData();
             Debug.Log("던전에 입장하였습니다. 남은 입장권 개수: " + GameManager.Instance.dungeonTicket);
 
-            SceneManager.LoadScene("AutoFarming");
+            SceneManager.LoadScene("AutoFarming");           
 
             SceneManager.sceneLoaded += OnSceneLoaded;
 
@@ -38,9 +38,9 @@ public class SceneSwitcher : MonoBehaviour
 
     public void SwitchSampleScene()
     {
-        SceneManager.LoadScene("SampleScene");
+        SceneManager.LoadScene("SampleScene");    
 
-        SceneManager.sceneLoaded += OnSceneLoaded;
+        SceneManager.sceneLoaded += OnSceneLoaded; 
 
         AudioManager.instance.PlayBgm(false);
     }
@@ -49,7 +49,7 @@ public class SceneSwitcher : MonoBehaviour
     {
         SceneManager.LoadScene("SampleScene");
 
-        GameManager.Instance.Init();
+        GameManager.Instance.Init();       
 
         SceneManager.sceneLoaded += OnSceneLoaded;
 
@@ -94,8 +94,6 @@ public class SceneSwitcher : MonoBehaviour
     {
         GameManager.Instance.SaveData();
 
-        Player.Instance.GetComponent<PlayerInput>().actions = playerAction;
-
         SceneManager.LoadScene("Boss");
 
         SceneManager.sceneLoaded += OnSceneLoaded;
@@ -104,8 +102,6 @@ public class SceneSwitcher : MonoBehaviour
     public void SwitchBossToSampleScene()
     {
         SceneManager.LoadScene("SampleScene");
-
-        Player.Instance.GetComponent<PlayerInput>().actions = null;
 
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
@@ -122,6 +118,8 @@ public class SceneSwitcher : MonoBehaviour
             {
                 Debug.LogError("GameManager를 찾을 수 없습니다.");
             }
+            // 중복되는 메인 카메라 비활성화
+            Player.Instance.transform.GetChild(3).gameObject.SetActive(false);
         }
         else if(scene.name == "SampleScene")
         {
@@ -134,6 +132,8 @@ public class SceneSwitcher : MonoBehaviour
             {
                 Debug.LogError("GameManager를 찾을 수 없습니다.");
             }
+            // 메인 카메라를 활성화
+            Player.Instance.transform.GetChild(3).gameObject.SetActive(true);
         }
         else if (scene.name == "Login")
         {
