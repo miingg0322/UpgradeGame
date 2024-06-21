@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1515200827069842710}
   - component: {fileID: 9159009347141659447}
   - component: {fileID: 1856475823477211356}
+  - component: {fileID: 3600639802662223798}
   m_Layer: 6
   m_Name: Enemy Test
   m_TagString: Enemy
@@ -75,9 +76,9 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 2
+  m_SortingOrder: 4
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 0.9811321, g: 0.54147387, b: 0.54147387, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -116,7 +117,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -171,7 +172,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e23492e296890244bb636e45055e1425, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dropItem: {fileID: 0}
+  dropItemSet: {fileID: 0}
   enemyData:
   - {fileID: 11400000, guid: f6dddf95b129e0c4391d1ac1ea9622b9, type: 2}
   - {fileID: 11400000, guid: 068dfe6c0864fbd47a4308d37d994587, type: 2}
@@ -184,7 +185,32 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 83091b6362fff6c48859310de367ba66, type: 2}
   - {fileID: 11400000, guid: 5af502ce2a9bc5c47a983b62a328affd, type: 2}
   - {fileID: 11400000, guid: 6402201d66fa19a4aa2aac6b2b12ccdd, type: 2}
+  animCon:
+  - {fileID: 9100000, guid: 7d2c8b0b9cff4274ba3c44421f7d1a23, type: 2}
+  - {fileID: 22100000, guid: ffe775dc119f06441af0845da182e61f, type: 2}
   hp: 0
+  maxHp: 0
   dmg: 0
   direction: {x: 0, y: 0}
   moveSpeed: 0
+--- !u!95 &3600639802662223798
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1677046663122528521}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 7d2c8b0b9cff4274ba3c44421f7d1a23, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
