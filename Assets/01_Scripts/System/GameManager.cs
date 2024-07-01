@@ -51,23 +51,25 @@ public class GameManager : MonoBehaviour
     public bool isCreate;
     public bool isChangeSetting;
     public bool isTutorialClear;
+    public bool isStop;
 
     /// <summary>
     /// Key = Upgrade, Cost, Destroy
     /// </summary>
     public Dictionary<string, List<int[]>> dataTables = new Dictionary<string, List<int[]>>();
     public int probBase = 1000;
+
     private void Awake()
     {      
         if (instance == null)
         {
             instance = this;
-            DontDestroyOnLoad(gameObject);
+            DontDestroyOnLoad(gameObject);          
         }
         else
         {
-            Destroy(gameObject);
-        }       
+            Destroy(gameObject);           
+        }
     }
 
     // Update is called once per frame
@@ -77,7 +79,7 @@ public class GameManager : MonoBehaviour
         {
             if (dungeonTicket != maxDungeonTicket)
             {
-                timer += Time.deltaTime;
+                timer += Time.unscaledDeltaTime;
             }
 
             if (timer >= ticketGenerationTime)
@@ -85,8 +87,8 @@ public class GameManager : MonoBehaviour
                 timer = 0f;
                 IncreaseTicket();
             }
-        }          
-    }
+        }
+    }   
 
     void IncreaseTicket()
     {
@@ -262,7 +264,14 @@ public class GameManager : MonoBehaviour
         loginUi.Login();
         SetUserSlots(userSlots);
     }
-
+    public void UserLogout()
+    {
+        userSlots = null;
+        selectedCharacterId = -1;
+        selectedCharacterClass = -1;
+        isCharacterSelect = false;
+        SaveData();
+    }
     // 테스트 구현
     public void BossClear(int bossIndex)
     {
