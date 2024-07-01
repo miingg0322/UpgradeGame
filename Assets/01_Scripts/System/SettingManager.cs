@@ -130,7 +130,6 @@ public class SettingManager : MonoBehaviour
         {
             SetActiveTotalSound();          
         }
-        Debug.Log(totalSoundToggle.isOn);
         CheckChangeSetting();
     }
 
