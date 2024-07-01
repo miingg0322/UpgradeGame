@@ -188,6 +188,9 @@ MonoBehaviour:
   animCon:
   - {fileID: 9100000, guid: 7d2c8b0b9cff4274ba3c44421f7d1a23, type: 2}
   - {fileID: 22100000, guid: ffe775dc119f06441af0845da182e61f, type: 2}
+  - {fileID: 22100000, guid: ae362a8e7a0ec984ab831351264e3165, type: 2}
+  - {fileID: 22100000, guid: ea5c75338c39e224fbb2fbc84590f55f, type: 2}
+  - {fileID: 22100000, guid: a855eb97cf59a0c4680ce9227293ea84, type: 2}
   hp: 0
   maxHp: 0
   dmg: 0
