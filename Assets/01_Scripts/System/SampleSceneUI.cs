@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,9 +9,7 @@ public class SampleSceneUI : MonoBehaviour
 {
     public Withdraw withdraw;
     public Image[] ticketIcon;
-    public Image playerIcon;
 
-    public Text[] playerInfoText;
     public TextMeshProUGUI[] dungeonDescription;
     public TextMeshProUGUI ticketValue;   
     public TextMeshProUGUI timer;
@@ -20,8 +17,6 @@ public class SampleSceneUI : MonoBehaviour
     public GameObject[] dungeonEnterBtns;
     public GameObject[] dungeonLockImage;
     public GameObject characterInfo;
-    public GameObject settingCancleNotice;
-    public GameObject settingUi;
     public GameObject dungeonList;
     public GameObject uiList;
     public GameObject menuUi;
@@ -36,10 +31,6 @@ public class SampleSceneUI : MonoBehaviour
         UpdateFarmingDungeon();
     }
 
-    private void Start()
-    {
-        StartCoroutine(UpdateCharacterInfo());
-    }
     void Update()
     {
         UpdateTimer();
@@ -96,7 +87,6 @@ public class SampleSceneUI : MonoBehaviour
     void UpdateFarmingDungeon()
     {
         int clear = DBManager.Instance.GetBossClear(GameManager.Instance.selectedCharacterId);
-        Debug.Log(clear);
         for (int index = 0; index < clear; index++)
         {
             dungeonEnterBtns[index].SetActive(true);
@@ -104,20 +94,7 @@ public class SampleSceneUI : MonoBehaviour
             dungeonDescription[index].text = "던전 설명 던전 설명 던전 설명 던전 설명 던전 설명";
         }
     }
-    // 캐릭터 정보 UI에 정보 할당
-    IEnumerator UpdateCharacterInfo()
-    {
-        yield return null;
-
-        playerIcon.sprite = Player.Instance.sprite;
-
-        playerInfoText[0].text = "직업 : " + Player.Instance.playerName;
-        playerInfoText[1].text = "HP : " + Player.Instance.maxHealth.ToString();
-        playerInfoText[2].text = "공격력 : ???"; // 무기의 기본 데미지와 강화 수치를 통해 계산하도록 수정 예정
-        playerInfoText[3].text = "장착중인 무기 : ???"; // 무기의 이름을 가져오도록 수정 예정
-        playerInfoText[4].text = "무기 강화 수치 : ???"; // 무기의 강화 레벨을 가져오도록 수정 예정
-        playerInfoText[5].text = "캐릭터 특성 : " + Player.Instance.playerTrait;
-    }
+   
 
     public void ActiveTutorialSkip()
     {
@@ -134,61 +111,6 @@ public class SampleSceneUI : MonoBehaviour
     public void CancleTutorialSkipUi()
     {
         CloseUI(tutorialSkipUi);
-    }
-
-    public void ActiveCharacterInfo()
-    {
-        AudioManager.instance.PlayUISfx(AudioManager.UISfx.characterInfo);
-        // 이미 활성화 되어있다면 버튼을 누를시 꺼지게 구현
-        if (characterInfo.activeSelf)
-        {
-            CloseUI(characterInfo);
-        }
-        else
-        {
-            OpenUI(characterInfo);          
-        }
-        
-    }
-
-    public void ActiveSettingUi()
-    {
-        // 이미 활성화 되어있다면 버튼을 누를시 꺼지게 구현
-        if (settingUi.activeSelf)
-        {
-            CloseUI(settingUi);
-        }
-        else
-        {
-            OpenUI(settingUi);
-        }
-
-    }
-
-    public void ActiveSettingCancleNotice()
-    {
-        if (GameManager.Instance.isChangeSetting)
-        {
-            OpenUI(settingCancleNotice);
-        }
-        else
-        {
-            CloseUI(settingUi);
-        }      
-    }
-
-    public void CancleSetting()
-    {
-        CloseUI(settingCancleNotice);
-        CloseUI(settingUi);
-    }
-    public void CancleSettingCancleNotice()
-    {
-        CloseUI(settingCancleNotice);
-    }
-    public void CancleCharacterInfo()
-    {
-        CloseUI(characterInfo);
     }
 
     public void ActiveDungeonList()
@@ -213,10 +135,6 @@ public class SampleSceneUI : MonoBehaviour
             CloseUI(uiList);
             if (dungeonList.activeSelf)
                 CloseUI(dungeonList);
-            if (characterInfo.activeSelf)
-                CloseUI(characterInfo);
-            if (withdraw.confirmUi.activeSelf)
-                CloseUI(withdraw.confirmUi);
         }
         else
         {

@@ -86,10 +86,19 @@ public class SceneSwitcher : MonoBehaviour
 
         transUserId = GameManager.Instance.userId;
       
-        GameManager.Instance.ReturnChSelect();
-        Destroy(GameManager.Instance.player.gameObject);
+        GameManager.Instance.ReturnChSelect();       
     }
 
+    public void Logout()
+    {
+        SceneManager.LoadScene("Login");
+
+        SceneManager.sceneLoaded += OnSceneLoaded;
+
+        transUserId = null;
+
+        GameManager.Instance.UserLogout();
+    }
     public void SwitchBossScene()
     {
         GameManager.Instance.SaveData();
@@ -120,20 +129,13 @@ public class SceneSwitcher : MonoBehaviour
             }
             // 중복되는 메인 카메라 비활성화
             Player.Instance.transform.GetChild(3).gameObject.SetActive(false);
+            Time.timeScale = 1;
         }
         else if(scene.name == "SampleScene")
         {
-            GameManager gameManager = FindObjectOfType<GameManager>();
-            if (gameManager != null)
-            {
-                Time.timeScale = 1f;              
-            }
-            else
-            {
-                Debug.LogError("GameManager를 찾을 수 없습니다.");
-            }
             // 메인 카메라를 활성화
             Player.Instance.transform.GetChild(3).gameObject.SetActive(true);
+            Time.timeScale = 1;
         }
         else if (scene.name == "Login")
         {
@@ -146,6 +148,8 @@ public class SceneSwitcher : MonoBehaviour
             {
                 Debug.LogError("GameManager를 찾을 수 없습니다.");
             }
+            Destroy(GameManager.Instance.player.gameObject);
+            Time.timeScale = 1;
         }
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }

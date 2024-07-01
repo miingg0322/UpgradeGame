@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 public class Withdraw : MonoBehaviour
 {
-    public SampleSceneUI SceneUI;
+    public EscUI escUI;
     public GameObject confirmUi;
     public Button withdrawBtn;
     public TMP_InputField withdrawField;
@@ -25,16 +25,16 @@ public class Withdraw : MonoBehaviour
     {
         if(confirmUi.activeSelf)
         {
-            SceneUI.CloseUI(confirmUi);
+            escUI.CloseUI(confirmUi);
         }
         else
         {
-            SceneUI.OpenUI(confirmUi);
+            escUI.OpenUI(confirmUi);
         }      
     }
     public void ConfirmWithdrawCancle()
     {
-        SceneUI.CloseUI(confirmUi);
+        escUI.CloseUI(confirmUi);
     }
     public void UserWithdraw()
     {
@@ -43,22 +43,10 @@ public class Withdraw : MonoBehaviour
             string userId = GameManager.Instance.userId;
 
             confirmUi.SetActive(false);
-            UserLogout();
+            GameManager.Instance.UserLogout();
             DBManager.Instance.DeleteUser(userId);
         }     
     }
-    public void UserLogout()
-    {
-        SceneManager.LoadScene("Login");
-        Destroy(GameManager.Instance.player.gameObject);
-
-        GameManager.Instance.userId = null;
-        GameManager.Instance.userSlots = null;
-        GameManager.Instance.selectedCharacterId = -1;
-        GameManager.Instance.isCharacterSelect = false;
-        GameManager.Instance.SaveData();
-    }
-
     public void ConfirmInputField()
     {
         confirmText = withdrawField.text;
