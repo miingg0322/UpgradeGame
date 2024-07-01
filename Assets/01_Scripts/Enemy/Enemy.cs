@@ -83,12 +83,12 @@ public class Enemy : MonoBehaviour
 
     public void BossInit(int level)
     {
-        Debug.Log("보스 데이터 초기화");
         FarmingBossData data = bossData[level];
 
         // 임시로 크기 증가 써둠
         transform.localScale = new Vector3(3f, 3f, 3f);
 
+        anim.runtimeAnimatorController = animCon[level];
         gameObject.layer = LayerMask.NameToLayer("Boss");
         moveSpeed = data.moveSpeed;
         maxHp = data.maxHp;
