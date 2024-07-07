@@ -52,6 +52,7 @@ public class GameManager : MonoBehaviour
     public bool isChangeSetting;
     public bool isTutorialClear;
     public bool isStop;
+    public bool isKeySetting;
 
     /// <summary>
     /// Key = Upgrade, Cost, Destroy
@@ -142,7 +143,7 @@ public class GameManager : MonoBehaviour
         PlayerPrefs.SetFloat("Character" + characterId + "Timer", timer);
         PlayerPrefs.SetString("Character" + characterId + "Time", DateTime.Now.Ticks.ToString());
 
-        Debug.Log("데이터가 저장 되었습니다");
+        PlayerPrefs.Save();
     }
 
     public void SetUserSlots(int[] slots)
