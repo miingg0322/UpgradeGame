@@ -6,10 +6,14 @@ using UnityEngine.SceneManagement;
 using UnityEditor;
 using System.Linq;
 using UnityEngine.UI;
+using TMPro;
 
 
 public class EscUI : MonoBehaviour
 {
+    public GameObject soundsetUI;
+    public GameObject keysetUI;
+
     public SceneSwitcher sceneSwitcher;
     public Image playerIcon;
     public Text[] playerInfoText;
@@ -18,15 +22,23 @@ public class EscUI : MonoBehaviour
     public GameObject darkOverlay;
 
     public GameObject returnUi;
-    public GameObject settingUi;
-    public GameObject settingCancleNotice;
+    public GameObject settingUi;   
     public GameObject characterInfoUi;
     public GameObject withdrawUi;
 
+    public GameObject settingCancleNotice;
+    public GameObject chSelectNotice;
+    public GameObject logoutNotice;
+
     public GameObject chSelectBtn;
     public GameObject logoutBtn;
+    public GameObject soundsetUiBtn;
+    public GameObject keysetUiBtn;
+    public GameObject soundSetDarkOverlay;
+    public GameObject keySetDarkOverlay;
 
     public bool notActive;
+    public TextMeshProUGUI[] keyText;
 
     Stack<GameObject> uiStack = new Stack<GameObject>();
 
@@ -38,13 +50,17 @@ public class EscUI : MonoBehaviour
         {
             chSelectBtn.GetComponent<Button>().onClick.AddListener(() => sceneSwitcher.ReturnCharacterSelect());
             logoutBtn.GetComponent<Button>().onClick.AddListener(() => sceneSwitcher.Logout());
+        }
+        for(int index = 0; index < keyText.Length; index++)
+        {
+            keyText[index].text = KeySetting.keys[(KeyAction)index].ToString();
         }       
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape) && !notActive)
+        if (Input.GetKeyDown(KeyCode.Escape) && !notActive && !GameManager.Instance.isKeySetting && !GameManager.Instance.isDungeonClear)
         {
             if (uiStack.Count == 0)
             {
@@ -54,6 +70,10 @@ public class EscUI : MonoBehaviour
             {
                 CloseTopUI();
             }                        
+        }
+        for (int index = 0; index < keyText.Length; index++)
+        {
+            keyText[index].text = KeySetting.keys[(KeyAction)index].ToString();
         }
     }
     public void ShowUI()
@@ -73,16 +93,35 @@ public class EscUI : MonoBehaviour
         Time.timeScale = 1;
     }
 
+    public void ShowSoundSetUI()
+    {
+        OpenUI(soundsetUI);
+        CloseUI(keysetUI);
+        soundSetDarkOverlay.SetActive(true);
+        keySetDarkOverlay.SetActive(false);
+    }
+
+    public void ShowKeySetUI()
+    {
+        OpenUI(keysetUI);
+        CloseUI(soundsetUI);
+        soundSetDarkOverlay.SetActive(false);
+        keySetDarkOverlay.SetActive(true);
+    }
     public void ActiveSettingUi()
     {
         // 이미 활성화 되어있다면 버튼을 누를시 꺼지게 구현
         if (settingUi.activeSelf)
         {
             CloseUI(settingUi);
+            soundsetUiBtn.SetActive(false);
+            keysetUiBtn.SetActive(false);
         }
         else
         {
             OpenUI(settingUi);
+            soundsetUiBtn.SetActive(true);
+            keysetUiBtn.SetActive(true);
         }
 
     }
@@ -95,14 +134,20 @@ public class EscUI : MonoBehaviour
         }
         else
         {
-            CloseUI(settingUi);
+            CloseUI(soundsetUI);
+            CloseUI(keysetUI);
+            soundsetUiBtn.SetActive(false);
+            keysetUiBtn.SetActive(false);
         }
     }
 
     public void CancleSetting()
     {
         CloseUI(settingCancleNotice);
-        CloseUI(settingUi);
+        CloseUI(soundsetUI);
+        CloseUI(keysetUI);
+        soundsetUiBtn.SetActive(false);
+        keysetUiBtn.SetActive(false);
     }
     public void CancleSettingCancleNotice()
     {
@@ -129,16 +174,35 @@ public class EscUI : MonoBehaviour
         CloseUI(characterInfoUi);
     }
 
+    public void ShowChSelectNotice()
+    {
+        OpenUI(chSelectNotice);
+    }
+
+    public void CancleChSelectNotice()
+    {
+        CloseUI(chSelectNotice); 
+    }
+
+    public void ShowLogoutNotice()
+    {
+        OpenUI(logoutNotice);
+    }
+
+    public void CancleLogoutNotice()
+    {
+        CloseUI(logoutNotice);
+    }
     public void ActiveExitFarming()
     {
         OpenUI(returnUi);
-        GameManager.Instance.SaveData();
+        //GameManager.Instance.SaveData();
     }
 
     public void CancleExitFarming()
     {
         CloseUI(returnUi);
-        GameManager.Instance.Init();
+        //GameManager.Instance.Init();
     }
 
     // UI를 스택에 추가하는 메서드
@@ -182,6 +246,12 @@ public class EscUI : MonoBehaviour
         {
             GameObject topUI = uiStack.Pop();
             topUI.SetActive(false);
+
+            if(topUI.gameObject.name == "Sound Panel" || topUI.gameObject.name == "Keyset Panel")
+            {
+                soundsetUiBtn.SetActive(false);
+                keysetUiBtn.SetActive(false);
+            }
 
             if (uiStack.Count > 0)
             {
