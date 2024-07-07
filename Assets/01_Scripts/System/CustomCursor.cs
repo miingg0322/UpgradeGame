@@ -66,8 +66,7 @@ public class CustomCursor : MonoBehaviour
 
         // 마우스 클릭과 드래그 구현
         if (Input.GetMouseButtonDown(0))
-        {
-            SimulateClick(worldPosition, -1); // 왼쪽 클릭
+        {           
             MouseDragStart(worldPosition); // 드래그 시작
         }
         else if (Input.GetMouseButton(0))
@@ -77,6 +76,7 @@ public class CustomCursor : MonoBehaviour
         else if (Input.GetMouseButtonUp(0))
         {
             MouseDragEnd(worldPosition); // 드래그 종료
+            SimulateClick(worldPosition, -1); // 왼쪽 클릭
         }
         else if(Input.GetMouseButtonDown(1))
         {
