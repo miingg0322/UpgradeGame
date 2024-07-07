@@ -19,7 +19,7 @@ public class SceneSwitcher : MonoBehaviour
         if (GameManager.Instance.dungeonTicket > 0)
         {
             GameManager.Instance.dungeonTicket--;
-            GameManager.Instance.SaveData();
+            //GameManager.Instance.SaveData();
             Debug.Log("던전에 입장하였습니다. 남은 입장권 개수: " + GameManager.Instance.dungeonTicket);
 
             SceneManager.LoadScene("AutoFarming");           
@@ -40,7 +40,9 @@ public class SceneSwitcher : MonoBehaviour
     {
         SceneManager.LoadScene("SampleScene");    
 
-        SceneManager.sceneLoaded += OnSceneLoaded; 
+        SceneManager.sceneLoaded += OnSceneLoaded;
+
+        GameManager.Instance.isDungeonClear = false;
 
         AudioManager.instance.PlayBgm(false);
     }
@@ -49,7 +51,7 @@ public class SceneSwitcher : MonoBehaviour
     {
         SceneManager.LoadScene("SampleScene");
 
-        GameManager.Instance.Init();       
+        //GameManager.Instance.Init();     
 
         SceneManager.sceneLoaded += OnSceneLoaded;
 
@@ -61,7 +63,7 @@ public class SceneSwitcher : MonoBehaviour
         if (GameManager.Instance.dungeonTicket > 0)
         {
             GameManager.Instance.dungeonTicket--;
-            GameManager.Instance.SaveData();
+            //GameManager.Instance.SaveData();
             Debug.Log("던전에 입장하였습니다. 남은 입장권 개수: " + GameManager.Instance.dungeonTicket);
 
             SceneManager.LoadScene("AutoFarming");
@@ -69,6 +71,7 @@ public class SceneSwitcher : MonoBehaviour
             SceneManager.sceneLoaded += OnSceneLoaded;
 
             levelValue = GameManager.Instance.DungeonLevel;
+            GameManager.Instance.isDungeonClear = false;
             AudioManager.instance.PlayBgm(true);
         }
         else
@@ -101,7 +104,7 @@ public class SceneSwitcher : MonoBehaviour
     }
     public void SwitchBossScene()
     {
-        GameManager.Instance.SaveData();
+        //GameManager.Instance.SaveData();
 
         SceneManager.LoadScene("Boss");
 
