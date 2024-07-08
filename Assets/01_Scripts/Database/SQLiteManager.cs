@@ -263,4 +263,12 @@ public class SQLiteManager : MonoBehaviour
         initCommand.ExecuteNonQuery();
         initCommand.Dispose();
     }
+
+    public void SaveItems(Item[] items)
+    {
+        for (int i = 0; i < items.Length; i++)
+        {
+            //StartCoroutine(AddItemToInventoryCo())
+        }
+    }
 }

@@ -93,22 +93,24 @@ public class Notice : MonoBehaviour
         clearlUi.SetActive(true);
 
         // 저장해둔 아이템 가져오기
-        List<CollectItem> collectItems = new List<CollectItem>();
+        Dictionary<Item,int> collectItems = new Dictionary<Item, int>();
         collectItems = GameManager.Instance.collectedItems;
 
         // ui 초기화
         ClearSlotInit();
 
         // UI에 저장해둔 아이템의 정보 할당
-        for (int index = 0; index < collectItems.Count; index++)
+        int index = 0;
+        foreach (var pair in collectItems)
         {
+            Item item = pair.Key;
             if (index == slots.Length)
                 break;
 
             slots[index].SetActive(true);
-            itemIcons[index].sprite = collectItems[index].itemImage;
-            itemNames[index].text = collectItems[index].itemName;
-            itemGrades[index].text = collectItems[index].itemGrade;
+            itemIcons[index].sprite = SheetManager.Instance.itemList.GetItemSprite(item.type, item.grade);
+            itemNames[index].text = item.name;
+            itemGrades[index].text = item.grade.ToString();
 
             // rare 등급이면 텍스트를 연보라색으로 변경
             if (itemGrades[index].text == "rare")
@@ -116,7 +118,8 @@ public class Notice : MonoBehaviour
                 itemGrades[index].GetComponent<Text>().color = new Color(190f / 255f, 110f / 255f, 236f / 255f);
             }
 
-            itemQuantitys[index].text = collectItems[index].itemQuantity.ToString();
+            itemQuantitys[index].text = collectItems[item].ToString();
+            index++;
         }
     }
     public void NoticeRoutine()
@@ -147,7 +150,7 @@ public class Notice : MonoBehaviour
 
     public void ClearSlotInit()
     {
-        GameManager.Instance.CollectedItemsInit();
+        GameManager.Instance.collectedItems.Clear();
 
         for(int index = 0; index < slots.Length; index++)
         {

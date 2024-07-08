@@ -16,15 +16,20 @@ MonoBehaviour:
   - itemName: null
     weight: 900
     grade: normal
+    type: 0
   - itemName: "\uD558\uAE09 \uAC15\uD654\uC11D A"
     weight: 25
     grade: normal
+    type: 1
   - itemName: "\uD558\uAE09 \uAC15\uD654\uC11D B"
     weight: 25
     grade: normal
+    type: 1
   - itemName: "\uD558\uAE09 \uAC15\uD654\uC11D C"
     weight: 25
     grade: normal
+    type: 1
   - itemName: "\uD558\uAE09 \uAC15\uD654\uC11D D"
     weight: 25
     grade: normal
+    type: 1

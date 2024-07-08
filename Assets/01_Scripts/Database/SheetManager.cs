@@ -12,12 +12,13 @@ public class SheetManager : MonoBehaviour
         get { return instance; }
         private set { }
     }
-    readonly string url = "https://script.google.com/macros/s/AKfycbyl3d1l6bLAg3wtyvV3l0YZTavtreQIJpnTqRdZdQ-xSFjNYyoluGKEjgB1BZdlyHGdjA/exec";
+    readonly string url = "https://script.google.com/macros/s/AKfycbxQfKuzApgi5AW-eue4vcZHadYqhU6jmb12dTcjRuTZp6HWUEbxsClxALEkkSbplO5RJw/exec";
     private SheetResponse response;
     public UserData user;
     public List<CharacterData> characterDatas = new List<CharacterData>();
     public CharacterData playingCharacter;
-    public ItemList items;
+    public ItemList itemList;
+    public WeightedRandom wRandom;
     private void Awake()
     {
         if(Instance == null)
@@ -32,18 +33,9 @@ public class SheetManager : MonoBehaviour
     }
     void Start()
     {
-        items = GetComponent<ItemList>();
+        itemList = GetComponent<ItemList>();
+        wRandom = GetComponent<WeightedRandom>();
         StartCoroutine(GetItemList());
-    }
-
-   
-    IEnumerator GetTest()
-    {
-        UnityWebRequest www = UnityWebRequest.Get(url);
-        yield return www.SendWebRequest();
-
-        string data = www.downloadHandler.text;
-        Debug.Log(data);
     }
 
     IEnumerator Post(WWWForm form)
@@ -205,13 +197,21 @@ public class SheetManager : MonoBehaviour
         form.AddField("order", "getItem");
         yield return StartCoroutine(Post(form));
         string[][] data = response.ParseData();
-        items.SortItem(data);
-        //for (int i = 0; i < data.Length; i++)
-        //{
-        //    for (int j = 0; j < data[i].Length; j++)
-        //    {
-        //        Debug.Log(data[i][j]);
-        //    }
-        //}
+        itemList.SortItem(data);
+        yield return StartCoroutine(GetItemConst());
     }
+
+    private IEnumerator GetItemConst()
+    {
+        WWWForm form = new WWWForm();
+        form.AddField("order", "getItemConst");
+        yield return StartCoroutine(Post(form));
+        itemList.maxType = int.Parse(response.data[0]);
+        itemList.maxGrade = int.Parse(response.data[1]);
+        Debug.Log($"Get Const::: {itemList.maxType}, {itemList.maxGrade}");
+        itemList.InitLists();
+        wRandom.SetRandom();
+        wRandom.RandomPickTest(1000);
+    }
+
 }

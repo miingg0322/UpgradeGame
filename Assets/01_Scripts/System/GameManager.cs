@@ -44,7 +44,7 @@ public class GameManager : MonoBehaviour
 
     public int[] userSlots;
 
-    public List<CollectItem> collectedItems = new List<CollectItem>();
+    public Dictionary<Item, int> collectedItems = new Dictionary<Item, int>();
 
     public bool isDungeonClear;
     public bool isCharacterSelect;
@@ -223,6 +223,7 @@ public class GameManager : MonoBehaviour
     public void DeleteCharacter()
     {
         SheetManager.Instance.DeleteCharacter(selectIndex);
+        //SQLiteManager.Instance.InitInventory();
         loginUi.deleteNotice.SetActive(false);
         loginUi.CancleDelete();
 
@@ -230,28 +231,25 @@ public class GameManager : MonoBehaviour
         SetUserSlots(userSlots);
     }
 
-    public void CollectedItemsInit()
-    {
-        collectedItems = new List<CollectItem>();
-    }
 
-    public void CollectItem(string name, string grade, Sprite sprite)
+    public void CollectItem(string name,int type, int grade, Sprite sprite)
     {
         // 중복된 아이템이 있는지 확인
-        foreach (CollectItem item in collectedItems)
+        foreach (var pair in collectedItems)
         {
-            if (item.itemName == name && item.itemGrade == grade)
+            Item item = pair.Key;
+            if (item.name.Equals(name) && item.grade.Equals(grade))
             {
                 // 중복된 아이템이 있으면 수량을 증가시키고 함수 종료
-                item.itemQuantity++;
+                collectedItems[item]++;
                 Debug.Log("중복된 아이템. 수량 증가");
                 return;
             }
         }
 
-        CollectItem newItem = new CollectItem(name, grade, sprite, 1);
-        collectedItems.Add(newItem);
-        collectedItems.Sort(new CollectItemComparer());
+        Item newItem = new Item(name, type, grade);
+        collectedItems.Add(newItem, 1);
+        //collectedItems.Sort(new CollectItemComparer());
     }
     public void ReturnChSelect()
     {

@@ -12,6 +12,7 @@ public class RanItemData : ScriptableObject
         public string itemName;
         public double weight;
         public string grade;
+        public int type;
     }
 
     public ItemInfo[] itemInfos;
