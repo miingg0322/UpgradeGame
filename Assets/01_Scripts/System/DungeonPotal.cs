@@ -22,12 +22,12 @@ public class DungeonPotal : MonoBehaviour
             StartCoroutine(EscUiNotActive());
         }
 
-        if(isArrive && (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space)) && !dungeonList.activeSelf)
+        if(isArrive && (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeySetting.keys[KeyAction.INTERACTION])) && !dungeonList.activeSelf)
         {
             escUI.notActive = true;
             dungeonList.SetActive(true);
         }
-        else if (isArrive && (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space)) && dungeonList.activeSelf)
+        else if (isArrive && (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeySetting.keys[KeyAction.INTERACTION])) && dungeonList.activeSelf)
         {
             dungeonList.SetActive(false);
             StartCoroutine(EscUiNotActive());
@@ -39,6 +39,12 @@ public class DungeonPotal : MonoBehaviour
         yield return null;
 
         escUI.notActive = false;
+    }
+
+    public void HideDungeonList()
+    {
+        dungeonList.SetActive(false);
+        StartCoroutine(EscUiNotActive());
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -54,7 +60,10 @@ public class DungeonPotal : MonoBehaviour
         if (collision.CompareTag("Player"))
         {
             isArrive = false;
-            StartCoroutine(EscUiNotActive());
+            if (gameObject.activeInHierarchy)
+            {
+                StartCoroutine(EscUiNotActive());
+            }
         }
     }
 }

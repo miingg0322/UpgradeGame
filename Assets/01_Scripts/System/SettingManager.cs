@@ -10,7 +10,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
 
-public enum KeyAction { UP, DOWN, LEFT, RIGHT, DASH, SKILL, ATTACK, KEYCOUNT }
+public enum KeyAction { UP, DOWN, LEFT, RIGHT, DASH, SKILL, ATTACK, INTERACTION, KEYCOUNT }
 
 public static class KeySetting { public static Dictionary<KeyAction, KeyCode> keys = new Dictionary<KeyAction, KeyCode>(); }
 public class SettingManager : MonoBehaviour
@@ -55,7 +55,7 @@ public class SettingManager : MonoBehaviour
 
     int codeKey = -1;
 
-    KeyCode[] defaultKeys = new KeyCode[] { KeyCode.W, KeyCode.S, KeyCode.A, KeyCode.D, KeyCode.LeftShift, KeyCode.R, KeyCode.Mouse0 };
+    KeyCode[] defaultKeys = new KeyCode[] { KeyCode.W, KeyCode.S, KeyCode.A, KeyCode.D, KeyCode.LeftShift, KeyCode.R, KeyCode.Mouse0, KeyCode.Space };
     private void Awake()
     {
         InitKeySetting();

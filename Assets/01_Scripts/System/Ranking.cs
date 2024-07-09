@@ -7,7 +7,7 @@ public class Ranking : MonoBehaviour
     bool isNear;
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && isNear)
+        if (Input.GetKeyDown(KeySetting.keys[KeyAction.INTERACTION]) && isNear)
         {
             Debug.Log("·©Å· UI Ãâ·Â");
         }
