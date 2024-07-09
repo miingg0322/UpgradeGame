@@ -11,6 +11,7 @@ public class Enemy : MonoBehaviour
     public DropItem dropItemSet;
     public EnemyData[] enemyData;
     public FarmingBossData[] bossData;
+    public RuntimeAnimatorController[] animCon;
     public float hp;
     public int maxHp;
     public int dmg;
@@ -22,6 +23,7 @@ public class Enemy : MonoBehaviour
     bool isDead;
     bool isDamaged;   
 
+    Animator anim;
     Rigidbody2D rigid;
     Collider2D coll;
     SpriteRenderer spriter;
@@ -31,6 +33,7 @@ public class Enemy : MonoBehaviour
     WaitForSeconds invincibility;
     void Awake()
     {
+        anim = GetComponent<Animator>();
         dropItemSet = FindObjectOfType<DropItem>();
         rigid = GetComponent<Rigidbody2D>();
         coll = GetComponent<Collider2D>();
@@ -48,15 +51,16 @@ public class Enemy : MonoBehaviour
 
     private void OnEnable()
     {
+        anim.SetBool("Dead", false);
         coll.enabled = true;
         rigid.simulated = true;
-        spriter.sortingOrder = 2;
+        spriter.sortingOrder = 4;
         hp = maxHp;
         isHit = false;
         isDead = false;
     }
 
-    void Update()
+    void FixedUpdate()
     {
         if (!isHit && !isDead)
             transform.Translate(direction * moveSpeed * Time.deltaTime);
@@ -70,6 +74,7 @@ public class Enemy : MonoBehaviour
     {
         EnemyData Data = enemyData[level];
 
+        anim.runtimeAnimatorController = animCon[level];
         moveSpeed = Data.moveSpeed;
         maxHp = Data.maxHp;
         hp = Data.curHp;
@@ -78,12 +83,12 @@ public class Enemy : MonoBehaviour
 
     public void BossInit(int level)
     {
-        Debug.Log("보스 데이터 초기화");
         FarmingBossData data = bossData[level];
 
         // 임시로 크기 증가 써둠
         transform.localScale = new Vector3(3f, 3f, 3f);
 
+        anim.runtimeAnimatorController = animCon[level];
         gameObject.layer = LayerMask.NameToLayer("Boss");
         moveSpeed = data.moveSpeed;
         maxHp = data.maxHp;
@@ -172,10 +177,11 @@ public class Enemy : MonoBehaviour
 
     public IEnumerator Dead()
     {
+        anim.SetBool("Dead", true);
         AudioManager.instance.PlaySkillSfx(AudioManager.SkillSfx.die);
         coll.enabled = false;
         rigid.simulated = false;
-        spriter.sortingOrder = 0;
+        spriter.sortingOrder = 3;
         isDead = true;
 
         yield return deadWait;
@@ -191,6 +197,7 @@ public class Enemy : MonoBehaviour
         if (hp > 0)
         {
             // 피격 애니메이션, 효과음 재생
+            anim.SetTrigger("Hit");
         }
         else
         {

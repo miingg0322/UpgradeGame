@@ -19,10 +19,10 @@ public class SceneSwitcher : MonoBehaviour
         if (GameManager.Instance.dungeonTicket > 0)
         {
             GameManager.Instance.dungeonTicket--;
-            GameManager.Instance.SaveData();
+            //GameManager.Instance.SaveData();
             Debug.Log("던전에 입장하였습니다. 남은 입장권 개수: " + GameManager.Instance.dungeonTicket);
 
-            SceneManager.LoadScene("AutoFarming");
+            SceneManager.LoadScene("AutoFarming");           
 
             SceneManager.sceneLoaded += OnSceneLoaded;
 
@@ -38,9 +38,11 @@ public class SceneSwitcher : MonoBehaviour
 
     public void SwitchSampleScene()
     {
-        SceneManager.LoadScene("SampleScene");
+        SceneManager.LoadScene("SampleScene");    
 
         SceneManager.sceneLoaded += OnSceneLoaded;
+
+        GameManager.Instance.isDungeonClear = false;
 
         AudioManager.instance.PlayBgm(false);
     }
@@ -49,7 +51,7 @@ public class SceneSwitcher : MonoBehaviour
     {
         SceneManager.LoadScene("SampleScene");
 
-        GameManager.Instance.Init();
+        //GameManager.Instance.Init();     
 
         SceneManager.sceneLoaded += OnSceneLoaded;
 
@@ -61,7 +63,7 @@ public class SceneSwitcher : MonoBehaviour
         if (GameManager.Instance.dungeonTicket > 0)
         {
             GameManager.Instance.dungeonTicket--;
-            GameManager.Instance.SaveData();
+            //GameManager.Instance.SaveData();
             Debug.Log("던전에 입장하였습니다. 남은 입장권 개수: " + GameManager.Instance.dungeonTicket);
 
             SceneManager.LoadScene("AutoFarming");
@@ -69,6 +71,7 @@ public class SceneSwitcher : MonoBehaviour
             SceneManager.sceneLoaded += OnSceneLoaded;
 
             levelValue = GameManager.Instance.DungeonLevel;
+            GameManager.Instance.isDungeonClear = false;
             AudioManager.instance.PlayBgm(true);
         }
         else
@@ -86,15 +89,22 @@ public class SceneSwitcher : MonoBehaviour
 
         transUserId = GameManager.Instance.userId;
       
-        GameManager.Instance.ReturnChSelect();
-        Destroy(GameManager.Instance.player.gameObject);
+        GameManager.Instance.ReturnChSelect();       
     }
 
+    public void Logout()
+    {
+        SceneManager.LoadScene("Login");
+
+        SceneManager.sceneLoaded += OnSceneLoaded;
+
+        transUserId = null;
+
+        GameManager.Instance.UserLogout();
+    }
     public void SwitchBossScene()
     {
-        GameManager.Instance.SaveData();
-
-        Player.Instance.GetComponent<PlayerInput>().actions = playerAction;
+        //GameManager.Instance.SaveData();
 
         SceneManager.LoadScene("Boss");
 
@@ -104,8 +114,6 @@ public class SceneSwitcher : MonoBehaviour
     public void SwitchBossToSampleScene()
     {
         SceneManager.LoadScene("SampleScene");
-
-        Player.Instance.GetComponent<PlayerInput>().actions = null;
 
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
@@ -122,18 +130,15 @@ public class SceneSwitcher : MonoBehaviour
             {
                 Debug.LogError("GameManager를 찾을 수 없습니다.");
             }
+            // 중복되는 메인 카메라 비활성화
+            Player.Instance.transform.GetChild(3).gameObject.SetActive(false);
+            Time.timeScale = 1;
         }
         else if(scene.name == "SampleScene")
         {
-            GameManager gameManager = FindObjectOfType<GameManager>();
-            if (gameManager != null)
-            {
-                Time.timeScale = 1f;              
-            }
-            else
-            {
-                Debug.LogError("GameManager를 찾을 수 없습니다.");
-            }
+            // 메인 카메라를 활성화
+            Player.Instance.transform.GetChild(3).gameObject.SetActive(true);
+            Time.timeScale = 1;
         }
         else if (scene.name == "Login")
         {
@@ -146,6 +151,8 @@ public class SceneSwitcher : MonoBehaviour
             {
                 Debug.LogError("GameManager를 찾을 수 없습니다.");
             }
+            Destroy(GameManager.Instance.player.gameObject);
+            Time.timeScale = 1;
         }
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }

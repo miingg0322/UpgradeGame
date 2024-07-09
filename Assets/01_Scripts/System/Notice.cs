@@ -8,9 +8,7 @@ using UnityEngine.UI;
 public class Notice : MonoBehaviour
 {
     public GameObject noticeUi;
-    public GameObject exitUi;
     public GameObject clearlUi;
-    public GameObject exitBtn;
     public GameObject specialMoveBtn;
     public GameObject cleaner;
     public Image noticeIcon;
@@ -76,8 +74,6 @@ public class Notice : MonoBehaviour
     public void DungeonClear()
     {
         AudioManager.instance.PlaySkillSfx(AudioManager.SkillSfx.victory);
-        // 나가기 버튼 비활성화
-        exitBtn.SetActive(false);
         // 아이템 획득 알림 비활성화
         noticeUi.SetActive(false);
         // 맵의 적과 무기 청소
@@ -133,19 +129,6 @@ public class Notice : MonoBehaviour
     public void HideNotice()
     {
         noticeUi.SetActive(false);
-    }
-    public void ActiveExitFarming()
-    {
-        exitUi.SetActive(true);
-        GameManager.Instance.SaveData();
-        Time.timeScale = 0f;      
-    }
-
-    public void CancleExitFarming()
-    {
-        exitUi.SetActive(false);
-        Time.timeScale = 1f;
-        GameManager.Instance.Init();
     }
 
     public void ClearSlotInit()

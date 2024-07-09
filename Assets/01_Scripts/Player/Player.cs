@@ -25,11 +25,16 @@ public class Player : MonoBehaviour
     public bool specialMove;
 
     public WeaponDataManager weaponDataManager;
-    public Vector2 inputVec;
+    public Vector2 movement;
+    public Vector2 dashVec;
     public Scanner scanner;
     public Weapon weapon;
     public Sprite sprite;
     public GameObject[] specialSkill;
+
+    bool isDash;
+    bool isDashCoolTime;
+    bool isDead;
 
     Rigidbody2D rigid;
     SpriteRenderer spriter;
@@ -58,32 +63,44 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        if (SceneManager.GetActiveScene().name != "Boss")
-        {
-            return; 
-        }
-
-        if (Input.GetMouseButtonDown(0))
-        {
-            // 기본 공격
-            Debug.Log("기본 공격");
-        }
-        if (Input.GetKeyDown(KeyCode.LeftShift))
-        {
-            // 대쉬
-            Debug.Log("대쉬");
-        }
+        Move();
+        Attack();
+        Dash();
+        Skill();
     }
-    void OnMove(InputValue value)
+    //void OnMove(InputValue value)
+    //{
+    //    inputVec = value.Get<Vector2>();
+    //}
+
+    void Move()
     {
-        inputVec = value.Get<Vector2>();
-    }
+        if (!isDash)
+        {
+            movement = Vector2.zero;
 
+            if (Input.GetKey(KeySetting.keys[KeyAction.UP]))
+            {
+                movement.y = 1;
+            }
+            if (Input.GetKey(KeySetting.keys[KeyAction.DOWN]))
+            {
+                movement.y = -1;
+            }
+            if (Input.GetKey(KeySetting.keys[KeyAction.LEFT]))
+            {
+                movement.x = -1;
+            }
+            if (Input.GetKey(KeySetting.keys[KeyAction.RIGHT]))
+            {
+                movement.x = 1;
+            }
+        }                         
+    } 
 
     private void FixedUpdate()
     {
-        Vector2 nextVec = inputVec * speed * Time.fixedDeltaTime;
-        rigid.MovePosition(rigid.position + nextVec);
+        rigid.MovePosition(rigid.position + movement * speed * Time.fixedDeltaTime);
     }
 
     public void Init(int index)
@@ -118,7 +135,43 @@ public class Player : MonoBehaviour
         }
         
     }
+    void Attack()
+    {
+        
+    }
+    void Dash()
+    {
+        if (Input.GetKey(KeySetting.keys[KeyAction.DASH]))
+        {
+            if (movement != Vector2.zero && !isDash && !isDead && !isDashCoolTime)
+            {
+                dashVec = movement;
+                speed *= 4;
+                isDash = true;
+                isDashCoolTime = true;
 
+                StartCoroutine(DashEnd());
+            }
+        }      
+    }
+
+    void Skill()
+    {
+        if (Input.GetKey(KeySetting.keys[KeyAction.SKILL]))
+        {
+            Debug.Log("SKILL");
+        }
+    }
+
+    IEnumerator DashEnd()
+    {
+        yield return new WaitForSeconds(0.25f);
+        isDash = false;
+        speed *= 0.25f;
+
+        yield return new WaitForSeconds(0.75f);
+        isDashCoolTime = false;
+    }
     // AutoFarming에서 사용가능한 필살기
     public void SpecialMove()
     {
@@ -130,5 +183,5 @@ public class Player : MonoBehaviour
             specialSkill[playerClass].SetActive(true);
             GameManager.Instance.notice.specialMoveBtn.SetActive(false);
         }           
-    }   
+    }
 }

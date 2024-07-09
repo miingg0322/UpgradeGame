@@ -11655,6 +11655,8 @@ MonoBehaviour:
   isCreate: 0
   isChangeSetting: 0
   isTutorialClear: 0
+  isStop: 0
+  isKeySetting: 0
   probBase: 1000
 --- !u!4 &1758712023
 Transform:

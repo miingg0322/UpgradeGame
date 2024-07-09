@@ -38,6 +38,11 @@ public class AudioManager : MonoBehaviour
     AudioSource[] uiSfxPlayers;
     int uiChannelIndex;
 
+    bool isMuteTotalSound;
+    bool isMuteBgmSound;
+    bool isMuteGameSound;
+    bool isMuteSkillSound;
+    bool isMuteUiSound;
     public enum GameSfx { getItem, hitEnemy, playerAttack }
     public enum SkillSfx { victory , lackTicket , die }
     public enum UISfx { uiList, dungeonList, characterInfo }
@@ -52,16 +57,35 @@ public class AudioManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+        CheckMuteSound();
         Init();
     }
 
+    void CheckMuteSound()
+    {
+        isMuteTotalSound = PlayerPrefs.GetInt("isMuteTotalSound", 0) == 1;
+        isMuteBgmSound = PlayerPrefs.GetInt("isMuteBgmSound", 0) == 1;
+        isMuteGameSound = PlayerPrefs.GetInt("isMuteGameSound", 0) == 1;
+        isMuteSkillSound = PlayerPrefs.GetInt("isMuteSkillSound", 0) == 1;
+        isMuteUiSound = PlayerPrefs.GetInt("isMuteUiSound", 0) == 1;
+    }
     void Init()
     {
-        bgmVolume = PlayerPrefs.GetInt("bgmVolumeValue", 70) / 100f;
-        gameSfxVolume = PlayerPrefs.GetInt("gameVolumeValue", 70) / 100f;
-        skillSfxVolume = PlayerPrefs.GetInt("skillVolumeValue", 70) / 100f;
-        uiSfxVolume = PlayerPrefs.GetInt("uiVolumeValue", 70) / 100f;
-
+        if (isMuteTotalSound)
+        {
+            bgmVolume = 0;
+            gameSfxVolume = 0;
+            skillSfxVolume = 0;
+            uiSfxVolume = 0;
+        }
+        else
+        {
+            bgmVolume = isMuteBgmSound ? 0 : PlayerPrefs.GetInt("bgmVolumeValue", 70) / 100f;
+            gameSfxVolume = isMuteGameSound ? 0 : PlayerPrefs.GetInt("gameVolumeValue", 70) / 100f;
+            skillSfxVolume = isMuteSkillSound ? 0 : PlayerPrefs.GetInt("skillVolumeValue", 70) / 100f;
+            uiSfxVolume = isMuteUiSound ? 0 : PlayerPrefs.GetInt("uiVolumeValue", 70) / 100f;
+        }
+                     
         GameObject bgmObject = new GameObject("BgmPlayer");
         bgmObject.transform.parent = transform;
         bgmPlayer = bgmObject.AddComponent<AudioSource>();

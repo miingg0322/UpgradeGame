@@ -6,11 +6,16 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
 
+public enum KeyAction { UP, DOWN, LEFT, RIGHT, DASH, SKILL, ATTACK, INTERACTION, KEYCOUNT }
+
+public static class KeySetting { public static Dictionary<KeyAction, KeyCode> keys = new Dictionary<KeyAction, KeyCode>(); }
 public class SettingManager : MonoBehaviour
-{
+{   
+    [Header("#Sound Setting")]
     public Slider sensitivitySlider;
     public Slider volumeSlider;
     public Slider bgmVolumeSlider;
@@ -31,7 +36,6 @@ public class SettingManager : MonoBehaviour
     public TMP_InputField skillSoundValue;
     public TMP_InputField uiSoundValue;
 
-
     public Toggle totalSoundToggle;
     public Toggle bgmSoundToggle;
     public Toggle gameSoundToggle;
@@ -40,17 +44,105 @@ public class SettingManager : MonoBehaviour
 
     public CustomCursor customCursor;
 
+    [Header("#Key Setting")]
+    public GameObject[] keySettingBtn;
+
     bool isChanging;
 
     int basicVolumeValue = 70;
     int basicSensitivityValue = 50;
     int maxVolume;
 
+    int codeKey = -1;
+
+    KeyCode[] defaultKeys = new KeyCode[] { KeyCode.W, KeyCode.S, KeyCode.A, KeyCode.D, KeyCode.LeftShift, KeyCode.R, KeyCode.Mouse0, KeyCode.Space };
+    private void Awake()
+    {
+        InitKeySetting();
+    }
     void Start()
     {
         // 전체 사운드 Value 값 설정
         maxVolume = PlayerPrefs.HasKey("volumeValue") ? PlayerPrefs.GetInt("volumeValue") : basicVolumeValue;
 
+        InitSlider();
+        InitToggle();       
+    }
+
+    private void OnGUI()
+    {
+        Event keyEvent = Event.current;
+
+        if (codeKey != -1)
+        {
+            GameManager.Instance.isKeySetting = true;
+            keySettingBtn[codeKey].GetComponent<Button>().interactable = false;
+            if (keyEvent.isKey)
+            {
+                KeyCode newKey = keyEvent.keyCode;
+                HandleKeyChange(newKey);
+            }
+            else if (keyEvent.type == EventType.MouseDown)
+            {
+                KeyCode newMouseKey = KeyCode.None;
+
+                switch (keyEvent.button)
+                {
+                    case 0:
+                        newMouseKey = KeyCode.Mouse0;
+                        break;
+                    case 1:
+                        newMouseKey = KeyCode.Mouse1;
+                        break;
+                    case 2:
+                        newMouseKey = KeyCode.Mouse2;
+                        break;
+                }
+
+                if (newMouseKey != KeyCode.None)
+                {
+                    HandleKeyChange(newMouseKey);
+                }
+            }
+        }
+    }
+    private void HandleKeyChange(KeyCode newKey)
+    {
+        KeyAction existingAction = KeyAction.KEYCOUNT;
+
+        foreach (var entry in KeySetting.keys)
+        {
+            if (entry.Value == newKey)
+            {
+                existingAction = entry.Key;
+                break;
+            }
+        }
+
+        if (existingAction != KeyAction.KEYCOUNT)
+        {
+            KeySetting.keys[existingAction] = KeySetting.keys[(KeyAction)codeKey];
+        }
+
+        KeySetting.keys[(KeyAction)codeKey] = newKey;
+        StartCoroutine(EndKeySetting());
+        keySettingBtn[codeKey].GetComponent<Button>().interactable = true;
+        codeKey = -1;
+        CheckChangeSetting();
+    }
+
+    IEnumerator EndKeySetting()
+    {
+        yield return null;
+
+        GameManager.Instance.isKeySetting = false;
+    }
+    public void ChangeKey(int num)
+    {
+        codeKey = num;
+    }
+    void InitSlider()
+    {
         // 슬라이더의 On Value Changed에 메서드 등록
         sensitivitySlider.onValueChanged.AddListener(delegate { OnSensitivityChanged(); });
         volumeSlider.onValueChanged.AddListener(delegate { OnVolumeChanged(); });
@@ -72,7 +164,9 @@ public class SettingManager : MonoBehaviour
         uiSoundValue.text = uiVolumeSlider.value.ToString();
         sensitivitySlider.value = PlayerPrefs.HasKey("cursorSensitivity") ? PlayerPrefs.GetInt("cursorSensitivity") : basicSensitivityValue;
         sensitivityValue.text = sensitivitySlider.value.ToString();
- 
+    }
+    void InitToggle()
+    {
         // Toggle 초기상태 설정
         totalSoundToggle.isOn = PlayerPrefs.HasKey("isMuteTotalSound") ? (PlayerPrefs.GetInt("isMuteTotalSound") == 1 ? true : false) : false;
         bgmSoundToggle.isOn = PlayerPrefs.HasKey("isMuteBgmSound") ? (PlayerPrefs.GetInt("isMuteBgmSound") == 1 ? true : false) : false;
@@ -85,6 +179,26 @@ public class SettingManager : MonoBehaviour
         SetGameToggle();
         SetSkillToggle();
         SetUIToggle();
+    }
+
+    void InitKeySetting()
+    {
+        // 저장된 값이 있는지 확인하고 있다면 그 값을 사용하여 초기화
+        foreach (KeyAction keyAction in System.Enum.GetValues(typeof(KeyAction)))
+        {
+            if (keyAction == KeyAction.KEYCOUNT) continue;
+
+            string keyString = PlayerPrefs.GetString(keyAction.ToString(), null);
+            if (!string.IsNullOrEmpty(keyString))
+            {
+                KeyCode loadedKey = (KeyCode)System.Enum.Parse(typeof(KeyCode), keyString);
+                KeySetting.keys[keyAction] = loadedKey;
+            }
+            else
+            {
+                KeySetting.keys[keyAction] = defaultKeys[(int)keyAction];
+            }
+        }
     }
     void OnVolumeChanged()
     {
@@ -130,7 +244,6 @@ public class SettingManager : MonoBehaviour
         {
             SetActiveTotalSound();          
         }
-        Debug.Log(totalSoundToggle.isOn);
         CheckChangeSetting();
     }
 
@@ -557,6 +670,12 @@ public class SettingManager : MonoBehaviour
         PlayerPrefs.SetInt("isMuteSkillSound", skillSoundToggle.isOn ? 1 : 0);
         PlayerPrefs.SetInt("isMuteUiSound", uiSoundToggle.isOn ? 1 : 0);
 
+        foreach (var entry in KeySetting.keys)
+        {
+            PlayerPrefs.SetString(entry.Key.ToString(), entry.Value.ToString());
+        }
+
+        PlayerPrefs.Save();
         GameManager.Instance.isChangeSetting = false;
     }
     // 설정창을 끌때 원래의 세팅으로 되돌리는 함수
@@ -574,6 +693,24 @@ public class SettingManager : MonoBehaviour
         skillSoundToggle.isOn = PlayerPrefs.GetInt("isMuteSkillSound", 0) == 1 ? true : false;
         uiSoundToggle.isOn = PlayerPrefs.GetInt("isMuteUiSound", 0) == 1 ? true : false;
 
+        // 키세팅 복구 추가
+        foreach (KeyAction keyAction in System.Enum.GetValues(typeof(KeyAction)))
+        {
+            if (keyAction == KeyAction.KEYCOUNT) continue;
+
+            string keyString = PlayerPrefs.GetString(keyAction.ToString(), null);
+            if (!string.IsNullOrEmpty(keyString))
+            {
+                KeyCode loadedKey = (KeyCode)System.Enum.Parse(typeof(KeyCode), keyString);
+                KeySetting.keys[keyAction] = loadedKey;
+            }
+            else
+            {
+                KeySetting.keys[keyAction] = defaultKeys[(int)keyAction];
+            }
+        }
+
+        PlayerPrefs.Save();
         UpdateVolumeSliderMax();
         GameManager.Instance.isChangeSetting = false;
     }
@@ -605,6 +742,21 @@ public class SettingManager : MonoBehaviour
         bool curIsMuteGameSound = gameSoundToggle.isOn;
         bool curIsMuteSkillSound = skillSoundToggle.isOn;
         bool curIsMuteUISound = uiSoundToggle.isOn;
+
+        // 키세팅 비교 부분 추가
+        foreach (KeyAction keyAction in System.Enum.GetValues(typeof(KeyAction)))
+        {
+            if (keyAction == KeyAction.KEYCOUNT) continue;
+
+            KeyCode savedKey = (KeyCode)System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString(keyAction.ToString(), defaultKeys[(int)keyAction].ToString()));
+            KeyCode currentKey = KeySetting.keys[keyAction];
+
+            if (savedKey != currentKey)
+            {
+                GameManager.Instance.isChangeSetting = true;
+                return; // 변경 여부가 발견되면 즉시 리턴
+            }
+        }
 
         if (savedVolume != curVolume || savedSensitivity != curSensitivity || savedBgmVolume != curBgmVolume || savedGameVolume != curGameVolume || savedSkillVolume != curSkillVolume || savedUIVolume != curUIVolume || savedIsMuteTotalSound != curIsMuteTotalSound || savedIsMuteBgmSound != curIsMuteBgmSound || savedIsMuteGameSound != curIsMuteGameSound || savedIsMuteSkillSound != curIsMuteSkillSound || savedIsMuteUISound != curIsMuteUISound) // 현재 설정과 저장된 설정이 일치하는지 확인
         {
