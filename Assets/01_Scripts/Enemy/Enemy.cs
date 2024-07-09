@@ -252,7 +252,7 @@ public class Enemy : MonoBehaviour
 
             // 얻은 아이템 저장
             Debug.Log("아이템 저장");
-            GameManager.Instance.CollectItem(itemName, grade, sprite);
+            //GameManager.Instance.CollectItem(itemName, grade, sprite);
             AudioManager.instance.PlayGameSfx(AudioManager.GameSfx.getItem);
 
             if (!gameObject.activeSelf)

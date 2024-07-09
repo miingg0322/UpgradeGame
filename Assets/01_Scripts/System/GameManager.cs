@@ -44,7 +44,7 @@ public class GameManager : MonoBehaviour
 
     public int[] userSlots;
 
-    public List<CollectItem> collectedItems = new List<CollectItem>();
+    public Dictionary<Item, int> collectedItems = new Dictionary<Item, int>();
 
     public bool isDungeonClear;
     public bool isCharacterSelect;
@@ -160,7 +160,7 @@ public class GameManager : MonoBehaviour
             }
             else
             {
-               int chClass = DBManager.Instance.GetCharacterClass(userSlots[index]);
+                int chClass = slots[index];
 
                 loginUi.selectCharacterIcons[index].sprite = playerData[chClass].playerSprite;
                 loginUi.characterTexts[index].text = playerData[chClass].playerName;
@@ -171,9 +171,11 @@ public class GameManager : MonoBehaviour
 
     public void SelectCharacter(int slotIndex)
     {
-        selectedCharacterClass = DBManager.Instance.GetCharacterClass(userSlots[slotIndex]);
-        selectedCharacterId = userSlots[slotIndex];
-        bossClear = DBManager.Instance.GetClearInfo(selectedCharacterId);
+        selectIndex = slotIndex;
+        selectedCharacterClass = userSlots[slotIndex];
+        SheetManager.Instance.playingCharacter = SheetManager.Instance.characterDatas[slotIndex];
+        bossClear = SheetManager.Instance.characterDatas[slotIndex].clear;
+        isTutorialClear = SheetManager.Instance.characterDatas[slotIndex].tutorial;
         SceneManager.LoadScene("SampleScene");
 
         StartCoroutine(Tutorial());
@@ -200,19 +202,20 @@ public class GameManager : MonoBehaviour
 
     public void CreateCharacter()
     {                 
-        string id = userId;
-        // DB�� ������ ����
-        int characterId = DBManager.Instance.CreateCharacter(id, selectIndex);
-        
-        for(int index = 0;index < userSlots.Length;index++)
+        int slotIndex = -1;
+        for (int i = 0; i < userSlots.Length; i++)
         {
-            if (userSlots[index] == -1)
+            if (userSlots[i] == -1)
             {
-                userSlots[index] = characterId;
+                slotIndex = i;
                 break;
             }
         }
-
+        if(slotIndex > -1)
+        {
+            SheetManager.Instance.CreateCharacter(slotIndex, selectIndex);
+            userSlots[slotIndex] = selectIndex;
+        }
         SetUserSlots(userSlots);
         loginUi.createUi.SetActive(false);
         loginUi.selectUi.SetActive(true);
@@ -222,7 +225,8 @@ public class GameManager : MonoBehaviour
 
     public void DeleteCharacter()
     {
-        DBManager.Instance.DeleteCharacter(deleteCharacter);
+        SheetManager.Instance.DeleteCharacter(selectIndex);
+        //SQLiteManager.Instance.InitInventory();
         loginUi.deleteNotice.SetActive(false);
         loginUi.CancleDelete();
 
@@ -230,28 +234,25 @@ public class GameManager : MonoBehaviour
         SetUserSlots(userSlots);
     }
 
-    public void CollectedItemsInit()
-    {
-        collectedItems = new List<CollectItem>();
-    }
 
-    public void CollectItem(string name, string grade, Sprite sprite)
+    public void CollectItem(string name,int type, int grade, Sprite sprite)
     {
         // 중복된 아이템이 있는지 확인
-        foreach (CollectItem item in collectedItems)
+        foreach (var pair in collectedItems)
         {
-            if (item.itemName == name && item.itemGrade == grade)
+            Item item = pair.Key;
+            if (item.name.Equals(name) && item.grade.Equals(grade))
             {
                 // 중복된 아이템이 있으면 수량을 증가시키고 함수 종료
-                item.itemQuantity++;
+                collectedItems[item]++;
                 Debug.Log("중복된 아이템. 수량 증가");
                 return;
             }
         }
 
-        CollectItem newItem = new CollectItem(name, grade, sprite, 1);
-        collectedItems.Add(newItem);
-        collectedItems.Sort(new CollectItemComparer());
+        Item newItem = new Item(name, type, grade);
+        collectedItems.Add(newItem, 1);
+        //collectedItems.Sort(new CollectItemComparer());
     }
     public void ReturnChSelect()
     {
