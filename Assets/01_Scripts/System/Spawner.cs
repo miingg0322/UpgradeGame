@@ -66,7 +66,7 @@ public class Spawner : MonoBehaviour
 
     void SpawnBoss()
     {
-        GameObject boss = GameManager.Instance.pool.Get(0);
+        GameObject boss = GameManager.Instance.pool.Get(6);
         boss.transform.position = spawnPoint[9].position;
         boss.GetComponent<Enemy>().BossInit(spawnDataIndex);        
     }
