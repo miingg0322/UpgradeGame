@@ -12,7 +12,7 @@ public class PlayerReposition : MonoBehaviour
         {
             Transform playerTransform = Player.Instance.transform;
 
-            Vector3 rePosition = new Vector3(7, 0, 0);
+            Vector3 rePosition = new Vector3(10, 0, 0);
             playerTransform.position = rePosition;
         }
         else

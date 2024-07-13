@@ -23,11 +23,17 @@ public class DamageText : MonoBehaviour
         text.text = damageValue.ToString();
         anim.SetTrigger("Damage");
 
-        Invoke("DestroyObject", destroyTime);
+        StartCoroutine(DestroyObject());
     }
 
-    private void DestroyObject()
+    private IEnumerator DestroyObject()
     {
+        float elapsedTime = 0f;
+        while (elapsedTime < destroyTime)
+        {
+            elapsedTime += Time.unscaledDeltaTime;
+            yield return null;
+        }
         gameObject.SetActive(false);
     }
 }

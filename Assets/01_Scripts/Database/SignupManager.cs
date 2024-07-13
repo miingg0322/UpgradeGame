@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using TMPro;
 using Unity.VisualScripting.Dependencies.Sqlite;
 using UnityEngine;
@@ -118,6 +119,18 @@ public class SignupManager : MonoBehaviour
             return;
         }
 
+        if (!IsValidIdOrPassword(id))
+        {
+            feedbackText.text = "아이디는 8글자 이상의 영문 + 숫자 조합이어야 합니다.";
+            return;
+        }
+
+        if (!IsValidIdOrPassword(password))
+        {
+            feedbackText.text = "비밀번호는 8글자 이상의 영문 + 숫자 조합이어야 합니다.";
+            return;
+        }
+
         if (!isPwSame)
         {
             feedbackText.text = "비밀번호를 일치하게 입력해주세요.";
@@ -180,5 +193,11 @@ public class SignupManager : MonoBehaviour
                 nicknameField.Select();
             }
         }
+    }
+
+    private bool IsValidIdOrPassword(string input)
+    {
+        // 영문과 숫자가 포함된 8글자 이상의 문자열인지 검증
+        return Regex.IsMatch(input, @"^(?=.*[a-zA-Z])(?=.*\d).{8,}$");
     }
 }

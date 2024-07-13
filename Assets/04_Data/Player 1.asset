@@ -18,7 +18,7 @@ MonoBehaviour:
   playerTrait: "\uD761\uD608"
   maxHp: 225
   curHp: 225
-  moveSpeed: 3.2
-  attackSpeed: 0.8
+  moveSpeed: 3.9
+  attackSpeed: 0.95
   drainRate: 1
   playerSprite: {fileID: -6251682230944352461, guid: 9fc5d6a43aa83eb429f6b99f0b96c44f, type: 3}

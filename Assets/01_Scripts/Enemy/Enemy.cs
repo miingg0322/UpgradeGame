@@ -19,9 +19,12 @@ public class Enemy : MonoBehaviour
     public Vector2 direction;
     public float moveSpeed = 2f;
 
-    bool isHit;
-    bool isDead;
-    bool isDamaged;   
+    public bool isDead;
+
+    bool isHit;    
+    bool isDamaged;
+    bool isExplosionHit;
+    bool isSpecialMoveHit;
 
     Animator anim;
     Rigidbody2D rigid;
@@ -85,11 +88,7 @@ public class Enemy : MonoBehaviour
     {
         FarmingBossData data = bossData[level];
 
-        // 임시로 크기 증가 써둠
-        transform.localScale = new Vector3(3f, 3f, 3f);
-
         anim.runtimeAnimatorController = animCon[level];
-        gameObject.layer = LayerMask.NameToLayer("Boss");
         moveSpeed = data.moveSpeed;
         maxHp = data.maxHp;
         hp = data.curHp;
@@ -136,8 +135,11 @@ public class Enemy : MonoBehaviour
 
             Damaged();
         }
-        if (collision.CompareTag("Explosion") && !isDead)
+        if (collision.CompareTag("Explosion") && !isDead && !isExplosionHit)
         {
+            isExplosionHit = true;
+            StartCoroutine(ExplosionHit());
+
             float damage = collision.GetComponent<Explosion>().damage;
             damage += Random.Range(-0.07f * damage, 0.07f * damage);
 
@@ -147,8 +149,12 @@ public class Enemy : MonoBehaviour
             ActiveDamageText(damage);
 
             Damaged();
-        }
-        if (collision.CompareTag("Skill") && !isDead)
+        }       
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Skill") && !isDead && !isSpecialMoveHit)
         {
             float damage = collision.GetComponent<SpecialMove>().damage;
             damage += Random.Range(-0.07f * damage, 0.07f * damage);
@@ -156,8 +162,11 @@ public class Enemy : MonoBehaviour
             // 적이 받은 데미지만큼 체력 감소
             hp -= damage;
 
-            ActiveDamageText(damage);          
+            ActiveDamageText(damage);
             Damaged();
+
+            isSpecialMoveHit = true;
+            StartCoroutine(SpecialMoveHit());
         }
     }
 
@@ -173,6 +182,18 @@ public class Enemy : MonoBehaviour
 
         yield return invincibility;
         isDamaged = false;
+    }
+    IEnumerator ExplosionHit()
+    {       
+        yield return invincibility;
+
+        isExplosionHit = false;
+    }
+    IEnumerator SpecialMoveHit()
+    {
+        yield return invincibility;
+
+        isSpecialMoveHit = false;
     }
 
     public IEnumerator Dead()

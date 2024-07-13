@@ -6,9 +6,18 @@ using UnityEngine;
 
 public class SpecialMove : MonoBehaviour
 {
-    public int damage = 300;
+    public float wariorDamage = 500;
+    public float berserkerDamage = 250;
+    public float gunslingerDamage = 300;
+
+    public float damage;
+    float spinSpeed = 30;
+    float spinDamage = 40;
+    float wariorMoveSpeed = 60;
+    float berserkerMoveSpeed = 20;
     float timer = 0;
 
+    
     bool explosion;
 
     SpriteRenderer spriter;
@@ -25,10 +34,31 @@ public class SpecialMove : MonoBehaviour
         transform.position = Player.Instance.transform.position;
         timer = 0;
 
-        if (Player.Instance.playerClass == 2)
+        switch (Player.Instance.playerClass)
         {
-            spriter.color = Color.white;
-            transform.localScale = Vector3.one;
+            case 0:
+                damage = wariorDamage;
+                break;
+            case 1:
+                damage = berserkerDamage;
+                break;
+            case 2:
+                damage = gunslingerDamage;
+                spriter.color = Color.white;
+                transform.localScale = Vector3.one;
+                break;
+        }
+    }
+    private void Update()
+    {
+        if (gameObject.activeSelf)
+        {
+            timer += Time.deltaTime;
+
+            if (timer > 0.5f && Player.Instance.playerClass == 1)
+            {
+                damage = spinDamage;
+            }
         }
     }
     void FixedUpdate()
@@ -48,59 +78,52 @@ public class SpecialMove : MonoBehaviour
     }
     void WarriorSpecialMove()
     {
-        transform.Translate(Vector2.left * 30 * Time.fixedDeltaTime);
+        transform.Translate(Vector2.left * wariorMoveSpeed * Time.fixedDeltaTime);
     }
     void BerserkerSpecialMove()
     {       
-        transform.Rotate(0, 0, 30);
-        rigid.velocity = Vector2.left * 20;
+        transform.Rotate(0, 0, spinSpeed);
+        rigid.velocity = Vector2.left * berserkerMoveSpeed;
 
-        if(timer > 0.3f)
-        {
-            damage = 40;
+        if(timer > 0.6f)
+        {          
             rigid.velocity = Vector2.zero;
         }
-        if (timer < 3f)
-        {                     
-            timer += Time.fixedDeltaTime;
-        }
-        else
+        if (timer > 3f)
         {
             gameObject.SetActive(false);
-        }
-        
+        }        
     }
     IEnumerator GunslingerSpecialMove()
     {
         Vector3 startPosition = transform.position;
         Vector3 targetPosition = Vector3.zero;
 
-        while (timer < 100)
+        while (timer < 0.7f)
         {
-            float t = timer / 100;
+            float t = timer / 0.7f;
             // 포물선 공식 사용: y = h * 4 * t * (1 - t)
             Vector3 currentPosition = Vector3.Lerp(startPosition, targetPosition, t);
             currentPosition.y = 8 * t * (1 - t); // 시작과 끝 위치의 y 좌표를 고려하여 계산
             gameObject.transform.position = currentPosition;
 
-            timer += Time.fixedDeltaTime;
             yield return null;
         }
 
         gameObject.transform.position = targetPosition;
 
-        if (timer > 100)
+        if (timer > 0.7f)
         {
-            yield return new WaitForSeconds(1);
+            yield return new WaitForSeconds(0.3f);
             explosion = true;           
         }
         if (explosion)
         {
             spriter.color = Color.red;
-            transform.localScale += Vector3.one * 15 * Time.fixedDeltaTime;
+            transform.localScale += Vector3.one * 20 * Time.fixedDeltaTime;
         }
         
-    }
+    }   
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if(collision.CompareTag("Wall"))

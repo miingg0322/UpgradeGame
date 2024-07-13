@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -20,6 +21,7 @@ public class Player : MonoBehaviour
     public float maxHealth;
     public float curHealth;
     public float speed;
+    public float dashSpeed = 1;
     public float attackSpeed;
     public float drainRate;
     public bool specialMove;
@@ -30,7 +32,10 @@ public class Player : MonoBehaviour
     public Scanner scanner;
     public Weapon weapon;
     public Sprite sprite;
+    public Renderer render;
     public GameObject[] specialSkill;
+
+    float chMoveSpeed;
 
     bool isDash;
     bool isDashCoolTime;
@@ -53,6 +58,7 @@ public class Player : MonoBehaviour
 
         rigid = GetComponent<Rigidbody2D>();
         spriter = GetComponent<SpriteRenderer>();
+        render = GetComponent<Renderer>();
     }
 
     private void Start()
@@ -95,12 +101,14 @@ public class Player : MonoBehaviour
             {
                 movement.x = 1;
             }
+
+            movement = movement.normalized;
         }                         
     } 
 
     private void FixedUpdate()
     {
-        rigid.MovePosition(rigid.position + movement * speed * Time.fixedDeltaTime);
+        rigid.MovePosition(rigid.position + movement * speed * dashSpeed * Time.fixedDeltaTime);
     }
 
     public void Init(int index)
@@ -115,6 +123,7 @@ public class Player : MonoBehaviour
         maxHealth = data.maxHp;
         curHealth = data.curHp;
         speed = data.moveSpeed;
+        chMoveSpeed = data.moveSpeed;
         attackSpeed = data.attackSpeed;
         drainRate = data.drainRate;
         sprite = data.playerSprite;
@@ -146,7 +155,7 @@ public class Player : MonoBehaviour
             if (movement != Vector2.zero && !isDash && !isDead && !isDashCoolTime)
             {
                 dashVec = movement;
-                speed *= 4;
+                dashSpeed = 4;
                 isDash = true;
                 isDashCoolTime = true;
 
@@ -162,14 +171,13 @@ public class Player : MonoBehaviour
             Debug.Log("SKILL");
         }
     }
-
     IEnumerator DashEnd()
     {
-        yield return new WaitForSeconds(0.25f);
+        yield return new WaitForSeconds(0.15f);
         isDash = false;
-        speed *= 0.25f;
+        dashSpeed = 1;
 
-        yield return new WaitForSeconds(0.75f);
+        yield return new WaitForSeconds(0.85f);
         isDashCoolTime = false;
     }
     // AutoFarming에서 사용가능한 필살기
@@ -184,4 +192,9 @@ public class Player : MonoBehaviour
             GameManager.Instance.notice.specialMoveBtn.SetActive(false);
         }           
     }
+    public void DisableSpecialSkill()
+    {
+        specialSkill[playerClass].SetActive(false);
+    }
+
 }
