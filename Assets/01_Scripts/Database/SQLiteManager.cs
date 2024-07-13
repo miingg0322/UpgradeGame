@@ -68,7 +68,7 @@ public class SQLiteManager : MonoBehaviour
     {
         if(SceneManager.GetActiveScene().buildIndex > 0)
         {
-            if (Input.GetKeyDown(KeyCode.I))
+            if (Input.GetKeyDown(KeySetting.keys[KeyAction.INVENTORY]))
             {
                 if (invenView.gameObject.activeSelf)
                 {
