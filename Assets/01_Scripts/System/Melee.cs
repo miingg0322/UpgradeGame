@@ -27,7 +27,7 @@ public class Melee : MonoBehaviour
         if (Player.Instance.playerId == 2)
         {
             trans.localScale = new Vector3(0.3f, 0.3f, 0.3f);
-            damage = 1;
+            rigid.simulated = false;
             StartCoroutine(Explosion());
         }
     }
