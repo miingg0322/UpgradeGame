@@ -15,9 +15,8 @@ public class UIManager : MonoBehaviour
         }
         else
         {
-            int characterId = GameManager.Instance.deleteCharacter;
-            int classId = DBManager.Instance.GetCharacterClass(characterId);
-            string name = GameManager.Instance.playerData[classId].playerName;
+            int characterId = GameManager.Instance.selectIndex;
+            string name = GameManager.Instance.playerData[characterId].playerName;
 
             notice.text = $"\"{name}\" 캐릭터를 정말로 삭제하시겠습니까?\n삭제된 데이터는 복구할 수 없습니다.";
         }       

@@ -60,7 +60,7 @@ public class LoginUi : MonoBehaviour
             createCharacterIcons[selectIndex].sprite = GameManager.Instance.playerData[selectIndex].playerSprite;
         }
 
-        chdelBtn.GetComponent<Button>().onClick.AddListener(() => GameManager.Instance.DeleteCharacter());
+        //chdelBtn.GetComponent<Button>().onClick.AddListener(() => GameManager.Instance.DeleteCharacter());
         createNoticeCreateBtn.GetComponent<Button>().onClick.AddListener(() => GameManager.Instance.CreateCharacter());
     }
 
@@ -212,7 +212,7 @@ public class LoginUi : MonoBehaviour
     public void ActiveDeleteCheck(int index)
     {
         GameManager.Instance.selectIndex = index;
-        GameManager.Instance.deleteCharacter = GameManager.Instance.userSlots[index];
+        //GameManager.Instance.deleteCharacter = GameManager.Instance.userSlots[index];
         deleteNotice.SetActive(true);
         activeUi = deleteNotice;
     }

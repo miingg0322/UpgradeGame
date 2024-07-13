@@ -20,7 +20,7 @@ public class InvenSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
                 if (slot!=null)
                 {
                     slot.RegisterItemIntoSlot(slotItem);
-                    slot.weapon.SetWeaponData((int)SQLiteManager.Instance.playingCharacter.charClass, slotItem.grade);
+                    slot.weapon.SetWeaponData(SheetManager.Instance.playingCharacter.job, slotItem.grade);
                     slot.weapon.Level = slotItem.value;
                 }
                 else

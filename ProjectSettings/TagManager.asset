@@ -12,6 +12,7 @@ TagManager:
   - Explosion
   - Enemy
   - Skill
+  - Inventory
   layers:
   - Default
   - TransparentFX

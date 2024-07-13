@@ -23,17 +23,18 @@ public class Upgrade : MonoBehaviour
             // 강화 비용 처리
             cost = GameManager.Instance.dataTables["Cost"][weapon.weaponData.grade][weapon.Level];
             Item foundItem = SQLiteManager.Instance.inventory.FindItemExists(1, weapon.weaponData.grade);
+            int amount = SQLiteManager.Instance.inventory.inventory[foundItem];
             // 비용 부족
             if (foundItem !=null)
             {
                 foundItem.PrintDetail();
-                if (foundItem.amount < cost)
+                if (amount < cost)
                 {
                     return;
                 }
-                foundItem.amount -= cost;
+                SQLiteManager.Instance.inventory.inventory[foundItem] -= cost;
                 SQLiteManager.Instance.UseItemFromInventory(foundItem, cost);
-                SQLiteManager.Instance.inventory.GetSlotOfItem(foundItem).SetItemAmountText(foundItem.amount);
+                SQLiteManager.Instance.inventory.GetSlotOfItem(foundItem).SetItemAmountText(SQLiteManager.Instance.inventory.inventory[foundItem]);
             }
             else
             {
