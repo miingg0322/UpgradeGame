@@ -51,10 +51,7 @@ public class EscUI : MonoBehaviour
             chSelectBtn.GetComponent<Button>().onClick.AddListener(() => sceneSwitcher.ReturnCharacterSelect());
             logoutBtn.GetComponent<Button>().onClick.AddListener(() => sceneSwitcher.Logout());
         }
-        for(int index = 0; index < keyText.Length; index++)
-        {
-            keyText[index].text = KeySetting.keys[(KeyAction)index].ToString();
-        }       
+        UpdateKeyText();
     }
 
     // Update is called once per frame
@@ -71,9 +68,27 @@ public class EscUI : MonoBehaviour
                 CloseTopUI();
             }                        
         }
+        UpdateKeyText();
+    }
+
+    void UpdateKeyText()
+    {
         for (int index = 0; index < keyText.Length; index++)
         {
-            keyText[index].text = KeySetting.keys[(KeyAction)index].ToString();
+            KeyCode key = KeySetting.keys[(KeyAction)index];
+            string keyString = key.ToUserFriendlyString();
+
+            keyText[index].text = keyString;
+
+            // 방향키는 크기 키우기
+            if (key == KeyCode.UpArrow || key == KeyCode.DownArrow || key == KeyCode.LeftArrow || key == KeyCode.RightArrow)
+            {
+                keyText[index].fontSize = 45; // 사이즈 크게
+            }
+            else
+            {
+                keyText[index].fontSize = 24; // 기본 크기
+            }
         }
     }
     public void ShowUI()
@@ -278,5 +293,49 @@ public class EscUI : MonoBehaviour
         playerInfoText[3].text = "장착중인 무기 : ???"; // 무기의 이름을 가져오도록 수정 예정
         playerInfoText[4].text = "무기 강화 수치 : ???"; // 무기의 강화 레벨을 가져오도록 수정 예정
         playerInfoText[5].text = "캐릭터 특성 : " + Player.Instance.playerTrait;
+    }
+}
+
+public static class KeyCodeExtensions
+{
+    public static string ToUserFriendlyString(this KeyCode keyCode)
+    {
+        switch (keyCode)
+        {
+            case KeyCode.Alpha0: return "0";
+            case KeyCode.Alpha1: return "1";
+            case KeyCode.Alpha2: return "2";
+            case KeyCode.Alpha3: return "3";
+            case KeyCode.Alpha4: return "4";
+            case KeyCode.Alpha5: return "5";
+            case KeyCode.Alpha6: return "6";
+            case KeyCode.Alpha7: return "7";
+            case KeyCode.Alpha8: return "8";
+            case KeyCode.Alpha9: return "9";
+            case KeyCode.Mouse0: return "Left Click";
+            case KeyCode.Mouse1: return "Right Click";
+            case KeyCode.Mouse2: return "Mouse Wheel";
+            case KeyCode.Space: return "SpaceBar";
+            case KeyCode.Return: return "Enter";
+            case KeyCode.BackQuote: return "`";
+            case KeyCode.LeftControl: return "Left Ctrl";
+            case KeyCode.RightControl: return "Right Ctrl";
+            case KeyCode.Backslash: return "|";
+            case KeyCode.UpArrow: return "↑";
+            case KeyCode.DownArrow: return "↓";
+            case KeyCode.LeftArrow: return "←";
+            case KeyCode.RightArrow: return "→";
+            case KeyCode.LeftBracket: return "[";
+            case KeyCode.RightBracket: return "]";
+            case KeyCode.Minus: return "-";
+            case KeyCode.Equals: return "=";
+            case KeyCode.Semicolon: return ";";
+            case KeyCode.Quote: return "'";
+            case KeyCode.Comma: return ",";
+            case KeyCode.Period: return ".";
+            case KeyCode.Slash: return "/";
+
+            default: return keyCode.ToString();
+        }
     }
 }

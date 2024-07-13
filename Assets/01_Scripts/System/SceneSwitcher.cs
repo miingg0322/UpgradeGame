@@ -38,6 +38,8 @@ public class SceneSwitcher : MonoBehaviour
 
     public void SwitchSampleScene()
     {
+        Player.Instance.DisableSpecialSkill();
+
         SceneManager.LoadScene("SampleScene");    
 
         SceneManager.sceneLoaded += OnSceneLoaded;
@@ -83,6 +85,10 @@ public class SceneSwitcher : MonoBehaviour
 
     public void ReturnCharacterSelect()
     {
+        AudioManager.instance.PlayBgm(false);
+
+        GameManager.Instance.SaveData();
+
         SceneManager.LoadScene("Login");
 
         SceneManager.sceneLoaded += OnSceneLoaded;
@@ -94,6 +100,10 @@ public class SceneSwitcher : MonoBehaviour
 
     public void Logout()
     {
+        AudioManager.instance.PlayBgm(false);
+
+        GameManager.Instance.SaveData();
+
         SceneManager.LoadScene("Login");
 
         SceneManager.sceneLoaded += OnSceneLoaded;
@@ -113,6 +123,8 @@ public class SceneSwitcher : MonoBehaviour
 
     public void SwitchBossToSampleScene()
     {
+        GameManager.Instance.SaveData();
+
         SceneManager.LoadScene("SampleScene");
 
         SceneManager.sceneLoaded += OnSceneLoaded;
@@ -151,7 +163,7 @@ public class SceneSwitcher : MonoBehaviour
             {
                 Debug.LogError("GameManager를 찾을 수 없습니다.");
             }
-            Destroy(GameManager.Instance.player.gameObject);
+            Destroy(GameManager.Instance.player.gameObject);           
             Time.timeScale = 1;
         }
         SceneManager.sceneLoaded -= OnSceneLoaded;

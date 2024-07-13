@@ -10,7 +10,6 @@ public class SampleSceneUI : MonoBehaviour
     public Withdraw withdraw;
     public Image[] ticketIcon;
 
-    public TextMeshProUGUI[] dungeonDescription;
     public TextMeshProUGUI ticketValue;   
     public TextMeshProUGUI timer;
 
@@ -93,7 +92,6 @@ public class SampleSceneUI : MonoBehaviour
         {
             dungeonEnterBtns[index].SetActive(true);
             dungeonLockImage[index].SetActive(false);
-            dungeonDescription[index].text = "던전 설명 던전 설명 던전 설명 던전 설명 던전 설명";
         }
     }
    
