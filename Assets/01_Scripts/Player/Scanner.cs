@@ -16,7 +16,7 @@ public class Scanner : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if(nearestTarget == null || !nearestTarget.gameObject.activeInHierarchy || nearestTarget.position.x > transform.position.x)
+        if(nearestTarget == null || !nearestTarget.gameObject.GetComponent<Enemy>().isDead || nearestTarget.position.x > (transform.position.x - 3))
         {
             targets = Physics2D.CircleCastAll(transform.position, scanRange, Vector2.zero, 0, targetLayer);
             boss = Physics2D.CircleCastAll(transform.position, scanRange, Vector2.zero, 0, targetLayerBoss);
