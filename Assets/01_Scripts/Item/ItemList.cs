@@ -58,25 +58,11 @@ public class ItemList : MonoBehaviour
 
     public ItemData GetItemData(int type, int grade)
     {
-        ItemData result;
-        switch (type)
-        {
-            case 0:
-                result = weaponList.Find(item => item.grade == grade);
-                break;
-            case 1:
-                result = stoneList.Find(item => item.grade == grade);
-                break;
-            case 2:
-                result = repairList.Find(item => item.grade == grade);
-                break;
-            case 3:
-                result = forgeList.Find(item => item.grade == grade);
-                break;
-            default:
-                result = null;
-                break;
-        }
+        Debug.Log($"{type}, {grade}");
+        Debug.Log(itemListByType.Count);
+        Debug.Log(itemListByType[type].Count);
+        ItemData result = itemListByType[type][grade];
+        Debug.Log(result.name);
         return result;
     }
 
@@ -105,6 +91,7 @@ public class ItemList : MonoBehaviour
             itemListByType[type].Add(itemData);
             itemListByGrade[grade].Add(itemData);
         }
+        Debug.Log($"{itemListByType[0].Count}");
     }
 }
 
@@ -135,6 +122,18 @@ public class Item : ItemData
     public int equipped = -1;
     public int value;
 
+    public Item(ItemData data, int value = -1, int equipped = -1)
+    {
+        name = data.name;
+        type = data.type;
+        grade = data.grade;
+        desc = data.desc;
+        weight = data.weight;
+        enName = data.enName;
+        enDesc = data.enDesc;
+        this.value = value;
+        this.equipped = equipped;
+    }
     public Item(string name, int type, int grade, int value = -1, int equipped = -1)
     {
         this.name = name;

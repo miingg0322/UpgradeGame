@@ -14,11 +14,10 @@ public class SQLiteManager : MonoBehaviour
     {
         get { return instance; }
     }
-    readonly string dbName = "/Player.db";
+    readonly static string dbName = "/Player.db";
     readonly string inventoryTable = "Inventory";
     readonly string characterTable = "Character";
-
-    SqliteConnection dbConn;
+    readonly string connectionString = $"data source={Application.streamingAssetsPath}{dbName}";
     public Inventory inventory;
     ScrollRect invenView;
     FollowDetail followDetail;
@@ -36,17 +35,6 @@ public class SQLiteManager : MonoBehaviour
             Destroy(this);
         }
         SceneManager.sceneLoaded += OnSceneLoaded;
-
-        Connect();
-
-        //StartCoroutine(CreateCharacter(tester));
-
-        //Item testItem = new Item("기본 강화석", 1, 0);
-        //StartCoroutine(AddItemToInventoryCo(testItem));
-
-        //Item testNewItem = new Item("또 다른 재료", 1, 0);
-        //StartCoroutine(AddItemToInventoryCo(testNewItem));
-        //StartCoroutine(UseItemFromInventoryCo(testItem, 5));
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode sceneMode)
@@ -62,7 +50,7 @@ public class SQLiteManager : MonoBehaviour
 
     void Start()
     {
-
+        itemList = GetComponent<ItemList>();
     }
     private void Update()
     {
@@ -83,70 +71,80 @@ public class SQLiteManager : MonoBehaviour
         }
     }
 
-    
-
-    private void Connect()
-    {
-        string connectionString = $"URI=file:{Application.streamingAssetsPath}{dbName}";
-        dbConn = new SqliteConnection(connectionString);
-        dbConn.Open();
-    }
-
     SqliteDataReader SelectQuery(string target, string table, string where)
     {
-        string query = $"SELECT {target} FROM {table} {where}";
-        //Debug.Log($"SELECT Query: {query}");
-        SqliteCommand dbCommand = dbConn.CreateCommand();
-        dbCommand.CommandText = query;
-        return dbCommand.ExecuteReader();
+        using(SqliteConnection conn = new SqliteConnection(connectionString))
+        {
+            conn.Open();
+            string query = $"SELECT {target} FROM {table} {where}";
+            using (SqliteCommand dbCommand = new SqliteCommand(query, conn))
+            {
+                dbCommand.CommandText = query;
+                return dbCommand.ExecuteReader();
+            }
+        }
     }
 
     // 아이템 획득
-    IEnumerator AddItemToInventoryCo(Item item, int amount = 1)
-    {
-        SqliteDataReader dataReader;
-        SqliteCommand dbCommand;
-        dbCommand = dbConn.CreateCommand();
-        string table = $"{inventoryTable}_{SheetManager.Instance.playingCharacter.slot}";
-        yield return dataReader = SelectQuery("Amount", table, $"WHERE Item = '{item.name}'");
+    //IEnumerator AddItemToInventoryCo(Item item, int amount = 1)
+    //{
+    //    SqliteDataReader dataReader;
+    //    SqliteCommand dbCommand;
+    //    dbCommand = dbConn.CreateCommand();
+    //    string table = $"{inventoryTable}_{SheetManager.Instance.playingCharacter.slot}";
+    //    yield return dataReader = SelectQuery("Amount", table, $"WHERE Item = '{item.name}'");
 
-        if(dataReader.HasRows)
-        {
-            dataReader.Read();
-            int curAmount = dataReader.GetInt32(0);
-            //Debug.Log($"추가 전 {curAmount} 개 있음");
-            StartCoroutine(UpdateExistItemAmount(item.name, curAmount + amount));
-        }
-        else
-        {
-            StartCoroutine(InsertNewItem(item, amount));
-        }
+    //    if (dataReader.HasRows)
+    //    {
+    //        dataReader.Read();
+    //        int curAmount = dataReader.GetInt32(0);
+    //        //Debug.Log($"추가 전 {curAmount} 개 있음");
+    //        StartCoroutine(UpdateExistItemAmount(item.name, curAmount + amount));
+    //    }
+    //    else
+    //    {
+    //        StartCoroutine(InsertNewItem(item, amount));
+    //    }
 
-    }
+    //}
 
     IEnumerator UpdateExistItemAmount(string item, int amount)
     {
-        SqliteCommand updateCommand = dbConn.CreateCommand();
-        updateCommand.Parameters.Add(new SqliteParameter("@Amount", amount));
-        updateCommand.Parameters.Add(new SqliteParameter("@Item", item));
-        string table = $"{inventoryTable}_{SheetManager.Instance.playingCharacter.slot}";
-        string query = $"UPDATE {table} SET Amount = @Amount WHERE Item = @Item";
-        //Debug.Log(query);
-        updateCommand.CommandText = query;
-        yield return updateCommand.ExecuteNonQuery();
-        updateCommand.Dispose();
+        using (SqliteConnection conn = new SqliteConnection(connectionString))
+        {
+            conn.Open();
+            string table = $"{inventoryTable}_{SheetManager.Instance.playingCharacter.slot}";
+            string query = $"UPDATE {table} SET Amount = @Amount WHERE Item = @Item";
+            using (SqliteCommand updateCommand = new SqliteCommand(query, conn))
+            {
+                updateCommand.Parameters.Add(new SqliteParameter("@Amount", amount));
+                updateCommand.Parameters.Add(new SqliteParameter("@Item", item));
+                updateCommand.CommandText = query;
+                yield return updateCommand.ExecuteNonQuery();
+                updateCommand.Dispose();
+                conn.Close();
+            }
+        }
     }
     IEnumerator InsertNewItem(Item item, int amount)
     {
-        SqliteCommand insertCommand = dbConn.CreateCommand();
-        insertCommand.Parameters.Add(new SqliteParameter("@Amount", amount));
-        insertCommand.Parameters.Add(new SqliteParameter("@Item", item.name));
-        insertCommand.Parameters.Add(new SqliteParameter("@Type", item.type));
-        string table = $"{inventoryTable}_{SheetManager.Instance.playingCharacter.slot}";
-        string query = $"INSERT INTO {table} (Item, Type, Amount) VALUES (@Item, @Type, @Amount)";
-        insertCommand.CommandText = query;
-        yield return insertCommand.ExecuteNonQuery();
-        insertCommand.Dispose();
+        using (SqliteConnection conn = new SqliteConnection(connectionString))
+        {
+            conn.Open();
+            string table = $"{inventoryTable}_{SheetManager.Instance.playingCharacter.slot}";
+            string query = $"INSERT INTO {table} (Item, Type, Amount) VALUES (@Item, @Type, @Amount)";
+            using (SqliteCommand insertCommand = new SqliteCommand(query, conn))
+            {
+                insertCommand.Parameters.Add(new SqliteParameter("@Amount", amount));
+                insertCommand.Parameters.Add(new SqliteParameter("@Item", item.name));
+                insertCommand.Parameters.Add(new SqliteParameter("@Type", item.type));
+
+                insertCommand.CommandText = query;
+                yield return insertCommand.ExecuteNonQuery();
+                insertCommand.Dispose();
+                conn.Close();
+            }
+        }
     }
 
     // 아이템 사용
@@ -182,56 +180,50 @@ public class SQLiteManager : MonoBehaviour
     }
     IEnumerator UpgradeWeaponCo(string weaponName, int level)
     {
-        string table = $"{inventoryTable}_{SheetManager.Instance.playingCharacter.slot}";
-        SqliteCommand updateCommand = dbConn.CreateCommand();
-        updateCommand.Parameters.Add(new SqliteParameter("@Value", level));
-        updateCommand.Parameters.Add(new SqliteParameter("@Item", weaponName));
-        string query = $"UPDATE {table} SET Value = @Value WHERE Item = @Item";
-        //Debug.Log(query);
-        updateCommand.CommandText = query;
-        yield return updateCommand.ExecuteNonQuery();
-        updateCommand.Dispose();
-
+        using (SqliteConnection conn = new SqliteConnection(connectionString))
+        {
+            conn.Open();
+            string table = $"{inventoryTable}_{SheetManager.Instance.playingCharacter.slot}";
+            string query = $"UPDATE {table} SET Value = @Value WHERE Item = @Item";
+            using(SqliteCommand updateCommand = new SqliteCommand(query, conn))
+            {
+                updateCommand.Parameters.Add(new SqliteParameter("@Value", level));
+                updateCommand.Parameters.Add(new SqliteParameter("@Item", weaponName));
+                //Debug.Log(query);
+                updateCommand.CommandText = query;
+                yield return updateCommand.ExecuteNonQuery();
+                updateCommand.Dispose();
+                conn.Close();
+            }
+        }
     }
-    IEnumerator CreateCharacter(Character character)
-    {
-        SqliteCommand createCharacterCommand = dbConn.CreateCommand();
-        createCharacterCommand.Parameters.Add(new SqliteParameter("@Slot", character.slot));
-        createCharacterCommand.Parameters.Add(new SqliteParameter("@Class", (int)character.charClass));
-        createCharacterCommand.Parameters.Add(new SqliteParameter("@Created", character.created));
-        string query = $"INSERT INTO {characterTable} (Slot, Class, Created) VALUES (@Slot, @Class, @Created)";
-        createCharacterCommand.CommandText = query;
-        yield return createCharacterCommand.ExecuteNonQuery();
-    }
-
-    IEnumerator DeleteCharacter(int slot)
-    {
-        SqliteCommand createCharacterCommand = dbConn.CreateCommand();
-        string query = $"DELETE FROM {characterTable} WHERE Slot = {slot}";
-        createCharacterCommand.CommandText = query;
-        yield return createCharacterCommand.ExecuteNonQuery();
-    }
-
-
     public Dictionary<Item, int> GetAllItems()
     {
-        string table = $"{inventoryTable}_{SheetManager.Instance.playingCharacter.slot}";
-        string query = $"SELECT * FROM {table} ORDER BY Type ASC, Grade DESC, Item ASC";
-        SqliteCommand dbCommand = dbConn.CreateCommand();
-        dbCommand.CommandText = query;
-        SqliteDataReader dataReader = dbCommand.ExecuteReader();
-        Dictionary<Item, int> itemDict = new Dictionary<Item, int>();
-        while (dataReader.Read())
+        using (SqliteConnection conn = new SqliteConnection(connectionString))
         {
-            string itemName = dataReader.GetString(0);
-            int type = dataReader.GetInt32(1);
-            int grade = dataReader.GetInt32(2);
-            int amount = dataReader.GetInt32(3);
-            int value = dataReader.GetInt32(4);
-            Item item = (Item)itemList.GetItemData(type, grade);
-            itemDict.Add(item, amount);
+            conn.Open();
+            string table = $"{inventoryTable}_{SheetManager.Instance.playingCharacter.slot}";
+            string query = $"SELECT * FROM {table} ORDER BY Type ASC, Grade DESC, Item ASC";
+            using(SqliteCommand dbCommand = new SqliteCommand(query, conn))
+            {
+                dbCommand.CommandText = query;
+                SqliteDataReader dataReader = dbCommand.ExecuteReader();
+                Dictionary<Item, int> itemDict = new Dictionary<Item, int>();
+                while (dataReader.Read())
+                {
+                    string itemName = dataReader.GetString(0);
+                    int type = dataReader.GetInt32(1);
+                    int grade = dataReader.GetInt32(2);
+                    int amount = dataReader.GetInt32(3);
+                    int value = dataReader.GetInt32(4);
+                    Item item = (Item)itemList.GetItemData(type, grade);
+                    itemDict.Add(item, amount);
+                }
+                dbCommand.Dispose();
+                conn.Close();
+                return itemDict;
+            }
         }
-        return itemDict;
     }
 
     public Weapon GetEquppiedWeapon()
@@ -253,15 +245,23 @@ public class SQLiteManager : MonoBehaviour
         return null;
     }
 
-    public void InitInventory()
+    public void InitInventory(int slot)
     {
-        string table = $"{inventoryTable}_{SheetManager.Instance.playingCharacter.slot}";
-        Item basicWeapon = (Item)itemList.GetItemData(0, 0);
-        string query = $"DELETE FROM {table}; INSERT INTO {table} (Item, Type, Grade, Amount, Value, Equipped) VALUES ({basicWeapon.name}, {basicWeapon.type}, {basicWeapon.grade}, {1}, {0}, {1})";
-        SqliteCommand initCommand = dbConn.CreateCommand();
-        initCommand.CommandText = query;
-        initCommand.ExecuteNonQuery();
-        initCommand.Dispose();
+        using (SqliteConnection conn = new SqliteConnection(connectionString))
+        {
+            conn.Open();
+            string table = $"{inventoryTable}_{slot}";
+            //string query = $"DELETE FROM {table};";
+            Item basicWeapon = new Item(itemList.GetItemData(0, 0), 0, 1);
+            string query = $"DELETE FROM {table}; INSERT INTO {table} (Item, Type, Grade, Amount, Value, Equipped) VALUES (\"{basicWeapon.name}\", {basicWeapon.type}, {basicWeapon.grade}, {1}, {0}, {1})";
+            Debug.Log(query);            
+            using(SqliteCommand initCommand = new SqliteCommand(query, conn))
+            {
+                initCommand.CommandText = query;
+                initCommand.ExecuteNonQuery();
+                initCommand.Dispose();
+            }
+        }
     }
 
     public void SaveItems(Item[] items)
