@@ -12,7 +12,7 @@ public class SheetManager : MonoBehaviour
         get { return instance; }
         private set { }
     }
-    readonly string url = "https://script.google.com/macros/s/AKfycbwzNZHwqRnXLQXj5k_dslcJ_f7Q3awhydVXFeaJZHkkp42CVHwBXjYqyfMRi4RI7snq1A/exec";
+    readonly string url = "https://script.google.com/macros/s/AKfycbyjU0TJSTWpabGGlqMJ5WiJLLWkuNRozmvs68xoWCuj_CLyd3aKUONRODGEY4Z1g84icQ/exec";
     private SheetResponse response;
     public UserData user;
     public List<CharacterData> characterDatas = new List<CharacterData>();
