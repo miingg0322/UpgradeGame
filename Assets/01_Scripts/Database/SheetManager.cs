@@ -170,6 +170,8 @@ public class SheetManager : MonoBehaviour
     public void CreateCharacter(int slot, int job)
     {
         SQLiteManager.Instance.InitInventory(slot);
+        CharacterData chData = new CharacterData(slot, job, 0, DateTime.Now.ToString(), 0, 0, 0);
+        characterDatas.Add(chData);
         WWWForm form = new WWWForm();
         form.AddField("order", "create");
         form.AddField("slot", slot);
@@ -238,7 +240,7 @@ public class SheetManager : MonoBehaviour
         }
     }
 
-    private void SortScore()
+    private void SortScore(List<UserScore> scoreList)
     {
 
     }
