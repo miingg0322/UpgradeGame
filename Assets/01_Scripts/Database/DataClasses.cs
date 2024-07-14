@@ -40,6 +40,17 @@ public class SheetResponse
     }
 }
 
+public class UserScore
+{
+    public string id;
+    public int score;
+    public UserScore(string id, int score)
+    {
+        this.id = id;
+        this.score = score;
+    }
+}
+
 public class UserData
 {
     public string id;

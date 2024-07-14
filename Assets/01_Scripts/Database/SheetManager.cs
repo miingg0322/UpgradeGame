@@ -12,13 +12,15 @@ public class SheetManager : MonoBehaviour
         get { return instance; }
         private set { }
     }
-    readonly string url = "https://script.google.com/macros/s/AKfycbxQfKuzApgi5AW-eue4vcZHadYqhU6jmb12dTcjRuTZp6HWUEbxsClxALEkkSbplO5RJw/exec";
+    readonly string url = "https://script.google.com/macros/s/AKfycbwzNZHwqRnXLQXj5k_dslcJ_f7Q3awhydVXFeaJZHkkp42CVHwBXjYqyfMRi4RI7snq1A/exec";
     private SheetResponse response;
     public UserData user;
     public List<CharacterData> characterDatas = new List<CharacterData>();
     public CharacterData playingCharacter;
     public ItemList itemList;
     public WeightedRandom wRandom;
+    public List<UserScore> userScores = new List<UserScore>();
+
     private void Awake()
     {
         if(Instance == null)
@@ -167,6 +169,7 @@ public class SheetManager : MonoBehaviour
 
     public void CreateCharacter(int slot, int job)
     {
+        SQLiteManager.Instance.InitInventory(slot);
         WWWForm form = new WWWForm();
         form.AddField("order", "create");
         form.AddField("slot", slot);
@@ -178,6 +181,7 @@ public class SheetManager : MonoBehaviour
     public void DeleteCharacter(int slot)
     {
         Debug.Log("Delete");
+        SQLiteManager.Instance.InitInventory(slot);
         characterDatas.Remove(characterDatas[slot]);
         WWWForm form = new WWWForm();
         form.AddField("order", "delete");
@@ -208,10 +212,42 @@ public class SheetManager : MonoBehaviour
         yield return StartCoroutine(Post(form));
         itemList.maxType = int.Parse(response.data[0]);
         itemList.maxGrade = int.Parse(response.data[1]);
-        Debug.Log($"Get Const::: {itemList.maxType}, {itemList.maxGrade}");
+        //Debug.Log($"Get Const::: {itemList.maxType}, {itemList.maxGrade}");
         itemList.InitLists();
         wRandom.SetRandom();
-        wRandom.RandomPickTest(1000);
+        // Å×½ºÆ®
+        //wRandom.RandomPickTest(1000);
     }
 
+    private IEnumerator GetAllScore()
+    {
+        userScores.Clear();
+        WWWForm form = new WWWForm();
+        form.AddField("order", "getAllScore");
+        yield return StartCoroutine(Post(form));
+        if (response.count > 0)
+        {
+            string[][] parsed = response.ParseData();
+            for (int i = 0; i < parsed.Length; i++)
+            {
+                string id = parsed[i][0];
+                int score = int.Parse(parsed[i][1]);
+                UserScore userScore = new UserScore(id, score);
+                userScores.Add(userScore);
+            }
+        }
+    }
+
+    private void SortScore()
+    {
+
+    }
+
+    public void SetHighScore(int score)
+    {
+        if(playingCharacter.score < score)
+        {
+            SetValue((int)CharSchema.SCORE, score, 1);
+        }
+    }
 }
