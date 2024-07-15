@@ -23,5 +23,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/00_Scenes/MergeTest/SampleScene.unity
     guid: 07be2294d83a4354fb103f13f8c4a655
+  - enabled: 1
+    path: Assets/00_Scenes/MergeTest/AutoFarming.unity
+    guid: 7b2a1a97ca8426c49b6ed7612e066475
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: ff9eff758921ccd48b8250fde1f287b6, type: 2}

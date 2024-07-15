@@ -8,6 +8,7 @@ using System.Linq;
 public class Inventory : MonoBehaviour
 {
     public Dictionary<Item, int> inventory = new Dictionary<Item, int>();
+    [SerializeField]
     GridLayoutGroup gridGroup;
     [SerializeField]
     private int cols;
@@ -21,11 +22,8 @@ public class Inventory : MonoBehaviour
         invenSlots = transform.GetComponentsInChildren<InvenSlot>().ToList();
 
         inventory = SQLiteManager.Instance.GetAllItems();
-        foreach (var item in inventory)
-        {
-            //Debug.Log($"{item.name}::{item.type}:::{item.grade}");
-        }
         SetInventorySlots();
+        SQLiteManager.Instance.invenView.gameObject.SetActive(false);
     }
     
     public void SetInventorySlots()

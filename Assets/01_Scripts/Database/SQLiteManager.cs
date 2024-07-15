@@ -19,7 +19,7 @@ public class SQLiteManager : MonoBehaviour
     readonly string characterTable = "Character";
     readonly string connectionString = $"data source={Application.streamingAssetsPath}{dbName}";
     public Inventory inventory;
-    ScrollRect invenView;
+    public ScrollRect invenView;
     FollowDetail followDetail;
     public ItemList itemList;
     
@@ -44,7 +44,7 @@ public class SQLiteManager : MonoBehaviour
             invenView = GameObject.FindGameObjectWithTag("Inventory").GetComponent<ScrollRect>();
             inventory = invenView.GetComponentInChildren<Inventory>();
             followDetail = invenView.GetComponentInChildren<FollowDetail>();
-            invenView.gameObject.SetActive(false);
+            //invenView.gameObject.SetActive(false);
         }
     }
 
@@ -216,7 +216,7 @@ public class SQLiteManager : MonoBehaviour
                     int grade = dataReader.GetInt32(2);
                     int amount = dataReader.GetInt32(3);
                     int value = dataReader.GetInt32(4);
-                    Item item = (Item)itemList.GetItemData(type, grade);
+                    Item item = new Item(itemList.GetItemData(type, grade));
                     itemDict.Add(item, amount);
                 }
                 dbCommand.Dispose();
