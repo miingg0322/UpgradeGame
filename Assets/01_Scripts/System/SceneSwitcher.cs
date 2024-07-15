@@ -25,7 +25,7 @@ public class SceneSwitcher : MonoBehaviour
             SceneManager.LoadScene("AutoFarming");           
 
             SceneManager.sceneLoaded += OnSceneLoaded;
-
+            
             levelValue = value;
             AudioManager.instance.PlayBgm(true);
         }
