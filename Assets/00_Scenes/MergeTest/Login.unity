@@ -1793,6 +1793,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemList: {fileID: 0}
+  wRandom: {fileID: 0}
 --- !u!114 &150678880
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11716,6 +11717,8 @@ MonoBehaviour:
   isCreate: 0
   isChangeSetting: 0
   isTutorialClear: 0
+  isStop: 0
+  isKeySetting: 0
   probBase: 1000
 --- !u!4 &1758712023
 Transform:
