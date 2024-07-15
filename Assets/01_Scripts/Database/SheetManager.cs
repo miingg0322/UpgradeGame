@@ -12,7 +12,7 @@ public class SheetManager : MonoBehaviour
         get { return instance; }
         private set { }
     }
-    readonly string url = "https://script.google.com/macros/s/AKfycbyjU0TJSTWpabGGlqMJ5WiJLLWkuNRozmvs68xoWCuj_CLyd3aKUONRODGEY4Z1g84icQ/exec";
+    readonly string url = "https://script.google.com/macros/s/AKfycbxtzx-A8zyuMOZLWmrPLdIDS9wjYNU-9KWuiIcnZKf1v2E59rMv6zWLc0fVpWLlm4m6QA/exec";
     private SheetResponse response;
     public UserData user;
     public List<CharacterData> characterDatas = new List<CharacterData>();
@@ -184,7 +184,8 @@ public class SheetManager : MonoBehaviour
     {
         Debug.Log("Delete");
         SQLiteManager.Instance.InitInventory(slot);
-        characterDatas.Remove(characterDatas[slot]);
+        CharacterData removeData = characterDatas.Find(data => data.slot.Equals(slot));
+        characterDatas.Remove(removeData);
         WWWForm form = new WWWForm();
         form.AddField("order", "delete");
         form.AddField("slot", slot);
