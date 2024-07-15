@@ -6,22 +6,25 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 0
-    path: Assets/00_Scenes/SampleScene.unity
-    guid: 8c9cfa26abfee488c85f1582747f6a02
-  - enabled: 0
-    path: Assets/00_Scenes/AutoFarming.unity
-    guid: 67cad4dad6947d54d9334ebb2854cc3a
+    path: Assets/00_Scenes/SheetDB.unity
+    guid: 35677a1009ed73d449aab62ce9dc4015
   - enabled: 0
     path: Assets/00_Scenes/Inventory.unity
     guid: 7014663cfcaa38240a2489d889238072
   - enabled: 0
     path: Assets/00_Scenes/Boss.unity
     guid: ff84b905bd205014db2f79cdec44aaf4
-  - enabled: 1
-    path: Assets/00_Scenes/MergeTest/Login.unity
-    guid: df8b17d9f0f97034588c3c3c2e58aa46
-  - enabled: 1
+  - enabled: 0
     path: Assets/00_Scenes/MergeTest/SampleScene.unity
     guid: 07be2294d83a4354fb103f13f8c4a655
+  - enabled: 0
+    path: Assets/00_Scenes/Login.unity
+    guid: df8b17d9f0f97034588c3c3c2e58aa46
+  - enabled: 0
+    path: Assets/00_Scenes/SampleScene.unity
+    guid: 8c9cfa26abfee488c85f1582747f6a02
+  - enabled: 0
+    path: Assets/00_Scenes/AutoFarming.unity
+    guid: 67cad4dad6947d54d9334ebb2854cc3a
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: ff9eff758921ccd48b8250fde1f287b6, type: 2}
