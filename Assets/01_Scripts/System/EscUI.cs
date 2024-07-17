@@ -57,7 +57,7 @@ public class EscUI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape) && !notActive && !GameManager.Instance.isKeySetting && !GameManager.Instance.isDungeonClear)
+        if (Input.GetKeyDown(KeyCode.Escape) && !notActive && !GameManager.Instance.isKeySetting && !GameManager.Instance.isDungeonClear && !SQLiteManager.Instance.isActiveInven)
         {
             if (uiStack.Count == 0)
             {
@@ -232,7 +232,8 @@ public class EscUI : MonoBehaviour
             }
 
             // 새로운 UI를 스택에 추가하고 상호작용을 가능하게 한다
-            ui.GetComponent<CanvasGroup>().blocksRaycasts = true;
+
+            ui.GetComponent<CanvasGroup>().blocksRaycasts = true;    
             uiStack.Push(ui);
             ui.SetActive(true);
         }
