@@ -22,7 +22,8 @@ public class SQLiteManager : MonoBehaviour
     public ScrollRect invenView;
     FollowDetail followDetail;
     public ItemList itemList;
-    
+    public bool isActiveInven;
+
     private void Awake()
     {
         if(instance == null)
@@ -56,17 +57,25 @@ public class SQLiteManager : MonoBehaviour
     {
         if(SceneManager.GetActiveScene().buildIndex > 0)
         {
-            if (Input.GetKeyDown(KeySetting.keys[KeyAction.INVENTORY]))
+            if (Input.GetKeyDown(KeySetting.keys[KeyAction.INVENTORY]) && !GameManager.Instance.isStop && !GameManager.Instance.isDungeonClear)
             {
                 if (invenView.gameObject.activeSelf)
                 {
                     followDetail.gameObject.SetActive(false);
                     invenView.gameObject.SetActive(false);
+                    StartCoroutine(InvenDisable());
                 }
                 else
                 {
                     invenView.gameObject.SetActive(true);
+                    isActiveInven = true;
                 }
+            }
+            if(Input.GetKeyDown(KeyCode.Escape) && invenView.gameObject.activeSelf)
+            {
+                followDetail.gameObject.SetActive(false);
+                invenView.gameObject.SetActive(false);
+                StartCoroutine(InvenDisable());
             }
         }
     }
@@ -108,6 +117,12 @@ public class SQLiteManager : MonoBehaviour
 
     //}
 
+    IEnumerator InvenDisable()
+    {
+        yield return null;
+
+        isActiveInven = false;
+    }
     IEnumerator UpdateExistItemAmount(string item, int amount)
     {
         using (SqliteConnection conn = new SqliteConnection(connectionString))
