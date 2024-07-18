@@ -27,7 +27,7 @@ public class Scanner : MonoBehaviour
     Transform GetNearest()
     {
         Transform result = null;
-        float diff = 100;
+        float diff = 25;
 
         foreach (RaycastHit2D hit in boss)
         {
