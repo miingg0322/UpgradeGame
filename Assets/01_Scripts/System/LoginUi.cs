@@ -98,7 +98,7 @@ public class LoginUi : MonoBehaviour
     // Password InputField에서 아이콘 클릭시 비밀번호가 보여지거나 숨겨지는 함수
     public void SetShowPassword()
     {
-        if(eyeOff.activeSelf)
+        if(passwordField.contentType == TMP_InputField.ContentType.Password)
         {
             eyeOff.SetActive(false);
             eyeOn.SetActive(true);
@@ -110,6 +110,7 @@ public class LoginUi : MonoBehaviour
             eyeOn.SetActive(false);
             passwordField.contentType = TMP_InputField.ContentType.Password;
         }
+         passwordField.ForceLabelUpdate();
     }
     public void ActiveSignUp()
     {
